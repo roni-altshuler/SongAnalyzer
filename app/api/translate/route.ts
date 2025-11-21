@@ -74,23 +74,41 @@ async function translateText(text: string): Promise<{ translatedText: string; de
   }
 
   try {
-    const srcLang = languageCodeMap[detectedLanguage] || detectedLanguage.toLowerCase();
+    // Use Helsinki-NLP translation models
+    const languageMap: Record<string, string> = {
+      'Spanish': 'es',
+      'French': 'fr',
+      'German': 'de',
+      'Italian': 'it',
+      'Portuguese': 'pt',
+      'Russian': 'ru',
+      'Chinese': 'zh',
+      'Japanese': 'ja',
+      'Korean': 'ko',
+      'Arabic': 'ar',
+    };
+
+    const langCode = languageMap[detectedLanguage];
     
-    // Using Helsinki-NLP translation models via Hugging Face
+    if (!langCode) {
+      return {
+        translatedText: text,
+        detectedLanguage,
+        wasTranslated: false,
+      };
+    }
+    
+    // Using Helsinki-NLP translation model
+    const modelName = `Helsinki-NLP/opus-mt-${langCode}-en`;
     const response = await fetch(
-      'https://api-inference.huggingface.co/models/facebook/nllb-200-distilled-600M',
+      `https://api-inference.huggingface.co/models/${modelName}`,
       {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${HF_TOKEN}`,
-          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           inputs: text,
-          parameters: {
-            src_lang: srcLang,
-            tgt_lang: 'eng_Latn',
-          },
         }),
       }
     );
@@ -104,7 +122,8 @@ async function translateText(text: string): Promise<{ translatedText: string; de
         wasTranslated: true,
       };
     } else {
-      console.error('Translation API error:', await response.text());
+      const errorText = await response.text();
+      console.error('Translation API error:', errorText);
       return {
         translatedText: text,
         detectedLanguage,

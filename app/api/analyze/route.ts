@@ -266,9 +266,60 @@ async function analyzeLyrics(lyrics: string): Promise<AnalysisResult> {
   let wasTranslated = false;
   
   if (originalLanguage !== 'English') {
-    // For server-side API calls, we'll analyze directly without making HTTP requests
-    // to avoid the need for base URL configuration
-    wasTranslated = false; // Will use original text since we can't easily call our own API from server
+    try {
+      // Call translation API
+      const HF_TOKEN = process.env.HUGGINGFACE_API_KEY;
+      
+      if (HF_TOKEN) {
+        // Use the translation service with Helsinki-NLP models
+        const languageMap: Record<string, string> = {
+          'Spanish': 'es',
+          'French': 'fr',
+          'German': 'de',
+          'Italian': 'it',
+          'Portuguese': 'pt',
+          'Russian': 'ru',
+          'Chinese': 'zh',
+          'Japanese': 'ja',
+          'Korean': 'ko',
+          'Arabic': 'ar',
+        };
+
+        const langCode = languageMap[originalLanguage];
+        
+        if (langCode) {
+          // Using Helsinki-NLP translation model
+          const modelName = `Helsinki-NLP/opus-mt-${langCode}-en`;
+          const response = await fetch(
+            `https://api-inference.huggingface.co/models/${modelName}`,
+            {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${HF_TOKEN}`,
+              },
+              body: JSON.stringify({
+                inputs: lyrics,
+              }),
+            }
+          );
+
+          if (response.ok) {
+            const result = await response.json();
+            const translatedText = result[0]?.translation_text || result[0]?.generated_text;
+            if (translatedText) {
+              textToAnalyze = translatedText;
+              wasTranslated = true;
+            }
+          } else {
+            const errorText = await response.text();
+            console.error('Translation API error:', errorText);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Translation error:', error);
+      // Continue with original text if translation fails
+    }
   }
   
   // Calculate word count

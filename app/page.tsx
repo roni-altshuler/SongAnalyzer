@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface AnalysisResult {
   mood: string;
@@ -20,6 +20,14 @@ export default function Home() {
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Reset analysis when lyrics change after an analysis has been done
+  useEffect(() => {
+    if (analysis) {
+      setAnalysis(null);
+      setError('');
+    }
+  }, [lyrics]);
 
   const analyzeLyrics = async () => {
     if (!lyrics.trim()) {
@@ -64,7 +72,7 @@ export default function Home() {
       <div className="container mx-auto px-4 py-12 max-w-5xl">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-5xl font-bold mb-4 pb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight">
             Song Lyric Analyzer
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300">
@@ -73,7 +81,7 @@ export default function Home() {
         </div>
 
         {/* Main Content */}
-        <div className="grid gap-8 lg:grid-cols-2">
+        <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-2">
           {/* Input Section */}
           <div className="space-y-4">
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-slate-700">
