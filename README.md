@@ -123,10 +123,6 @@ Or deploy with one click:
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/roni-altshuler/SongAnalyzer)
 
-## 📝 License
-
-ISC
-
 ## 🤝 Contributing
 
 Contributions, issues, and feature requests are welcome!
