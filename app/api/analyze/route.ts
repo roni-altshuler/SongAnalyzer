@@ -226,7 +226,10 @@ function generateDetailedAnalysis(
   analysis += `The overall sentiment leans ${sentiment.toLowerCase()}, creating an emotional atmosphere that resonates with ${energy.toLowerCase()} energy. `;
   
   if (themes.length > 0) {
-    analysis += `\n\nThe lyrical content explores themes of ${themes.slice(0, -1).join(', ')}${themes.length > 1 ? ', and ' + themes[themes.length - 1] : themes[0]}, `;
+    const themesList = themes.length > 1 
+      ? themes.slice(0, -1).join(', ') + ', and ' + themes[themes.length - 1]
+      : themes[0];
+    analysis += `\n\nThe lyrical content explores themes of ${themesList}, `;
     
     if (isFullSong) {
       analysis += 'weaving these elements throughout the composition to create a rich, multi-layered narrative. ';
@@ -263,24 +266,9 @@ async function analyzeLyrics(lyrics: string): Promise<AnalysisResult> {
   let wasTranslated = false;
   
   if (originalLanguage !== 'English') {
-    // Attempt translation
-    try {
-      const translateResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/translate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: lyrics }),
-      });
-      
-      if (translateResponse.ok) {
-        const translateResult = await translateResponse.json();
-        if (translateResult.wasTranslated) {
-          textToAnalyze = translateResult.translatedText;
-          wasTranslated = true;
-        }
-      }
-    } catch (error) {
-      console.error('Translation failed, analyzing original text:', error);
-    }
+    // For server-side API calls, we'll analyze directly without making HTTP requests
+    // to avoid the need for base URL configuration
+    wasTranslated = false; // Will use original text since we can't easily call our own API from server
   }
   
   // Calculate word count

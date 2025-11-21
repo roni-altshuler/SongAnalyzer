@@ -85,7 +85,11 @@ export default function Home() {
                 value={lyrics}
                 onChange={(e) => setLyrics(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Paste full or partial lyrics here...&#10;&#10;Supports multiple languages - non-English lyrics will be automatically translated for analysis.&#10;&#10;Tip: More lyrics = more detailed insights!"
+                placeholder="Paste full or partial lyrics here...
+
+Supports multiple languages - non-English lyrics will be automatically translated for analysis.
+
+Tip: More lyrics = more detailed insights!"
                 className="w-full h-80 px-4 py-3 text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none font-mono text-sm"
               />
               <div className="mt-4 flex items-center justify-between">

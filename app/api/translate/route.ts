@@ -44,6 +44,21 @@ async function translateText(text: string): Promise<{ translatedText: string; de
     };
   }
 
+  // Language code mapping for NLLB model
+  const languageCodeMap: Record<string, string> = {
+    'Spanish': 'spa_Latn',
+    'French': 'fra_Latn',
+    'German': 'deu_Latn',
+    'Italian': 'ita_Latn',
+    'Portuguese': 'por_Latn',
+    'Russian': 'rus_Cyrl',
+    'Chinese': 'zho_Hans',
+    'Japanese': 'jpn_Jpan',
+    'Korean': 'kor_Hang',
+    'Arabic': 'arb_Arab',
+    'Hebrew': 'heb_Hebr',
+  };
+
   // For demo purposes without API key, we'll use a simple approach
   // In production, you'd use HuggingFace API with a token
   const HF_TOKEN = process.env.HUGGINGFACE_API_KEY;
@@ -59,6 +74,8 @@ async function translateText(text: string): Promise<{ translatedText: string; de
   }
 
   try {
+    const srcLang = languageCodeMap[detectedLanguage] || detectedLanguage.toLowerCase();
+    
     // Using Helsinki-NLP translation models via Hugging Face
     const response = await fetch(
       'https://api-inference.huggingface.co/models/facebook/nllb-200-distilled-600M',
@@ -71,7 +88,7 @@ async function translateText(text: string): Promise<{ translatedText: string; de
         body: JSON.stringify({
           inputs: text,
           parameters: {
-            src_lang: detectedLanguage.toLowerCase(),
+            src_lang: srcLang,
             tgt_lang: 'eng_Latn',
           },
         }),
