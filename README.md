@@ -1,119 +1,130 @@
 # 🎵 Song Lyric Analyzer
 
-A modern, minimalist web application that analyzes song lyrics to determine mood, vibe, and emotional insights. Built with Next.js, TypeScript, and Tailwind CSS.
+A modern web application that analyzes song lyrics to determine mood, vibe, energy, and emotional insights — powered by keyword-based NLP with optional Hugging Face translation.
 
-## ✨ Features
+**Live:** [songanalyzer.vercel.app](https://songanalyzer.vercel.app) *(if deployed)*
 
-- **Mood & Vibe Analysis**: Determines the emotional tone and atmosphere of song lyrics
-- **Multi-Language Support**: Automatically detects and translates non-English lyrics for analysis
-- **Detailed Insights**: Provides comprehensive analysis that becomes more detailed with longer lyric inputs
-- **Modern UI**: Clean, professional, and highly intuitive interface
-- **Real-time Analysis**: Fast processing with immediate results
-- **Theme Detection**: Identifies key themes present in the lyrics
-- **Sentiment Analysis**: Evaluates the overall emotional sentiment
-- **Energy Level**: Assesses the energy and intensity of the song
+---
 
-## 🚀 Getting Started
+## Features
+
+| Feature | Description |
+|---------|-------------|
+| **Mood & Vibe Analysis** | Determines emotional tone, atmosphere, energy, and sentiment |
+| **Mood Radar Chart** | SVG spider chart visualising five mood dimensions |
+| **Sample Lyrics** | One-click samples for instant demo (Pop, Ballad, Rock, Chill) |
+| **Analysis History** | Saves past analyses to localStorage — view, restore, or delete |
+| **Share / Export** | Copy a formatted text summary to clipboard |
+| **Multi-Language** | Auto-detects 11+ languages; translates via Hugging Face models |
+| **Dark Mode** | System-aware toggle with persistence |
+| **Confidence Bar** | Animated visual indicator based on word count |
+| **Loading Skeleton** | Polished skeleton UI while results load |
+| **Keyboard Shortcut** | Cmd/Ctrl + Enter to analyze |
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router)
+- **Language:** TypeScript 5
+- **Styling:** Tailwind CSS 4
+- **AI/ML:** Hugging Face Inference (optional, for translation)
+- **Analytics:** Vercel Analytics
+- **Deployment:** Vercel-ready
+
+## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+ installed
-- npm or yarn package manager
+- Node.js 18+
+- npm, yarn, or pnpm
 
 ### Installation
 
-1. Clone the repository:
 ```bash
 git clone https://github.com/roni-altshuler/SongAnalyzer.git
 cd SongAnalyzer
-```
-
-2. Install dependencies:
-```bash
 npm install
 ```
 
-3. (Optional) Set up environment variables:
+### Environment Variables (optional)
+
 ```bash
 cp .env.example .env
 ```
 
-Add your Hugging Face API token to `.env` for enhanced translation features (optional):
+Add a [Hugging Face token](https://huggingface.co/settings/tokens) for translation support:
+
 ```
 HUGGINGFACE_API_KEY=your_token_here
 ```
 
-4. Run the development server:
+### Development
+
 ```bash
-npm run dev
+npm run dev        # start dev server at http://localhost:3000
+npm run build      # production build
+npm run start      # serve production build
+npm run lint       # ESLint
+npm test           # run tests
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
-
-## 🎯 Usage
-
-1. **Paste Lyrics**: Copy and paste full or partial song lyrics into the text area
-2. **Analyze**: Click the "Analyze Lyrics" button or press Cmd/Ctrl+Enter
-3. **View Results**: See the mood, vibe, energy level, sentiment, themes, and detailed analysis
-4. **Multi-Language**: Non-English lyrics are automatically detected and analyzed
-
-### Tips for Best Results
-
-- Paste **full song lyrics** for the most detailed and accurate analysis
-- Partial lyrics work too, but provide less comprehensive insights
-- The app supports multiple languages with automatic translation
-- More lyrics = more detailed analysis and higher confidence scores
-
-## 🛠️ Technology Stack
-
-- **Framework**: Next.js 14+ (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **AI/ML**: Hugging Face Inference (optional for translation)
-- **Deployment**: Vercel-ready
-
-## 📊 Analysis Components
-
-The analyzer evaluates lyrics across multiple dimensions:
-
-1. **Mood**: Emotional state (e.g., Melancholic, Euphoric, Peaceful)
-2. **Vibe**: Overall atmosphere (e.g., Upbeat, Moody, Tranquil)
-3. **Energy**: Intensity level (e.g., Very High, Moderate, Low)
-4. **Sentiment**: Emotional direction (e.g., Positive, Negative, Neutral)
-5. **Themes**: Key topics and subjects (e.g., Love, Hope, Nostalgia)
-6. **Detailed Analysis**: Comprehensive narrative explaining the emotional journey
-
-## 🌍 Multi-Language Support
-
-The app includes built-in language detection for:
-- Spanish, French, German, Italian, Portuguese
-- Russian, Chinese, Japanese, Korean
-- Arabic, Hebrew
-- And more...
-
-When a non-English language is detected, the app can translate it for analysis (requires Hugging Face API key for full translation features).
-
-## 🏗️ Project Structure
+## Project Structure
 
 ```
 SongAnalyzer/
 ├── app/
 │   ├── api/
-│   │   ├── analyze/     # Main analysis endpoint
-│   │   └── translate/   # Translation endpoint
-│   ├── globals.css      # Global styles
-│   ├── layout.tsx       # Root layout
-│   └── page.tsx         # Main page component
-├── public/              # Static assets
-├── .env.example         # Environment variables template
-├── next.config.js       # Next.js configuration
-├── tailwind.config.js   # Tailwind CSS configuration
-└── tsconfig.json        # TypeScript configuration
+│   │   ├── analyze/route.ts     # Lyric analysis endpoint
+│   │   └── translate/route.ts   # Translation endpoint
+│   ├── components/
+│   │   ├── AnalysisResults.tsx   # Results card with stat grid & detailed text
+│   │   ├── AnalysisSkeleton.tsx  # Pulse-animated loading placeholder
+│   │   ├── ConfidenceBar.tsx     # Animated confidence progress bar
+│   │   ├── EmptyState.tsx        # Placeholder before first analysis
+│   │   ├── HistoryPanel.tsx      # Collapsible analysis history list
+│   │   ├── LyricsInput.tsx       # Textarea + word count + keyboard shortcut
+│   │   ├── MoodRadar.tsx         # SVG radar / spider chart
+│   │   ├── SampleLyricPicker.tsx # Horizontal card carousel
+│   │   └── ThemeToggle.tsx       # Dark / light toggle button
+│   ├── providers/
+│   │   └── theme-provider.tsx    # React context for theme state
+│   ├── globals.css               # Tailwind imports + custom animations
+│   ├── layout.tsx                # Root layout + Vercel Analytics
+│   └── page.tsx                  # Main page (assembles all components)
+├── lib/
+│   ├── history.ts                # localStorage history CRUD helpers
+│   ├── language.ts               # Shared language detection patterns
+│   ├── samples.ts                # Built-in sample lyrics data
+│   └── types.ts                  # Shared TypeScript interfaces
+├── __tests__/
+│   ├── analyze.test.ts           # API route tests for /api/analyze
+│   └── language.test.ts          # Unit tests for language utilities
+├── .env.example
+├── next.config.js
+├── tailwind.config.js
+├── tsconfig.json
+└── package.json
 ```
 
-## 🚢 Deployment
+## Analysis Dimensions
 
-The app is ready for deployment on Vercel:
+The analyzer evaluates lyrics across six dimensions:
+
+1. **Mood** — Emotional state (e.g., Melancholic, Euphoric, Peaceful)
+2. **Vibe** — Atmosphere (e.g., Upbeat, Moody, Tranquil)
+3. **Energy** — Intensity level (Very High → Very Low)
+4. **Sentiment** — Emotional direction (Very Positive → Very Negative)
+5. **Themes** — Up to 5 key topics (Love, Hope, Struggle, etc.)
+6. **Detailed Analysis** — Narrative summary of the emotional arc
+
+The Mood Radar chart maps these into five visual axes: Energy, Positivity, Intensity, Complexity, and Emotion.
+
+## Multi-Language Support
+
+Built-in detection for: Spanish, French, German, Italian, Portuguese, Russian, Chinese, Japanese, Korean, Arabic, and Hebrew.
+
+When a non-English language is detected and a Hugging Face API key is configured, the lyrics are translated via Helsinki-NLP models before analysis.
+
+## Deployment
 
 ```bash
 npm run build
@@ -123,11 +134,11 @@ Or deploy with one click:
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/roni-altshuler/SongAnalyzer)
 
-## 🤝 Contributing
+## Contributing
 
 Contributions, issues, and feature requests are welcome!
 
-## 👤 Author
+## Author
 
 **Roni Altshuler**
 

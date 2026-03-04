@@ -1,46 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-interface AnalysisResult {
-  mood: string;
-  vibe: string;
-  energy: string;
-  sentiment: string;
-  themes: string[];
-  detailedAnalysis: string;
-  confidence: number;
-  wordCount: number;
-  originalLanguage?: string;
-  translated?: boolean;
-}
-
-// Language detection patterns (same as translate API)
-const LANGUAGE_PATTERNS = {
-  spanish: /[\u00C0-\u00FF]/i,
-  french: /[àâäéèêëïîôùûüÿœæç]/i,
-  german: /[äöüßÄÖÜ]/i,
-  italian: /[àèéìòù]/i,
-  portuguese: /[ãõâêôáéíóú]/i,
-  russian: /[\u0400-\u04FF]/,
-  chinese: /[\u4E00-\u9FFF]/,
-  japanese: /[\u3040-\u309F\u30A0-\u30FF]/,
-  korean: /[\uAC00-\uD7AF]/,
-  arabic: /[\u0600-\u06FF]/,
-  hebrew: /[\u0590-\u05FF]/,
-};
-
-function detectLanguage(text: string): string {
-  if (!/[^\u0000-\u007F]/.test(text)) {
-    return 'English';
-  }
-
-  for (const [language, pattern] of Object.entries(LANGUAGE_PATTERNS)) {
-    if (pattern.test(text)) {
-      return language.charAt(0).toUpperCase() + language.slice(1);
-    }
-  }
-
-  return 'Unknown';
-}
+import { detectLanguage, LANGUAGE_CODE_MAP } from '@/lib/language';
+import { AnalysisResult } from '@/lib/types';
 
 // Sentiment analysis based on keyword patterns
 function analyzeSentiment(text: string): string {
@@ -271,21 +231,7 @@ async function analyzeLyrics(lyrics: string): Promise<AnalysisResult> {
       const HF_TOKEN = process.env.HUGGINGFACE_API_KEY;
       
       if (HF_TOKEN) {
-        // Use the translation service with Helsinki-NLP models
-        const languageMap: Record<string, string> = {
-          'Spanish': 'es',
-          'French': 'fr',
-          'German': 'de',
-          'Italian': 'it',
-          'Portuguese': 'pt',
-          'Russian': 'ru',
-          'Chinese': 'zh',
-          'Japanese': 'ja',
-          'Korean': 'ko',
-          'Arabic': 'ar',
-        };
-
-        const langCode = languageMap[originalLanguage];
+        const langCode = LANGUAGE_CODE_MAP[originalLanguage];
         
         if (langCode) {
           // Using Helsinki-NLP translation model

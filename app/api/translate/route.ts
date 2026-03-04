@@ -1,34 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-// Language detection patterns
-const LANGUAGE_PATTERNS = {
-  spanish: /[\u00C0-\u00FF]/i,
-  french: /[àâäéèêëïîôùûüÿœæç]/i,
-  german: /[äöüßÄÖÜ]/i,
-  italian: /[àèéìòù]/i,
-  portuguese: /[ãõâêôáéíóú]/i,
-  russian: /[\u0400-\u04FF]/,
-  chinese: /[\u4E00-\u9FFF]/,
-  japanese: /[\u3040-\u309F\u30A0-\u30FF]/,
-  korean: /[\uAC00-\uD7AF]/,
-  arabic: /[\u0600-\u06FF]/,
-  hebrew: /[\u0590-\u05FF]/,
-};
-
-function detectLanguage(text: string): string {
-  // Check for non-ASCII characters first
-  if (!/[^\u0000-\u007F]/.test(text)) {
-    return 'English';
-  }
-
-  for (const [language, pattern] of Object.entries(LANGUAGE_PATTERNS)) {
-    if (pattern.test(text)) {
-      return language.charAt(0).toUpperCase() + language.slice(1);
-    }
-  }
-
-  return 'Unknown';
-}
+import { detectLanguage, LANGUAGE_CODE_MAP } from '@/lib/language';
 
 // Simple translation using Hugging Face's free models (when HF_TOKEN is available)
 // Otherwise, returns original text with detection info
@@ -74,21 +45,7 @@ async function translateText(text: string): Promise<{ translatedText: string; de
   }
 
   try {
-    // Use Helsinki-NLP translation models
-    const languageMap: Record<string, string> = {
-      'Spanish': 'es',
-      'French': 'fr',
-      'German': 'de',
-      'Italian': 'it',
-      'Portuguese': 'pt',
-      'Russian': 'ru',
-      'Chinese': 'zh',
-      'Japanese': 'ja',
-      'Korean': 'ko',
-      'Arabic': 'ar',
-    };
-
-    const langCode = languageMap[detectedLanguage];
+    const langCode = LANGUAGE_CODE_MAP[detectedLanguage];
     
     if (!langCode) {
       return {
