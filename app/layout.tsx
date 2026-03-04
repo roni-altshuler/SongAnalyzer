@@ -4,8 +4,8 @@ import "./globals.css";
 import { ThemeProvider } from "./providers/theme-provider";
 
 export const metadata: Metadata = {
-  title: "Song Lyric Analyzer",
-  description: "Analyze song lyrics to determine mood, vibe, and emotional insights",
+  title: "Song Analyzer — Lyrics & Audio Mood Detection",
+  description: "Analyze song lyrics or audio files to determine mood, vibe, energy, and emotional insights",
   icons: {
     icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎵</text></svg>",
   },

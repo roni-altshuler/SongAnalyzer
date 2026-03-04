@@ -1,6 +1,6 @@
-# 🎵 Song Lyric Analyzer
+# 🎵 Song Analyzer
 
-A modern web application that analyzes song lyrics to determine mood, vibe, energy, and emotional insights — powered by keyword-based NLP with optional Hugging Face translation.
+A modern web application that analyzes **song lyrics** *and* **audio files** to determine mood, vibe, energy, and emotional insights. Lyrics analysis uses keyword-based NLP with optional Hugging Face translation. Audio analysis uses the Web Audio API to extract tempo, energy, spectral brightness, and dynamics — all client-side.
 
 **Live:** [songanalyzer.vercel.app](https://songanalyzer.vercel.app) *(if deployed)*
 
@@ -10,23 +10,28 @@ A modern web application that analyzes song lyrics to determine mood, vibe, ener
 
 | Feature | Description |
 |---------|-------------|
-| **Mood & Vibe Analysis** | Determines emotional tone, atmosphere, energy, and sentiment |
-| **Mood Radar Chart** | SVG spider chart visualising five mood dimensions |
+| **Lyrics Mode** | Paste lyrics → get mood, vibe, energy, sentiment, themes |
+| **Audio Mode** | Upload MP3/MP4/WAV/etc. → detect mood from beat, rhythm, and tone |
+| **Mood Radar Chart** | SVG spider chart visualising five mood dimensions (lyrics) |
+| **Audio Feature Bars** | Visual bars for RMS energy, brightness, dynamics, percussiveness |
+| **BPM Detection** | Automatic tempo estimation via onset autocorrelation |
 | **Sample Lyrics** | One-click samples for instant demo (Pop, Ballad, Rock, Chill) |
-| **Analysis History** | Saves past analyses to localStorage — view, restore, or delete |
-| **Share / Export** | Copy a formatted text summary to clipboard |
+| **Analysis History** | Saves past lyric analyses to localStorage — view, restore, or delete |
+| **Share / Export** | Copy a formatted text summary to clipboard (both modes) |
 | **Multi-Language** | Auto-detects 11+ languages; translates via Hugging Face models |
 | **Dark Mode** | System-aware toggle with persistence |
-| **Confidence Bar** | Animated visual indicator based on word count |
+| **Confidence Bar** | Animated visual indicator based on input length / duration |
 | **Loading Skeleton** | Polished skeleton UI while results load |
-| **Keyboard Shortcut** | Cmd/Ctrl + Enter to analyze |
+| **Keyboard Shortcut** | Cmd/Ctrl + Enter to analyze lyrics |
 
 ## Tech Stack
 
 - **Framework:** Next.js 16 (App Router)
 - **Language:** TypeScript 5
 - **Styling:** Tailwind CSS 4
+- **Audio Analysis:** Web Audio API (client-side, zero dependencies)
 - **AI/ML:** Hugging Face Inference (optional, for translation)
+- **Testing:** Vitest
 - **Analytics:** Vercel Analytics
 - **Deployment:** Vercel-ready
 
@@ -73,32 +78,38 @@ npm test           # run tests
 SongAnalyzer/
 ├── app/
 │   ├── api/
-│   │   ├── analyze/route.ts     # Lyric analysis endpoint
-│   │   └── translate/route.ts   # Translation endpoint
+│   │   ├── analyze/route.ts          # Lyric analysis endpoint
+│   │   └── translate/route.ts        # Translation endpoint
 │   ├── components/
-│   │   ├── AnalysisResults.tsx   # Results card with stat grid & detailed text
-│   │   ├── AnalysisSkeleton.tsx  # Pulse-animated loading placeholder
-│   │   ├── ConfidenceBar.tsx     # Animated confidence progress bar
-│   │   ├── EmptyState.tsx        # Placeholder before first analysis
-│   │   ├── HistoryPanel.tsx      # Collapsible analysis history list
-│   │   ├── LyricsInput.tsx       # Textarea + word count + keyboard shortcut
-│   │   ├── MoodRadar.tsx         # SVG radar / spider chart
-│   │   ├── SampleLyricPicker.tsx # Horizontal card carousel
-│   │   └── ThemeToggle.tsx       # Dark / light toggle button
+│   │   ├── AnalysisResults.tsx        # Lyrics results card
+│   │   ├── AnalysisSkeleton.tsx       # Pulse-animated loading placeholder
+│   │   ├── AudioAnalysisResults.tsx   # Audio results card with feature bars
+│   │   ├── AudioUpload.tsx            # Drag-and-drop audio file uploader
+│   │   ├── ConfidenceBar.tsx          # Animated confidence progress bar
+│   │   ├── EmptyState.tsx             # Placeholder before first analysis
+│   │   ├── HistoryPanel.tsx           # Collapsible analysis history list
+│   │   ├── LyricsInput.tsx            # Textarea + word count + shortcut
+│   │   ├── ModeTabs.tsx               # Lyrics / Audio mode switcher
+│   │   ├── MoodRadar.tsx              # SVG radar / spider chart
+│   │   ├── SampleLyricPicker.tsx      # Horizontal card carousel
+│   │   └── ThemeToggle.tsx            # Dark / light toggle button
 │   ├── providers/
-│   │   └── theme-provider.tsx    # React context for theme state
-│   ├── globals.css               # Tailwind imports + custom animations
-│   ├── layout.tsx                # Root layout + Vercel Analytics
-│   └── page.tsx                  # Main page (assembles all components)
+│   │   └── theme-provider.tsx         # React context for theme state
+│   ├── globals.css                    # Tailwind imports + animations
+│   ├── layout.tsx                     # Root layout + Vercel Analytics
+│   └── page.tsx                       # Main page (both modes)
 ├── lib/
-│   ├── history.ts                # localStorage history CRUD helpers
-│   ├── language.ts               # Shared language detection patterns
-│   ├── samples.ts                # Built-in sample lyrics data
-│   └── types.ts                  # Shared TypeScript interfaces
+│   ├── audio-analysis.ts             # Client-side Web Audio API analysis
+│   ├── history.ts                     # localStorage history CRUD helpers
+│   ├── language.ts                    # Shared language detection patterns
+│   ├── samples.ts                     # Built-in sample lyrics data
+│   └── types.ts                       # Shared TypeScript interfaces
 ├── __tests__/
-│   ├── analyze.test.ts           # API route tests for /api/analyze
-│   └── language.test.ts          # Unit tests for language utilities
+│   ├── analyze.test.ts                # API route tests for /api/analyze
+│   ├── audio-analysis.test.ts         # Unit tests for audio feature mapping
+│   └── language.test.ts               # Unit tests for language utilities
 ├── .env.example
+├── vitest.config.ts
 ├── next.config.js
 ├── tailwind.config.js
 ├── tsconfig.json
@@ -107,7 +118,9 @@ SongAnalyzer/
 
 ## Analysis Dimensions
 
-The analyzer evaluates lyrics across six dimensions:
+### Lyrics Mode
+
+The lyric analyzer evaluates text across six dimensions:
 
 1. **Mood** — Emotional state (e.g., Melancholic, Euphoric, Peaceful)
 2. **Vibe** — Atmosphere (e.g., Upbeat, Moody, Tranquil)
@@ -117,6 +130,22 @@ The analyzer evaluates lyrics across six dimensions:
 6. **Detailed Analysis** — Narrative summary of the emotional arc
 
 The Mood Radar chart maps these into five visual axes: Energy, Positivity, Intensity, Complexity, and Emotion.
+
+### Audio Mode
+
+The audio analyzer processes uploaded files entirely client-side using the Web Audio API:
+
+| Feature | How it's measured |
+|---------|-------------------|
+| **Tempo (BPM)** | Onset-based autocorrelation on the down-mixed mono signal |
+| **RMS Energy** | Root-mean-square loudness, normalised 0-1 |
+| **Spectral Centroid** | Frequency-weighted centre of mass (brightness in Hz) |
+| **Dynamic Range** | Std-dev of short-term RMS windows (variation in loudness) |
+| **Zero-Crossing Rate** | Percussiveness / noisiness indicator |
+
+These features are mapped to **Mood**, **Vibe**, **Energy**, **Sentiment**, **Tempo**, and **Characteristics** using heuristic rules.
+
+Supported formats: MP3, MP4, M4A, AAC, OGG, WAV, WebM.
 
 ## Multi-Language Support
 
