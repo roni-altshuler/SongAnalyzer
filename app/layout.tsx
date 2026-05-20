@@ -32,10 +32,9 @@ export const metadata: Metadata = {
   title: 'Song Analyzer — Lyrics & Audio Mood Detection',
   description:
     'Analyze song lyrics or audio files to determine mood, vibe, energy, and emotional insights',
-  icons: {
-    icon:
-      "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎵</text></svg>",
-  },
+  // Favicon: Next.js auto-detects app/icon.svg, no explicit `icons` field
+  // needed. The previous inline 🎵 emoji icon felt cartoony; the SVG at
+  // app/icon.svg is the spectrum-bars mark from the design system.
 };
 
 export default function RootLayout({
