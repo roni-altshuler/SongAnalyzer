@@ -1,5 +1,7 @@
 'use client';
 
+import { cn } from '@/lib/cn';
+
 export type AnalysisMode = 'lyrics' | 'audio';
 
 interface ModeTabsProps {
@@ -7,36 +9,47 @@ interface ModeTabsProps {
   onChange: (mode: AnalysisMode) => void;
 }
 
+const OPTIONS: Array<{ value: AnalysisMode; label: string; icon: string }> = [
+  { value: 'lyrics', label: 'Lyrics', icon: '✏' },
+  { value: 'audio', label: 'Audio', icon: '◎' },
+];
+
 export default function ModeTabs({ mode, onChange }: ModeTabsProps) {
   return (
-    <div className="flex items-center justify-center mb-8">
-      <div className="inline-flex rounded-xl bg-gray-200 dark:bg-slate-700 p-1">
-        <button
-          onClick={() => onChange('lyrics')}
-          className={`
-            px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200
-            ${
-              mode === 'lyrics'
-                ? 'bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 shadow-sm'
-                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-            }
-          `}
-        >
-          📝 Lyrics
-        </button>
-        <button
-          onClick={() => onChange('audio')}
-          className={`
-            px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200
-            ${
-              mode === 'audio'
-                ? 'bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 shadow-sm'
-                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-            }
-          `}
-        >
-          🎧 Audio
-        </button>
+    <div className="flex items-center justify-center mb-10">
+      <div
+        role="tablist"
+        aria-label="Analysis mode"
+        className={cn(
+          'inline-flex p-1 rounded-2xl',
+          'bg-[var(--bg-elev1)] border border-[var(--border-subtle)]',
+          'ring-inset-soft',
+        )}
+      >
+        {OPTIONS.map((opt) => {
+          const selected = mode === opt.value;
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              role="tab"
+              aria-selected={selected}
+              onClick={() => onChange(opt.value)}
+              className={cn(
+                'relative px-6 py-2.5 rounded-xl text-sm font-medium tracking-wide',
+                'transition-[background,color,box-shadow] duration-200',
+                '[transition-timing-function:var(--ease-out)]',
+                'focus-visible:outline-2 focus-visible:outline-[var(--accent-from)] focus-visible:outline-offset-2',
+                selected
+                  ? 'bg-[var(--bg-elev3)] text-[var(--text-hi)] shadow-[0_0_24px_-12px_var(--accent-glow)]'
+                  : 'text-[var(--text-low)] hover:text-[var(--text-med)]',
+              )}
+            >
+              <span className="mr-1.5 opacity-70">{opt.icon}</span>
+              {opt.label}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
