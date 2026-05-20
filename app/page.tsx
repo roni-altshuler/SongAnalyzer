@@ -129,6 +129,62 @@ export default function Home() {
     }
   }, []);
 
+  /**
+   * Auto-analyze a picked song.
+   *
+   * We can't fetch lyrics from Genius (ToS), so the analysis path is:
+   *   - Spotify ships a 30-second `preview_url` → fetch + decode + analyze
+   *     via the existing client-side Web Audio pipeline. Switch to audio
+   *     mode so the result lands in the right surface.
+   *   - No preview URL (some markets / labels strip it) → leave the user
+     in lyrics mode with a clear notice to paste lyrics.
+   */
+  const handleSongPicked = useCallback(
+    async (hit: SearchHit) => {
+      setPickedSong(hit.song);
+
+      const previewUrl = hit.song.previewUrl;
+      if (!previewUrl) {
+        toast.message(`${hit.song.title}`, {
+          description: 'No 30s preview available — paste lyrics to analyze.',
+        });
+        return;
+      }
+
+      // Move to the audio surface so the loading skeleton + result render
+      // in the correct mode.
+      setMode('audio');
+      const filename = `${hit.song.artist} — ${hit.song.title}.mp3`;
+      setAudioFileName(filename);
+      setAudioLoading(true);
+      setAudioError('');
+      setAudioAnalysis(null);
+
+      try {
+        const res = await fetch(previewUrl);
+        if (!res.ok) {
+          throw new Error(`Could not fetch preview (${res.status})`);
+        }
+        const blob = await res.blob();
+        const file = new File([blob], filename, {
+          type: blob.type || 'audio/mpeg',
+        });
+        const result = await analyzeAudioFile(file);
+        setAudioAnalysis(result);
+        toast.success(`Analyzed ${hit.song.title}`);
+      } catch (err) {
+        setAudioError(
+          err instanceof Error
+            ? err.message
+            : 'Could not analyze the Spotify preview.',
+        );
+      } finally {
+        setAudioLoading(false);
+      }
+    },
+    [],
+  );
+
   const handleAudioExport = useCallback(() => {
     if (!audioAnalysis) return;
     const text = [
@@ -179,10 +235,10 @@ export default function Home() {
 
       <div className="container mx-auto px-4 pt-20 pb-16 max-w-6xl">
         {/* ── Hero ── */}
-        <header className="text-center mb-12 space-y-5">
+        <header className="text-center mb-10 space-y-5">
           <div className="flex items-center justify-center gap-3 text-[var(--text-low)] text-xs uppercase tracking-[0.32em]">
             <span aria-hidden className="inline-block h-px w-8 bg-[var(--border-strong)]" />
-            v2 · hybrid engine
+            Beat · Lyric · Mood
             <span aria-hidden className="inline-block h-px w-8 bg-[var(--border-strong)]" />
           </div>
 
@@ -194,8 +250,9 @@ export default function Home() {
           </h1>
 
           <p className="mx-auto max-w-xl text-base md:text-lg text-[var(--text-med)] leading-relaxed">
-            Paste lyrics or drop an audio file. A hybrid keyword-plus-transformer engine reads
-            the emotion, themes, and energy — and tints the page with the song&rsquo;s color.
+            Search for a song, paste lyrics, or drop an audio file. A hybrid keyword-plus-transformer
+            engine reads the emotion, themes, and energy — and tints the page with the song&rsquo;s
+            color.
           </p>
 
           <div className="flex justify-center pt-2">
@@ -203,51 +260,48 @@ export default function Home() {
           </div>
         </header>
 
+        {/* Song search is global — picking a track auto-analyzes its 30s preview,
+            so it makes sense to show it above the mode tabs. */}
+        <div className="mb-6">
+          <SongSearch onSelect={handleSongPicked} />
+        </div>
+
+        {pickedSong && (
+          <div className="mb-6 flex items-center gap-3 rounded-xl px-4 py-3 border border-[var(--border-subtle)] bg-[var(--bg-elev1)] ring-inset-soft">
+            {pickedSong.coverUrl && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={pickedSong.coverUrl}
+                alt=""
+                width={36}
+                height={36}
+                className="h-9 w-9 rounded-md border border-[var(--border-subtle)] object-cover"
+              />
+            )}
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-low)]">
+                Now analyzing
+              </p>
+              <p className="truncate text-sm text-[var(--text-hi)]">
+                <span className="font-display">{pickedSong.title}</span>
+                <span className="text-[var(--text-med)]"> · {pickedSong.artist}</span>
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setPickedSong(null)}
+              className="text-xs text-[var(--text-low)] hover:text-[var(--state-error)] transition-colors"
+            >
+              Clear
+            </button>
+          </div>
+        )}
+
         <ModeTabs mode={mode} onChange={setMode} />
 
         {/* ── Lyrics mode ── */}
         {mode === 'lyrics' && (
           <>
-            <div className="mb-6">
-              <SongSearch
-                onSelect={(hit) => {
-                  setPickedSong(hit.song);
-                  toast.success(`${hit.song.title} — paste the lyrics to analyze`);
-                }}
-              />
-            </div>
-
-            {pickedSong && (
-              <div className="mb-6 flex items-center gap-3 rounded-xl px-4 py-3 border border-[var(--border-subtle)] bg-[var(--bg-elev1)] ring-inset-soft">
-                {pickedSong.coverUrl && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={pickedSong.coverUrl}
-                    alt=""
-                    width={36}
-                    height={36}
-                    className="h-9 w-9 rounded-md border border-[var(--border-subtle)] object-cover"
-                  />
-                )}
-                <div className="min-w-0 flex-1">
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-low)]">
-                    Now analyzing
-                  </p>
-                  <p className="truncate text-sm text-[var(--text-hi)]">
-                    <span className="font-display">{pickedSong.title}</span>
-                    <span className="text-[var(--text-med)]"> · {pickedSong.artist}</span>
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setPickedSong(null)}
-                  className="text-xs text-[var(--text-low)] hover:text-[var(--state-error)] transition-colors"
-                >
-                  Clear
-                </button>
-              </div>
-            )}
-
             <SampleLyricPicker onSelect={(s) => handleLyricsChange(s)} />
 
             <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
