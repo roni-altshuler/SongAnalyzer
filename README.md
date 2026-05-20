@@ -167,6 +167,63 @@ Or deploy with one click:
 
 Contributions, issues, and feature requests are welcome!
 
+## Mood Atlas
+
+The Mood Atlas is a public, research-flavored dashboard at `/atlas` that aggregates every visible (public or system-seeded) analysis into cross-catalog views:
+
+- **Overview** (`/atlas`) — global mood distribution, browseable genre tiles, top artists.
+- **Per-artist** (`/atlas/artist/[slug]`) — mood-over-time area chart of the artist's discography, mood mix, and a clickable list of every analyzed song.
+- **Per-genre** (`/atlas/genre/[name]`) — mood distribution, top artists in the genre, and a weighted theme cloud.
+
+The atlas reads from a materialized view (`atlas_aggregates`) plus a `analyses_with_song` convenience join, both created by `supabase/migrations/0002_atlas_view.sql` and `0003_atlas_view_helpers.sql`. Pages render an empty-state card when no data is present, so the dashboard is safe to visit before the seed has been applied locally.
+
+### Seeding the atlas
+
+The Mood Atlas ships with ~60 synthetic-artist analyses so the dashboard looks populated on day one. Seed lyrics live in [`lib/seeds/atlas-seed-lyrics.ts`](lib/seeds/atlas-seed-lyrics.ts); a deterministic builder script emits the corresponding SQL.
+
+Regenerate `supabase/seed.sql`:
+
+```bash
+# one-time, if tsx is not already installed
+npm install -D tsx
+
+# emit seed SQL (deterministic — same input produces identical output)
+npx tsx lib/seeds/build-seed-sql.ts > supabase/seed.sql
+```
+
+Apply the seed to a local Supabase stack:
+
+```bash
+npx supabase db reset       # re-applies every migration + seed.sql
+```
+
+### Refreshing the materialized view
+
+`atlas_aggregates` does **not** auto-refresh. After seeding (or after any bulk insert of public analyses) run:
+
+```sql
+select public.refresh_atlas_aggregates();
+```
+
+in the Supabase SQL editor (or `psql`). The function is `security definer`, so the service role can call it from server code if/when we add an admin RPC.
+
+### Scheduling nightly refreshes (optional)
+
+Supabase exposes `pg_cron` as an opt-in extension per project. We do **not** enable it in the migrations — flipping it on is a project-level decision. When you're ready:
+
+```sql
+-- in the Supabase SQL editor, project owner
+create extension if not exists pg_cron;
+
+select cron.schedule(
+  'refresh-atlas-aggregates',
+  '17 3 * * *',                            -- nightly 03:17 UTC
+  $$ select public.refresh_atlas_aggregates(); $$
+);
+```
+
+The seed corpus is intentionally synthetic (fictional artist names, original lyric snippets) — no copyrighted material is shipped or stored.
+
 ## Author
 
 **Roni Altshuler**

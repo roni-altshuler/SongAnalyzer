@@ -10,6 +10,7 @@ import AnalysisResults from './components/AnalysisResults';
 import AnalysisSkeleton from './components/AnalysisSkeleton';
 import EmptyState from './components/EmptyState';
 import SampleLyricPicker from './components/SampleLyricPicker';
+import SongSearch from './components/SongSearch';
 import HistoryPanel from './components/HistoryPanel';
 import ModeTabs, { AnalysisMode } from './components/ModeTabs';
 import AudioUpload from './components/AudioUpload';
@@ -17,6 +18,7 @@ import AudioAnalysisResultsView from './components/AudioAnalysisResults';
 import { Card } from './components/ui/Card';
 import { Spectrum } from './components/ui/Spectrum';
 import { toast } from './components/ui/Toast';
+import type { SearchHit } from '@/lib/sources/types';
 
 export default function Home() {
   const [mode, setMode] = useState<AnalysisMode>('lyrics');
@@ -27,6 +29,8 @@ export default function Home() {
   const [lyricsLoading, setLyricsLoading] = useState(false);
   const [lyricsError, setLyricsError] = useState('');
   const [historyKey, setHistoryKey] = useState(0);
+  // The user-picked Spotify track (metadata only — Genius ToS bars storing lyrics).
+  const [pickedSong, setPickedSong] = useState<SearchHit['song'] | null>(null);
 
   // ── Audio state ──
   const [audioAnalysis, setAudioAnalysis] = useState<AudioAnalysisResult | null>(null);
@@ -204,6 +208,46 @@ export default function Home() {
         {/* ── Lyrics mode ── */}
         {mode === 'lyrics' && (
           <>
+            <div className="mb-6">
+              <SongSearch
+                onSelect={(hit) => {
+                  setPickedSong(hit.song);
+                  toast.success(`${hit.song.title} — paste the lyrics to analyze`);
+                }}
+              />
+            </div>
+
+            {pickedSong && (
+              <div className="mb-6 flex items-center gap-3 rounded-xl px-4 py-3 border border-[var(--border-subtle)] bg-[var(--bg-elev1)] ring-inset-soft">
+                {pickedSong.coverUrl && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={pickedSong.coverUrl}
+                    alt=""
+                    width={36}
+                    height={36}
+                    className="h-9 w-9 rounded-md border border-[var(--border-subtle)] object-cover"
+                  />
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-low)]">
+                    Now analyzing
+                  </p>
+                  <p className="truncate text-sm text-[var(--text-hi)]">
+                    <span className="font-display">{pickedSong.title}</span>
+                    <span className="text-[var(--text-med)]"> · {pickedSong.artist}</span>
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setPickedSong(null)}
+                  className="text-xs text-[var(--text-low)] hover:text-[var(--state-error)] transition-colors"
+                >
+                  Clear
+                </button>
+              </div>
+            )}
+
             <SampleLyricPicker onSelect={(s) => handleLyricsChange(s)} />
 
             <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">

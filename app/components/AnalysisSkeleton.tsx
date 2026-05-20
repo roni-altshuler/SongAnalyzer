@@ -1,43 +1,43 @@
 'use client';
 
-/**
- * Skeleton loader displayed while waiting for analysis results.
- */
+import { Card } from './ui/Card';
+import { Skeleton } from './ui/Skeleton';
+
 export default function AnalysisSkeleton() {
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-slate-700 space-y-6 animate-pulse">
-      {/* Title */}
-      <div className="h-7 w-48 bg-gray-200 dark:bg-slate-700 rounded" />
+    <Card variant="elev1" className="space-y-6">
+      <div className="flex items-center justify-between">
+        <Skeleton className="h-6 w-32" />
+        <Skeleton className="h-8 w-20" />
+      </div>
 
-      {/* Stat cards */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-3">
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-xl p-4 bg-gray-100 dark:bg-slate-700/50 space-y-2"
+            className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elev2)] p-3.5 space-y-2"
           >
-            <div className="h-3 w-14 bg-gray-300 dark:bg-slate-600 rounded" />
-            <div className="h-5 w-24 bg-gray-300 dark:bg-slate-600 rounded" />
+            <Skeleton className="h-2.5 w-12" />
+            <Skeleton className="h-5 w-24" />
           </div>
         ))}
       </div>
 
-      {/* Themes */}
       <div className="flex gap-2">
         {Array.from({ length: 3 }).map((_, i) => (
-          <div
-            key={i}
-            className="h-7 w-20 bg-gray-200 dark:bg-slate-700 rounded-full"
-          />
+          <Skeleton key={i} className="h-6 w-20 rounded-full" />
         ))}
       </div>
 
-      {/* Text block */}
-      <div className="space-y-2">
-        <div className="h-3 w-full bg-gray-200 dark:bg-slate-700 rounded" />
-        <div className="h-3 w-5/6 bg-gray-200 dark:bg-slate-700 rounded" />
-        <div className="h-3 w-4/6 bg-gray-200 dark:bg-slate-700 rounded" />
+      <div className="space-y-2 pt-2">
+        <Skeleton className="h-3 w-full" />
+        <Skeleton className="h-3 w-5/6" />
+        <Skeleton className="h-3 w-4/6" />
       </div>
-    </div>
+
+      <div className="border-t border-[var(--border-subtle)] pt-4 space-y-2">
+        <Skeleton className="h-2 w-full rounded-full" />
+      </div>
+    </Card>
   );
 }

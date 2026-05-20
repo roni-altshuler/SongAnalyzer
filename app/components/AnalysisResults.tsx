@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { AnalysisResult } from '@/lib/types';
 import { moodToColor } from '@/lib/analysis/palette';
 import { useMoodTheme } from '@/app/providers/mood-theme-provider';
@@ -8,12 +8,16 @@ import { Card, CardHeader, CardTitle } from '@/app/components/ui/Card';
 import { Badge } from '@/app/components/ui/Badge';
 import { Meter } from '@/app/components/ui/Meter';
 import { Button } from '@/app/components/ui/Button';
+import { toast } from '@/app/components/ui/Toast';
 import { cn } from '@/lib/cn';
 import MoodRadar from './MoodRadar';
+import EngineProvenance from './EngineProvenance';
 
 interface AnalysisResultsProps {
   analysis: AnalysisResult;
   onExport: () => void;
+  /** Optional — when set, enables the Share button which POSTs to /api/analyses/share. */
+  analysisId?: string;
 }
 
 /**
@@ -37,46 +41,9 @@ function Stat({ label, value, accent }: { label: string; value: string; accent?:
   );
 }
 
-/**
- * Inline provenance row showing which engines produced the result. Surfaces
- * the v2 hybrid pipeline transparently — "transformer ✓ joy 0.82, keyword ✓".
- */
-function EngineProvenance({ engines }: { engines: NonNullable<AnalysisResult['engines']> }) {
-  const t = engines.transformer;
-  const k = engines.keyword;
-
-  return (
-    <div className="flex flex-wrap items-center gap-2 text-xs">
-      {t.status === 'ok' ? (
-        <Badge variant="mood" title={t.model ?? 'transformer'}>
-          <span className="opacity-80">transformer</span>
-          {t.scores?.[0] && (
-            <span className="ml-1.5 font-mono opacity-95">
-              {t.scores[0].label} · {t.scores[0].score.toFixed(2)}
-            </span>
-          )}
-        </Badge>
-      ) : (
-        <Badge variant="outline" title={t.reason ?? t.status}>
-          <span className="opacity-70">transformer · {t.status}</span>
-        </Badge>
-      )}
-      <Badge variant="outline">
-        <span className="opacity-80">
-          keyword
-          {k.scores && (
-            <span className="ml-1.5 font-mono opacity-80">
-              +{k.scores.positive} / −{k.scores.negative}
-            </span>
-          )}
-        </span>
-      </Badge>
-    </div>
-  );
-}
-
-export default function AnalysisResults({ analysis, onExport }: AnalysisResultsProps) {
+export default function AnalysisResults({ analysis, onExport, analysisId }: AnalysisResultsProps) {
   const { setMoodColor, resetMoodColor } = useMoodTheme();
+  const [sharing, setSharing] = useState(false);
 
   // Cascade the mood accent through the design system whenever a result lands.
   useEffect(() => {
@@ -86,6 +53,29 @@ export default function AnalysisResults({ analysis, onExport }: AnalysisResultsP
       resetMoodColor();
     };
   }, [analysis.mood, analysis.moodColor, setMoodColor, resetMoodColor]);
+
+  const handleShare = async () => {
+    if (!analysisId) return;
+    setSharing(true);
+    try {
+      const res = await fetch('/api/analyses/share', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ analysisId }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new Error(body?.error ?? `Share failed (${res.status})`);
+      }
+      const { shareUrl } = (await res.json()) as { shareUrl: string };
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success('Share link copied');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Could not share');
+    } finally {
+      setSharing(false);
+    }
+  };
 
   return (
     <div className="space-y-4 animate-slide-up">
@@ -103,19 +93,40 @@ export default function AnalysisResults({ analysis, onExport }: AnalysisResultsP
             />
             <CardTitle>Analysis</CardTitle>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onExport}
-            title="Copy results to clipboard"
-            aria-label="Copy results to clipboard"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-            </svg>
-            <span className="ml-1.5">Copy</span>
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onExport}
+              title="Copy results to clipboard"
+              aria-label="Copy results to clipboard"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+              </svg>
+              <span className="ml-1.5">Copy</span>
+            </Button>
+            {analysisId && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleShare}
+                loading={sharing}
+                title="Create a public share link"
+                aria-label="Create a public share link"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="18" cy="5" r="3" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="19" r="3" />
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                </svg>
+                <span className="ml-1.5">Share</span>
+              </Button>
+            )}
+          </div>
         </CardHeader>
 
         {analysis.translated && (

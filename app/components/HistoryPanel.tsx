@@ -1,13 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { HistoryEntry } from '@/lib/types';
-import { getHistory, removeFromHistory, clearHistory } from '@/lib/history';
+import { useEffect, useState } from 'react';
+import type { HistoryEntry } from '@/lib/types';
+import { clearHistory, getHistory, removeFromHistory } from '@/lib/history';
+import { cn } from '@/lib/cn';
 
 interface HistoryPanelProps {
-  /** Called when the user clicks a history entry to restore it. */
   onRestore: (entry: HistoryEntry) => void;
-  /** Bumped externally to trigger a re-read from localStorage. */
   refreshKey: number;
 }
 
@@ -22,20 +21,31 @@ export default function HistoryPanel({ onRestore, refreshKey }: HistoryPanelProp
   if (entries.length === 0) return null;
 
   return (
-    <div className="mt-6">
+    <div className="mt-2">
       <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className={cn(
+          'inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em]',
+          'text-[var(--text-low)] hover:text-[var(--text-med)]',
+          'transition-colors',
+        )}
       >
         <svg
-          className={`w-4 h-4 transition-transform ${open ? 'rotate-90' : ''}`}
+          width="11"
+          height="11"
+          viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          viewBox="0 0 24 24"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+          className={cn('transition-transform', open && 'rotate-90')}
         >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          <polyline points="9 18 15 12 9 6" />
         </svg>
-        Analysis History ({entries.length})
+        History · {entries.length}
       </button>
 
       {open && (
@@ -43,51 +53,66 @@ export default function HistoryPanel({ onRestore, refreshKey }: HistoryPanelProp
           {entries.map((entry) => (
             <div
               key={entry.id}
-              className="flex items-center justify-between bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 px-4 py-3 hover:border-blue-400 dark:hover:border-blue-500 transition-colors group"
+              className={cn(
+                'group flex items-center justify-between gap-3 px-4 py-3 rounded-xl',
+                'bg-[var(--bg-elev1)] border border-[var(--border-subtle)] ring-inset-soft',
+                'transition-[border-color,transform] duration-200',
+                '[transition-timing-function:var(--ease-out)]',
+                'hover:-translate-y-0.5',
+                'hover:border-[color-mix(in_oklab,var(--accent-from)_40%,var(--border-strong))]',
+              )}
             >
               <button
+                type="button"
                 onClick={() => onRestore(entry)}
-                className="flex-1 text-left min-w-0"
+                className="flex-1 text-left min-w-0 focus-visible:outline-none"
               >
-                <p className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">
-                  {entry.result.mood} · {entry.result.vibe}
+                <p className="text-sm text-[var(--text-hi)] truncate">
+                  <span className="font-medium">{entry.result.mood}</span>
+                  <span className="text-[var(--text-low)] mx-2">·</span>
+                  <span className="text-[var(--text-med)]">{entry.result.vibe}</span>
                 </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                <p className="text-xs text-[var(--text-low)] truncate mt-0.5">
                   {entry.lyricsPreview}
                 </p>
-                <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">
+                <p className="text-[10px] font-mono text-[var(--text-low)] opacity-70 mt-1">
                   {new Date(entry.timestamp).toLocaleString()}
                 </p>
               </button>
               <button
+                type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   removeFromHistory(entry.id);
                   setEntries(getHistory());
                 }}
-                className="ml-3 p-1 rounded text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                className={cn(
+                  'p-1.5 rounded-md text-[var(--text-low)]',
+                  'opacity-0 group-hover:opacity-100',
+                  'hover:text-[var(--state-error)] hover:bg-[var(--bg-elev3)]',
+                  'transition-[opacity,color,background] duration-150',
+                  'focus-visible:opacity-100',
+                )}
                 title="Remove"
+                aria-label="Remove from history"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
               </button>
             </div>
           ))}
 
           <button
+            type="button"
             onClick={() => {
               clearHistory();
               setEntries([]);
             }}
-            className="text-xs text-gray-400 hover:text-red-500 transition-colors mt-2"
+            className="mt-2 text-[11px] uppercase tracking-[0.18em] text-[var(--text-low)] hover:text-[var(--state-error)] transition-colors"
           >
-            Clear all history
+            Clear all
           </button>
         </div>
       )}

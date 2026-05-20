@@ -1,6 +1,8 @@
 'use client';
 
 import { useRef, useState, useCallback } from 'react';
+import { Card } from './ui/Card';
+import { cn } from '@/lib/cn';
 
 const ACCEPTED_TYPES = [
   'audio/mpeg',
@@ -34,15 +36,10 @@ export default function AudioUpload({
 
   const handleFile = useCallback(
     (file: File) => {
-      // Accept by MIME or by extension fallback
-      const ext = '.' + file.name.split('.').pop()?.toLowerCase();
+      const ext = '.' + (file.name.split('.').pop()?.toLowerCase() ?? '');
       const validExt = ACCEPTED_EXTENSIONS.split(',').includes(ext);
       const validMime = ACCEPTED_TYPES.includes(file.type);
-
-      if (!validMime && !validExt) {
-        return; // silently ignore — browser should prevent via accept attr
-      }
-
+      if (!validMime && !validExt) return;
       onFileSelected(file);
     },
     [onFileSelected],
@@ -62,7 +59,6 @@ export default function AudioUpload({
 
   return (
     <div className="space-y-4">
-      {/* Drop zone */}
       <div
         onDragOver={(e) => {
           e.preventDefault();
@@ -71,14 +67,24 @@ export default function AudioUpload({
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
         onClick={() => inputRef.current?.click()}
-        className={`
-          cursor-pointer rounded-2xl border-2 border-dashed p-10 text-center transition-colors
-          ${
-            dragOver
-              ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-              : 'border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:border-blue-400 dark:hover:border-blue-500'
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            inputRef.current?.click();
           }
-        `}
+        }}
+        role="button"
+        tabIndex={0}
+        aria-label="Upload audio file"
+        className={cn(
+          'cursor-pointer rounded-2xl border border-dashed p-10 text-center',
+          'transition-[background,border-color,box-shadow] duration-200',
+          '[transition-timing-function:var(--ease-out)]',
+          'focus-visible:outline-2 focus-visible:outline-[var(--accent-from)] focus-visible:outline-offset-2',
+          dragOver
+            ? 'border-[var(--accent-from)] bg-[color-mix(in_oklab,var(--accent-from)_8%,var(--bg-elev1))] shadow-[0_0_30px_var(--accent-glow)]'
+            : 'border-[var(--border-strong)] bg-[var(--bg-elev1)] hover:border-[color-mix(in_oklab,var(--accent-from)_40%,var(--border-strong))]',
+        )}
       >
         <input
           ref={inputRef}
@@ -88,70 +94,49 @@ export default function AudioUpload({
           className="hidden"
         />
 
-        <div className="text-5xl mb-3">🎧</div>
+        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-elev3)] text-[var(--text-med)]">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+        </div>
 
         {fileName ? (
           <>
-            <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate max-w-xs mx-auto">
+            <p className="font-display text-base text-[var(--text-hi)] truncate max-w-xs mx-auto">
               {fileName}
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Click or drop to change file
+            <p className="text-xs text-[var(--text-low)] mt-1.5 tracking-wide">
+              Click or drop to replace
             </p>
           </>
         ) : (
           <>
-            <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-              Drop an audio file here or click to browse
+            <p className="font-display text-lg text-[var(--text-hi)]">
+              Drop an audio file
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              MP3, MP4, M4A, AAC, OGG, WAV, WebM
+            <p className="text-xs text-[var(--text-low)] mt-1.5 tracking-[0.18em] uppercase">
+              MP3 · MP4 · M4A · AAC · OGG · WAV · WebM
             </p>
           </>
         )}
       </div>
 
-      {/* Analyze button */}
-      <button
-        onClick={() => inputRef.current?.click()}
-        disabled={loading || !fileName}
-        className={`
-          w-full font-semibold py-4 px-6 rounded-xl transition-all duration-200 shadow-lg
-          ${
-            fileName
-              ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white hover:shadow-xl active:scale-[0.98]'
-              : 'bg-gray-300 dark:bg-slate-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-          }
-          disabled:opacity-50 disabled:cursor-not-allowed
-        `}
-        style={{ display: 'none' }} // button not needed — analysis starts on file select
-      >
-        Analyze Audio
-      </button>
-
       {loading && (
-        <div className="flex items-center justify-center gap-3 py-2 text-sm text-gray-600 dark:text-gray-300">
-          <svg
-            className="animate-spin h-5 w-5 text-blue-500"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            />
+        <div className="flex items-center justify-center gap-3 py-2 text-sm text-[var(--text-med)]">
+          <svg className="animate-spin h-4 w-4 text-[var(--accent-from)]" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeOpacity="0.25" strokeWidth="3" />
+            <path d="M22 12a10 10 0 0 0-10-10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
           </svg>
-          Analyzing audio — this may take a few seconds…
+          Analyzing audio…
         </div>
       )}
 
       {error && (
-        <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl p-4 animate-fade-in">
-          <p className="text-red-800 dark:text-red-200 text-sm">{error}</p>
-        </div>
+        <Card variant="flat" className="border-[var(--state-error)] bg-[color-mix(in_oklab,var(--state-error)_10%,transparent)] p-4 animate-fade-in">
+          <p className="text-sm text-[var(--state-error)]">{error}</p>
+        </Card>
       )}
     </div>
   );
