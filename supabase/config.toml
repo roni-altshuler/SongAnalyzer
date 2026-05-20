@@ -1,0 +1,100 @@
+# Supabase CLI project config for SongAnalyzer v2.
+# Generated to match `npx supabase init` defaults (CLI v2.x).
+# Run `npx supabase start` (requires Docker) to boot the local stack.
+
+# A string used to distinguish different Supabase projects on the same host.
+# Defaults to the parent directory name when not set.
+project_id = "songanalyzer"
+
+[api]
+enabled = true
+# Port to use for the API URL.
+port = 54321
+# Schemas to expose in your API. Tables, views, and stored procedures in this
+# schema will get API endpoints. public and graphql_public schemas are included
+# by default.
+schemas = ["public", "graphql_public"]
+# Extra schemas to add to the search_path of every request.
+extra_search_path = ["public", "extensions"]
+# Maximum rows returned from a view, table, or stored procedure.
+max_rows = 1000
+
+[db]
+# Port to use for the local database URL.
+port = 54322
+# Port used by db diff command to initialize the shadow database.
+shadow_port = 54320
+# The database major version to use. Mirrors hosted Supabase default.
+major_version = 15
+
+[db.pooler]
+enabled = false
+port = 54329
+pool_mode = "transaction"
+default_pool_size = 20
+max_client_conn = 100
+
+[realtime]
+enabled = true
+
+[studio]
+enabled = true
+port = 54323
+api_url = "http://127.0.0.1"
+
+# Email testing server. Emails sent with the local dev setup are not actually
+# sent — instead, they are monitored, and you can view the emails that would
+# have been sent from the web interface.
+[inbucket]
+enabled = true
+port = 54324
+
+[storage]
+enabled = true
+# The maximum file size allowed (e.g. "5MB", "500KB").
+file_size_limit = "50MiB"
+
+[auth]
+enabled = true
+# The base URL of your website. Used as an allow-list for redirects and for
+# constructing URLs used in emails.
+site_url = "http://localhost:3000"
+# A list of *exact* URLs that auth providers are permitted to redirect to post
+# authentication.
+additional_redirect_urls = ["http://localhost:3000/api/auth/callback"]
+# How long tokens are valid for, in seconds. Defaults to 3600 (1 hour),
+# maximum 604800 (1 week).
+jwt_expiry = 3600
+# Allow/disallow new user signups via Supabase Auth.
+enable_signup = true
+
+[auth.email]
+# Allow/disallow new user signups via email to your project.
+enable_signup = true
+# If enabled, a user will be required to confirm any email change on both the
+# old, and new email addresses. If disabled, only the new email is required to
+# confirm.
+double_confirm_changes = true
+# If enabled, users need to confirm their email address before signing in.
+enable_confirmations = false
+
+# Configure one of the supported SMS providers: `twilio`, `messagebird`,
+# `textlocal`, `vonage`.
+[auth.sms]
+enable_signup = false
+enable_confirmations = false
+
+# Use an external OAuth provider. Supported: apple, azure, bitbucket, discord,
+# facebook, github, gitlab, google, keycloak, linkedin, notion, twitch,
+# twitter, slack, spotify, workos, zoom.
+[auth.external.github]
+enabled = false
+client_id = ""
+secret = ""
+redirect_uri = ""
+
+[analytics]
+enabled = false
+port = 54327
+vector_port = 54328
+backend = "postgres"

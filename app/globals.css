@@ -1,15 +1,177 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────────────────────────
+   Custom variants — preserve the legacy `dark:` utility variant
+   so v1 components that hard-code `dark:bg-slate-800` still work
+   while we incrementally migrate to token-based primitives.
+   ───────────────────────────────────────────────────────────── */
 @custom-variant dark (&:where(.dark, .dark *));
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+/* ─────────────────────────────────────────────────────────────
+   Design tokens — music-streaming dark
+   ───────────────────────────────────────────────────────────── */
+:root {
+  /* Surface scale (dark is the brand default) */
+  --bg-base: #07070A;
+  --bg-elev1: #0F0F14;
+  --bg-elev2: #17171E;
+  --bg-elev3: #1F1F28;
+
+  /* Text */
+  --text-hi: #F5F5F7;
+  --text-med: #B4B4BD;
+  --text-low: #6E6E78;
+
+  /* Borders */
+  --border-subtle: #22222B;
+  --border-strong: #2E2E38;
+
+  /* Mood accent — set at runtime by <MoodThemeProvider>.
+     Defaults: electric blue → violet. */
+  --accent-from: #3B82F6;
+  --accent-to: #8B5CF6;
+  --accent-glow: rgba(99, 102, 241, 0.35);
+
+  /* State */
+  --state-success: #34D399;
+  --state-warn: #FBBF24;
+  --state-error: #F87171;
+
+  /* Type scale (rem) */
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-lg: 1.125rem;
+  --fs-xl: 1.25rem;
+  --fs-2xl: 1.5rem;
+  --fs-3xl: 2rem;
+  --fs-4xl: 2.75rem;
+  --fs-5xl: 4rem;
+  --fs-6xl: 5.5rem;
+
+  /* Motion easings */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-/* ─── Animations ────────────────────────────────────────────── */
+/* Light theme — secondary fallback, applied via `.light` class on <html> */
+.light {
+  --bg-base: #F7F7F8;
+  --bg-elev1: #FFFFFF;
+  --bg-elev2: #F2F2F4;
+  --bg-elev3: #E8E8EC;
 
+  --text-hi: #0A0A0F;
+  --text-med: #4A4A55;
+  --text-low: #8A8A95;
+
+  --border-subtle: #E4E4EA;
+  --border-strong: #D0D0D8;
+
+  --accent-glow: rgba(99, 102, 241, 0.22);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Tailwind v4 — register tokens with @theme so they become
+   utilities (bg-bg-elev1, text-text-hi, border-border-subtle, …)
+   ───────────────────────────────────────────────────────────── */
+@theme {
+  /* Surfaces */
+  --color-bg-base: var(--bg-base);
+  --color-bg-elev1: var(--bg-elev1);
+  --color-bg-elev2: var(--bg-elev2);
+  --color-bg-elev3: var(--bg-elev3);
+
+  /* Text */
+  --color-text-hi: var(--text-hi);
+  --color-text-med: var(--text-med);
+  --color-text-low: var(--text-low);
+
+  /* Borders */
+  --color-border-subtle: var(--border-subtle);
+  --color-border-strong: var(--border-strong);
+
+  /* Accents */
+  --color-accent-from: var(--accent-from);
+  --color-accent-to: var(--accent-to);
+  --color-accent-glow: var(--accent-glow);
+
+  /* State */
+  --color-state-success: var(--state-success);
+  --color-state-warn: var(--state-warn);
+  --color-state-error: var(--state-error);
+
+  /* Fonts (wired in app/layout.tsx via next/font/google) */
+  --font-display: var(--font-display, ui-serif, Georgia, "Times New Roman", serif);
+  --font-sans: var(--font-body, ui-sans-serif, system-ui, sans-serif);
+  --font-mono: var(--font-mono, ui-monospace, "JetBrains Mono", "Fira Code", monospace);
+
+  /* Type scale */
+  --text-xs: var(--fs-xs);
+  --text-sm: var(--fs-sm);
+  --text-base: var(--fs-base);
+  --text-lg: var(--fs-lg);
+  --text-xl: var(--fs-xl);
+  --text-2xl: var(--fs-2xl);
+  --text-3xl: var(--fs-3xl);
+  --text-4xl: var(--fs-4xl);
+  --text-5xl: var(--fs-5xl);
+  --text-6xl: var(--fs-6xl);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Base layer
+   ───────────────────────────────────────────────────────────── */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Dark is the primary brand. Light only kicks in if `.light` is set
+     explicitly. The legacy `.dark` class keeps working because the
+     `:root` defaults already match the dark palette. */
+  html.dark,
+  html:not(.light) {
+    color-scheme: dark;
+  }
+
+  html.light {
+    color-scheme: light;
+  }
+
+  body {
+    background-color: var(--bg-base);
+    color: var(--text-hi);
+    font-family: var(--font-body, ui-sans-serif, system-ui, sans-serif);
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+  }
+
+  /* Selection — accent-tinted */
+  ::selection {
+    background: color-mix(in oklab, var(--accent-from) 35%, transparent);
+    color: var(--text-hi);
+  }
+
+  /* Focus rings — universal, accent-from coloured */
+  :focus-visible {
+    outline: 2px solid var(--accent-from);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Reset focus on elements that opt out (Radix primitives manage their own rings) */
+  [data-focus-no-outline]:focus-visible {
+    outline: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Animations
+   ───────────────────────────────────────────────────────────── */
 @keyframes fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }
@@ -20,25 +182,102 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes meter-fill {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(var(--meter-value, 1)); }
+}
+
+@keyframes accent-pulse {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
 
   .animate-fade-in {
-    animation: fade-in 0.3s ease-out both;
+    animation: fade-in 0.3s var(--ease-out) both;
   }
 
   .animate-slide-up {
-    animation: slide-up 0.4s ease-out both;
+    animation: slide-up 0.4s var(--ease-out) both;
   }
 
-  /* Hide scrollbar for sample lyrics carousel */
+  /* Shimmer sweep for skeletons */
+  .animate-shimmer {
+    background: linear-gradient(
+      110deg,
+      var(--bg-elev1) 30%,
+      var(--bg-elev2) 50%,
+      var(--bg-elev1) 70%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s linear infinite;
+  }
+
+  .animate-accent-pulse {
+    animation: accent-pulse 2.4s var(--ease-in-out) infinite;
+  }
+
+  /* Soft accent glow for cards / hero artwork */
+  .glow-accent {
+    box-shadow:
+      0 0 0 1px var(--border-subtle),
+      0 30px 60px -20px var(--accent-glow),
+      0 0 30px var(--accent-glow);
+  }
+
+  /* Inner highlight line — emulates streaming app card edge lighting */
+  .ring-inset-soft {
+    box-shadow: inset 0 1px 0 0 color-mix(in oklab, white 6%, transparent);
+  }
+
+  /* Hide scrollbar (sample lyrics carousel etc) */
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  /* Gradient text using mood accent */
+  .text-accent-gradient {
+    background: linear-gradient(90deg, var(--accent-from), var(--accent-to));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Display serif headlines */
+  .font-display {
+    font-family: var(--font-display, ui-serif, Georgia, serif);
+    letter-spacing: -0.02em;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Reduced motion — replace animation with instant transitions
+   ───────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-shimmer {
+    animation: none;
+    background: var(--bg-elev2);
   }
 }

@@ -1,41 +1,52 @@
 'use client';
 
 import { SAMPLE_LYRICS } from '@/lib/samples';
+import { cn } from '@/lib/cn';
 
 interface SampleLyricPickerProps {
   onSelect: (lyrics: string) => void;
 }
 
-const GENRE_ICONS: Record<string, string> = {
-  pop: '🎤',
-  ballad: '🎹',
-  rock: '🎸',
-  chill: '☕',
+const GENRE_GLYPH: Record<string, string> = {
+  pop: '◐',
+  ballad: '♪',
+  rock: '⚡',
+  chill: '∿',
 };
 
-/**
- * Horizontal card carousel letting the user quickly load sample lyrics.
- */
 export default function SampleLyricPicker({ onSelect }: SampleLyricPickerProps) {
   return (
-    <div className="mb-6">
-      <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-3">
-        Quick Start — Try a Sample
+    <div className="mb-8">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--text-low)] mb-3">
+        Quick start · try a sample
       </p>
       <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
         {SAMPLE_LYRICS.map((sample) => (
           <button
             key={sample.title}
+            type="button"
             onClick={() => onSelect(sample.lyrics)}
-            className="flex-shrink-0 text-left px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-md transition-all duration-200 w-44"
+            className={cn(
+              'group flex-shrink-0 w-48 text-left px-4 py-3.5 rounded-xl',
+              'bg-[var(--bg-elev1)] border border-[var(--border-subtle)] ring-inset-soft',
+              'transition-[transform,border-color,box-shadow] duration-200',
+              '[transition-timing-function:var(--ease-out)]',
+              'hover:-translate-y-0.5',
+              'hover:border-[color-mix(in_oklab,var(--accent-from)_40%,var(--border-strong))]',
+              'hover:shadow-[0_8px_24px_-12px_var(--accent-glow)]',
+              'focus-visible:outline-2 focus-visible:outline-[var(--accent-from)] focus-visible:outline-offset-2',
+            )}
           >
-            <span className="text-xl">{GENRE_ICONS[sample.genre] ?? '🎵'}</span>
-            <p className="font-semibold text-sm text-gray-800 dark:text-gray-200 mt-1 truncate">
+            <span
+              aria-hidden
+              className="inline-block text-lg leading-none text-[var(--text-med)] group-hover:text-[var(--accent-from)] transition-colors"
+            >
+              {GENRE_GLYPH[sample.genre] ?? '♫'}
+            </span>
+            <p className="font-display text-base text-[var(--text-hi)] mt-1.5 truncate">
               {sample.title}
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-              {sample.artist}
-            </p>
+            <p className="text-xs text-[var(--text-low)] truncate mt-0.5">{sample.artist}</p>
           </button>
         ))}
       </div>

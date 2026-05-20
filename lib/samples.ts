@@ -4,6 +4,7 @@
  */
 
 import { SampleLyric } from './types';
+import { ATLAS_SEED_LYRICS } from './seeds/atlas-seed-lyrics';
 
 export const SAMPLE_LYRICS: SampleLyric[] = [
   {
@@ -83,3 +84,18 @@ Sometimes stillness is the loudest song
 In the quiet is where I belong`,
   },
 ];
+
+/**
+ * Five sample lyrics surfaced from the Mood Atlas seed corpus so the
+ * sample-lyric picker can preview real atlas entries without duplicating
+ * the text. Sourced from `lib/seeds/atlas-seed-lyrics.ts`; if the corpus
+ * shrinks below 5 entries this falls back to whatever is available.
+ */
+export const seedLyrics: SampleLyric[] = ATLAS_SEED_LYRICS.slice(0, 5).map(
+  (entry) => ({
+    title: entry.title,
+    artist: entry.artist,
+    genre: entry.genre.toLowerCase(),
+    lyrics: entry.lyrics,
+  }),
+);

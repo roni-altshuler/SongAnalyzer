@@ -1,48 +1,83 @@
-# 🎵 Song Analyzer
+# SongAnalyzer
 
-A modern web application that analyzes **song lyrics** *and* **audio files** to determine mood, vibe, energy, and emotional insights. Lyrics analysis uses keyword-based NLP with optional Hugging Face translation. Audio analysis uses the Web Audio API to extract tempo, energy, spectral brightness, and dynamics — all client-side.
+> Decode the mood of a song from its lyrics, its audio, or both — and let the song tint the page.
 
-**Live:** [songanalyzer.vercel.app](https://songanalyzer.vercel.app) *(if deployed)*
+SongAnalyzer is a music-streaming-dark Next.js app that reads songs through two engines and one feeling. Lyrics flow through a hybrid pipeline (a Hugging Face transformer falling back to deterministic keyword rules); audio goes through the Web Audio API client-side. The dominant emotion drives an accent gradient that cascades through the entire UI in real time.
+
+**Live:** [songanalyzer.vercel.app](https://songanalyzer.vercel.app)
 
 ---
 
-## Features
+## What you can do
 
-| Feature | Description |
-|---------|-------------|
-| **Lyrics Mode** | Paste lyrics → get mood, vibe, energy, sentiment, themes |
-| **Audio Mode** | Upload MP3/MP4/WAV/etc. → detect mood from beat, rhythm, and tone |
-| **Mood Radar Chart** | SVG spider chart visualising five mood dimensions (lyrics) |
-| **Audio Feature Bars** | Visual bars for RMS energy, brightness, dynamics, percussiveness |
-| **BPM Detection** | Automatic tempo estimation via onset autocorrelation |
-| **Sample Lyrics** | One-click samples for instant demo (Pop, Ballad, Rock, Chill) |
-| **Analysis History** | Saves past lyric analyses to localStorage — view, restore, or delete |
-| **Share / Export** | Copy a formatted text summary to clipboard (both modes) |
-| **Multi-Language** | Auto-detects 11+ languages; translates via Hugging Face models |
-| **Dark Mode** | System-aware toggle with persistence |
-| **Confidence Bar** | Animated visual indicator based on input length / duration |
-| **Loading Skeleton** | Polished skeleton UI while results load |
-| **Keyboard Shortcut** | Cmd/Ctrl + Enter to analyze lyrics |
+| | |
+|---|---|
+| **Paste lyrics** | Hybrid transformer + keyword engine returns mood, vibe, energy, sentiment, themes, and a per-engine provenance trail. Confidence calibrated, dominant emotion mapped, mood color computed server-side. |
+| **Upload audio** | Client-side Web Audio analyser extracts BPM (onset autocorrelation), RMS energy, spectral centroid, dynamic range, and zero-crossing rate; maps them to mood/vibe/energy through deterministic rules. |
+| **Search a song** | Typeahead against Spotify (Client Credentials) returns metadata, cover art, and 30-second previews. Genius enrichment for IDs and album info only — never lyrics, by ToS. MusicBrainz + AcousticBrainz fill in open audio features when available. |
+| **Share a result** | Each analysis can be marked public; you get a permalink (`/share/<slug>`) and a 1200×630 OG image generated at the edge using the song's mood-color palette. |
+| **Mood Atlas** | A public dashboard (`/atlas`) aggregating every visible analysis into a global mood distribution, browseable genres, per-artist mood-over-time, and theme clouds. |
+| **Combined view** | When the same song has both a lyrics analysis and an audio analysis, an Agreement Meter shows how closely the two engines agree on its mood — surfacing the classic "happy melody / sad lyrics" tension. |
+| **Mood-color cascade** | When a result lands, `--accent-from / --accent-to / --accent-glow` are written to `<html>` and every primitive (cards, buttons, badges, charts, hero glow) repaints in the song's color. |
+| **Multi-language** | Built-in detection across 11+ languages; auto-translates via Helsinki-NLP through the Hugging Face Inference API when a token is configured. |
+| **History** | Local analyses persist to `localStorage`; signed-in users get a Supabase-backed list. |
 
-## Tech Stack
+## Architecture in one breath
 
-- **Framework:** Next.js 16 (App Router)
-- **Language:** TypeScript 5
-- **Styling:** Tailwind CSS 4
-- **Audio Analysis:** Web Audio API (client-side, zero dependencies)
-- **AI/ML:** Hugging Face Inference (optional, for translation)
-- **Testing:** Vitest
-- **Analytics:** Vercel Analytics
-- **Deployment:** Vercel-ready
+```
+┌──────────────────────────────────────────────────────────────────┐
+│ Next.js 16 App Router · TypeScript · Tailwind v4 · React 19      │
+├──────────────────────────────────────────────────────────────────┤
+│  app/                                                            │
+│    page.tsx              ── home (lyrics + audio modes)          │
+│    share/[slug]/         ── permalink + edge-rendered OG image   │
+│    atlas/                ── public Mood Atlas dashboard          │
+│    api/analyze           ── hybrid engine endpoint               │
+│    api/songs/{search,id} ── Spotify/Genius/MB/AB orchestration   │
+│    api/analyses/share    ── mark-public + slug return            │
+│    api/auth/callback     ── Supabase OAuth code exchange         │
+│    components/ui/        ── Card, Button, Tabs, Badge, Meter,    │
+│                             Tooltip, Modal, Skeleton, Toast,     │
+│                             Spectrum                             │
+│    components/           ── SongHero, SongSearch, CombinedView,  │
+│                             WaveformPlayer, EngineProvenance,    │
+│                             MoodRadarV2, AnalysisResults, …      │
+│    providers/            ── MoodThemeProvider, theme-provider    │
+│  lib/                                                            │
+│    analysis/             ── keyword + transformer engines, blend │
+│    sources/              ── spotify, genius, musicbrainz,        │
+│                             acousticbrainz, resolveSong          │
+│    db/                   ── songs, analyses, shares, store-adapter│
+│    supabase/             ── client, server, admin, middleware    │
+│    seeds/                ── atlas-seed-lyrics + builder script   │
+│  supabase/migrations/    ── schema, RLS, atlas_aggregates view   │
+└──────────────────────────────────────────────────────────────────┘
+```
 
-## Getting Started
+## Tech stack
+
+- **Framework:** Next.js 16 (App Router) on Turbopack
+- **Language / runtime:** TypeScript 5, React 19, Node 20+
+- **Styling:** Tailwind v4 with CSS-variable `@theme` tokens. Display: Instrument Serif. Body: Inter. Mono: JetBrains Mono.
+- **Primitives:** Radix UI (Dialog, Tabs, Tooltip, Slot, Popover) + Framer Motion (`LazyMotion + domAnimation`) + Sonner toasts
+- **Persistence + auth:** Supabase (Postgres, RLS, Auth, Storage) via `@supabase/ssr`
+- **Analysis:** Hugging Face Inference (`@huggingface/inference`) — `j-hartmann/emotion-english-distilroberta-base` primary, `bhadresh-savani/distilbert-base-uncased-emotion` fallback
+- **Audio:** Web Audio API + `wavesurfer.js@7` (lazy-loaded)
+- **External data:** Spotify Web API (Client Credentials), Genius (metadata only — ToS), MusicBrainz, AcousticBrainz
+- **Charts:** Recharts (Atlas dashboard only)
+- **Color extraction:** `node-vibrant`
+- **Testing:** Vitest + Playwright (E2E smoke)
+- **Deployment:** Vercel (Edge runtime for OG images)
+
+## Getting started
 
 ### Prerequisites
 
-- Node.js 18+
-- npm, yarn, or pnpm
+- Node.js 20+ (Vite 7 requires `^20.19.0 || >=22.12.0`)
+- npm
+- (Optional) Docker + Supabase CLI for local Postgres
 
-### Installation
+### Install
 
 ```bash
 git clone https://github.com/roni-altshuler/SongAnalyzer.git
@@ -50,122 +85,150 @@ cd SongAnalyzer
 npm install
 ```
 
-### Environment Variables (optional)
+### Environment variables
+
+Everything is optional — the app degrades gracefully when keys are missing:
 
 ```bash
-cp .env.example .env
+cp .env.example .env.local
 ```
 
-Add a [Hugging Face token](https://huggingface.co/settings/tokens) for translation support:
+| Variable | Without it… |
+|---|---|
+| `HUGGINGFACE_API_KEY` | Transformer engine is `skipped`; keyword fallback runs alone. No non-English translation. |
+| `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` | No persistence, no auth, no share URLs (`/share/<bad-slug>` returns a clean 404). Atlas pages show an empty state. |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server-side writes (anonymous analyses, song upserts, atlas refresh) fail. Reads still work. |
+| `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` | `/api/songs/search` returns 503 (`spotify_not_configured`); SongSearch shows an inline notice. |
+| `GENIUS_ACCESS_TOKEN` | Genius enrichment skipped in `resolveSong`; everything else still resolves. |
+| `SUPABASE_LOCAL=1` | Enables the RLS test suite (`__tests__/rls.test.ts`). Requires a running `supabase start`. |
 
-```
-HUGGINGFACE_API_KEY=your_token_here
-```
-
-### Development
+### Develop
 
 ```bash
-npm run dev        # start dev server at http://localhost:3000
-npm run build      # production build
-npm run start      # serve production build
-npm run lint       # ESLint
-npm test           # run tests
+npm run dev      # http://localhost:3000 — boots in ~1.5s
+npm run build    # production build
+npm run start    # serve production build
+npm run lint     # ESLint
+npm test         # Vitest (81 tests, 8 RLS skipped without local Supabase)
 ```
 
-## Project Structure
+Visit `/dev/components` for the design-system showcase — every primitive in every variant, with an interactive mood-color picker that repaints the page live.
 
+## The hybrid analysis engine
+
+The `/api/analyze` route blends two engines:
+
+1. **Transformer** (`lib/analysis/transformer.ts`) — calls the HF Inference API with an 8-second `AbortSignal.timeout`. On 503 it falls back from the primary model to the secondary; on any further failure (rate limit, timeout, missing token) it returns `null` and the route records `engines.transformer.status` accordingly.
+2. **Keyword** (`lib/analysis/keyword.ts`) — deterministic, synchronous, always succeeds. Inherited verbatim from v1 so the existing test fixtures still pass.
+
+`lib/analysis/blend.ts` merges them: when the transformer succeeds, its top emotion drives `mood` and `sentiment`; the keyword engine always provides `themes`; confidence is a 70/30 weighted average. The result includes a `moodColor: { from, to, glow }` triplet derived from the dominant emotion via `lib/analysis/palette.ts`, which the front-end pushes into CSS variables.
+
+A SHA-256-keyed cache (`lib/analysis/cache.ts`) lets future re-analyses of the same lyrics short-circuit. The in-memory store is the default; a Supabase-backed store can plug in via `setAnalysisCache(...)`.
+
+## Design system
+
+The music-streaming-dark theme is built from CSS variables registered in `app/globals.css` with Tailwind v4's `@theme` directive:
+
+- Surface depths: `--bg-base`, `--bg-elev1`, `--bg-elev2`, `--bg-elev3`
+- Text: `--text-hi`, `--text-med`, `--text-low`
+- Accents (live, mood-driven): `--accent-from`, `--accent-to`, `--accent-glow`
+- State: `--state-success`, `--state-warn`, `--state-error`
+- Easings: `--ease-out`, `--ease-in-out`
+
+`<MoodThemeProvider>` lets any component call `setMoodColor({ from, to, glow })` and have the gradient cascade everywhere — the analyze flow uses the engine-derived color, `SongHero` overrides it with the cover-art palette via `node-vibrant`, and the showcase page lets you pick manually. All primitives respect `prefers-reduced-motion`.
+
+## Data layer
+
+Supabase Postgres schema (in `supabase/migrations/0001_init.sql`):
+
+- `profiles` — mirrors `auth.users`
+- `songs` — canonical track records keyed by Spotify / Genius / MusicBrainz IDs
+- `analyses` — every analysis, with `system_seed`, `is_public`, `share_slug`, and the full `result jsonb`
+- `shares` — view-count + cached OG image path
+
+RLS is enabled across all tables. Public reads are gated on `is_public OR system_seed`; writes go through the service-role client (`lib/supabase/admin.ts`) so anonymous analyses can be inserted by the API route. The `SongRow` ↔ `Song` adapter (`lib/db/song-store-adapter.ts`) bridges snake_case DB shapes to the camelCase resolver world.
+
+To run Supabase locally:
+
+```bash
+npx supabase start              # boots a local stack via Docker
+npx supabase db reset           # applies every migration + seed.sql
+SUPABASE_LOCAL=1 npm test       # adds the RLS suite to the test run
 ```
-SongAnalyzer/
-├── app/
-│   ├── api/
-│   │   ├── analyze/route.ts          # Lyric analysis endpoint
-│   │   └── translate/route.ts        # Translation endpoint
-│   ├── components/
-│   │   ├── AnalysisResults.tsx        # Lyrics results card
-│   │   ├── AnalysisSkeleton.tsx       # Pulse-animated loading placeholder
-│   │   ├── AudioAnalysisResults.tsx   # Audio results card with feature bars
-│   │   ├── AudioUpload.tsx            # Drag-and-drop audio file uploader
-│   │   ├── ConfidenceBar.tsx          # Animated confidence progress bar
-│   │   ├── EmptyState.tsx             # Placeholder before first analysis
-│   │   ├── HistoryPanel.tsx           # Collapsible analysis history list
-│   │   ├── LyricsInput.tsx            # Textarea + word count + shortcut
-│   │   ├── ModeTabs.tsx               # Lyrics / Audio mode switcher
-│   │   ├── MoodRadar.tsx              # SVG radar / spider chart
-│   │   ├── SampleLyricPicker.tsx      # Horizontal card carousel
-│   │   └── ThemeToggle.tsx            # Dark / light toggle button
-│   ├── providers/
-│   │   └── theme-provider.tsx         # React context for theme state
-│   ├── globals.css                    # Tailwind imports + animations
-│   ├── layout.tsx                     # Root layout + Vercel Analytics
-│   └── page.tsx                       # Main page (both modes)
-├── lib/
-│   ├── audio-analysis.ts             # Client-side Web Audio API analysis
-│   ├── history.ts                     # localStorage history CRUD helpers
-│   ├── language.ts                    # Shared language detection patterns
-│   ├── samples.ts                     # Built-in sample lyrics data
-│   └── types.ts                       # Shared TypeScript interfaces
-├── __tests__/
-│   ├── analyze.test.ts                # API route tests for /api/analyze
-│   ├── audio-analysis.test.ts         # Unit tests for audio feature mapping
-│   └── language.test.ts               # Unit tests for language utilities
-├── .env.example
-├── vitest.config.ts
-├── next.config.js
-├── tailwind.config.js
-├── tsconfig.json
-└── package.json
-```
 
-## Analysis Dimensions
+## Multi-language
 
-### Lyrics Mode
-
-The lyric analyzer evaluates text across six dimensions:
-
-1. **Mood** — Emotional state (e.g., Melancholic, Euphoric, Peaceful)
-2. **Vibe** — Atmosphere (e.g., Upbeat, Moody, Tranquil)
-3. **Energy** — Intensity level (Very High → Very Low)
-4. **Sentiment** — Emotional direction (Very Positive → Very Negative)
-5. **Themes** — Up to 5 key topics (Love, Hope, Struggle, etc.)
-6. **Detailed Analysis** — Narrative summary of the emotional arc
-
-The Mood Radar chart maps these into five visual axes: Energy, Positivity, Intensity, Complexity, and Emotion.
-
-### Audio Mode
-
-The audio analyzer processes uploaded files entirely client-side using the Web Audio API:
-
-| Feature | How it's measured |
-|---------|-------------------|
-| **Tempo (BPM)** | Onset-based autocorrelation on the down-mixed mono signal |
-| **RMS Energy** | Root-mean-square loudness, normalised 0-1 |
-| **Spectral Centroid** | Frequency-weighted centre of mass (brightness in Hz) |
-| **Dynamic Range** | Std-dev of short-term RMS windows (variation in loudness) |
-| **Zero-Crossing Rate** | Percussiveness / noisiness indicator |
-
-These features are mapped to **Mood**, **Vibe**, **Energy**, **Sentiment**, **Tempo**, and **Characteristics** using heuristic rules.
-
-Supported formats: MP3, MP4, M4A, AAC, OGG, WAV, WebM.
-
-## Multi-Language Support
-
-Built-in detection for: Spanish, French, German, Italian, Portuguese, Russian, Chinese, Japanese, Korean, Arabic, and Hebrew.
-
-When a non-English language is detected and a Hugging Face API key is configured, the lyrics are translated via Helsinki-NLP models before analysis.
+Built-in detection for: Spanish, French, German, Italian, Portuguese, Russian, Chinese, Japanese, Korean, Arabic, and Hebrew. When a non-English language is detected and `HUGGINGFACE_API_KEY` is set, the lyrics are translated via Helsinki-NLP models before analysis.
 
 ## Deployment
 
+The app is Vercel-ready. The OG image route at `/share/[slug]/opengraph-image` runs on the Edge runtime; everything else on Node. Add the env vars above to your Vercel project; the Supabase migrations need to be pushed separately:
+
 ```bash
-npm run build
+npx supabase db push            # against a hosted project
 ```
 
 Or deploy with one click:
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/roni-altshuler/SongAnalyzer)
 
+## Mood Atlas
+
+The Mood Atlas is a public, research-flavored dashboard at `/atlas` that aggregates every visible (public or system-seeded) analysis into cross-catalog views:
+
+- **Overview** (`/atlas`) — global mood distribution, browseable genre tiles, top artists.
+- **Per-artist** (`/atlas/artist/[slug]`) — mood-over-time area chart of the artist's discography, mood mix, and a clickable list of every analyzed song.
+- **Per-genre** (`/atlas/genre/[name]`) — mood distribution, top artists in the genre, and a weighted theme cloud.
+
+The atlas reads from a materialized view (`atlas_aggregates`) plus an `analyses_with_song` convenience join, both created by `supabase/migrations/0002_atlas_view.sql` and `0003_atlas_view_helpers.sql`. Pages render an empty-state card when no data is present, so the dashboard is safe to visit before the seed has been applied locally.
+
+### Seeding the atlas
+
+The Mood Atlas ships with ~60 synthetic-artist analyses so the dashboard looks populated on day one. Seed lyrics live in [`lib/seeds/atlas-seed-lyrics.ts`](lib/seeds/atlas-seed-lyrics.ts); a deterministic builder script emits the corresponding SQL.
+
+Regenerate `supabase/seed.sql`:
+
+```bash
+# emit seed SQL (deterministic — same input produces identical output)
+npx tsx lib/seeds/build-seed-sql.ts > supabase/seed.sql
+```
+
+Apply the seed to a local Supabase stack:
+
+```bash
+npx supabase db reset       # re-applies every migration + seed.sql
+```
+
+### Refreshing the materialized view
+
+`atlas_aggregates` does **not** auto-refresh. After seeding (or after any bulk insert of public analyses) run:
+
+```sql
+select public.refresh_atlas_aggregates();
+```
+
+in the Supabase SQL editor (or `psql`). The function is `security definer`, so the service role can call it from server code if/when we add an admin RPC.
+
+### Scheduling nightly refreshes (optional)
+
+Supabase exposes `pg_cron` as an opt-in extension per project. We do **not** enable it in the migrations — flipping it on is a project-level decision. When you're ready:
+
+```sql
+-- in the Supabase SQL editor, project owner
+create extension if not exists pg_cron;
+
+select cron.schedule(
+  'refresh-atlas-aggregates',
+  '17 3 * * *',                            -- nightly 03:17 UTC
+  $$ select public.refresh_atlas_aggregates(); $$
+);
+```
+
+The seed corpus is intentionally synthetic (fictional artist names, original lyric snippets) — no copyrighted material is shipped or stored. Genius lyrics are never fetched or persisted by design; the Genius adapter only consumes IDs and metadata.
+
 ## Contributing
 
-Contributions, issues, and feature requests are welcome!
+Issues and PRs welcome. Run `npm test` before opening one — `tsc --noEmit` and `npm run lint` are part of CI.
 
 ## Author
 
@@ -173,4 +236,4 @@ Contributions, issues, and feature requests are welcome!
 
 ---
 
-Made with ❤️ using Next.js and Tailwind CSS
+Made with care using Next.js, Tailwind, Supabase, and a soft spot for editorial typography.

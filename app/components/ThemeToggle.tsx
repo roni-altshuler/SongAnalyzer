@@ -1,7 +1,8 @@
 'use client';
 
-import { useTheme } from '../providers/theme-provider';
 import { useEffect, useState } from 'react';
+import { useTheme } from '../providers/theme-provider';
+import { cn } from '@/lib/cn';
 
 export default function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
@@ -11,48 +12,38 @@ export default function ThemeToggle() {
     setMounted(true);
   }, []);
 
-  // Prevent hydration mismatch by not rendering until mounted
+  const base = cn(
+    'inline-flex items-center justify-center h-10 w-10 rounded-xl',
+    'bg-[var(--bg-elev1)] border border-[var(--border-subtle)] ring-inset-soft',
+    'text-[var(--text-med)] hover:text-[var(--text-hi)] hover:bg-[var(--bg-elev2)]',
+    'hover:border-[var(--border-strong)]',
+    'transition-[background,border-color,color] duration-200',
+    '[transition-timing-function:var(--ease-out)]',
+    'focus-visible:outline-2 focus-visible:outline-[var(--accent-from)] focus-visible:outline-offset-2',
+  );
+
   if (!mounted) {
-    return (
-      <div className="p-2 rounded-lg bg-gray-200 dark:bg-slate-700 w-9 h-9" />
-    );
+    return <div className={cn(base, 'pointer-events-none opacity-50')} aria-hidden />;
   }
 
   return (
     <button
+      type="button"
       onClick={toggleTheme}
-      className="p-2 rounded-lg bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 dark:hover:bg-slate-600 transition-colors duration-200"
-      aria-label="Toggle theme"
+      className={base}
+      aria-label="Toggle color theme"
+      title={theme === 'light' ? 'Switch to dark' : 'Switch to light'}
     >
       {theme === 'light' ? (
-        <svg
-          className="w-5 h-5 text-gray-800"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-          />
+        // Moon — currently light, click for dark
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
         </svg>
       ) : (
-        <svg
-          className="w-5 h-5 text-yellow-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-          />
+        // Sun — currently dark, click for light
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
         </svg>
       )}
     </button>
