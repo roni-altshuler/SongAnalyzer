@@ -1,0 +1,72 @@
+[
+  {
+    "id": "mix-01",
+    "label": "Bittersweet farewell",
+    "lyrics": "Goodbye, sweet love, tears in my smile. Beautiful pain, blessed loss, lonely hope. Dream of you in the dark, alive but broken.",
+    "expectedSentiment": "mixed",
+    "expectedMoodFamily": "ambivalent"
+  },
+  {
+    "id": "mix-02",
+    "label": "Hopeful sadness",
+    "lyrics": "Lonely night, but hope still burns. Lost and broken, yet I dream. Pain and light, tears and joy, alive in the dark.",
+    "expectedSentiment": "mixed",
+    "expectedMoodFamily": "ambivalent"
+  },
+  {
+    "id": "mix-03",
+    "label": "Contemplative",
+    "lyrics": "I think and wonder, remember the time, maybe perhaps. Day after day, night follows night. Question without answer, time keeps passing.",
+    "expectedSentiment": "neutral",
+    "expectedMoodFamily": "contemplative"
+  },
+  {
+    "id": "mix-04",
+    "label": "Conflicted love",
+    "lyrics": "Love and hate, sweet and broken, beautiful pain. Holding on, letting go, alive and dead at once. Hope and fear, joy and tears.",
+    "expectedSentiment": "mixed",
+    "expectedMoodFamily": "ambivalent"
+  },
+  {
+    "id": "mix-05",
+    "label": "Quiet reflection",
+    "lyrics": "Time moves slow, I remember the day. Wonder what was, maybe still is. Quiet thinking, soft questions, calm in the night.",
+    "expectedSentiment": "neutral",
+    "expectedMoodFamily": "contemplative"
+  },
+  {
+    "id": "mix-06",
+    "label": "Hurting but free",
+    "lyrics": "Hurt me deep, but I'm free now, alive and broken. Pain made me bright, tears taught me hope. Lonely strong, dark light.",
+    "expectedSentiment": "mixed",
+    "expectedMoodFamily": "ambivalent"
+  },
+  {
+    "id": "mix-07",
+    "label": "Wistful",
+    "lyrics": "Remember when we were happy, sweet days now lost. Dream of the light, but cold remains. Beautiful past, lonely now.",
+    "expectedSentiment": "mixed",
+    "expectedMoodFamily": "ambivalent"
+  },
+  {
+    "id": "mix-08",
+    "label": "Searching",
+    "lyrics": "Wonder where, question why, think and remember. Maybe the day, perhaps the night, time will tell. Slow steps, calm breath.",
+    "expectedSentiment": "neutral",
+    "expectedMoodFamily": "contemplative"
+  },
+  {
+    "id": "mix-09",
+    "label": "Resilient grief",
+    "lyrics": "Broken but blessed, lonely yet free. Tears and smile, pain and hope, dead and alive. Sad sweet light, dark beautiful day.",
+    "expectedSentiment": "mixed",
+    "expectedMoodFamily": "ambivalent"
+  },
+  {
+    "id": "mix-10",
+    "label": "Ambiguous",
+    "lyrics": "Maybe I love you, maybe I don't. Sweet pain, beautiful lost. Hope or fear, joy or tears, alive in the empty.",
+    "expectedSentiment": "mixed",
+    "expectedMoodFamily": "ambivalent"
+  }
+]

@@ -1,0 +1,72 @@
+[
+  {
+    "id": "neg-01",
+    "label": "Heartbreak",
+    "lyrics": "Broken, lost, lonely in the dark. Tears falling, hurt so deep, pain that never fades. Cold and empty, dead inside, sad goodbye.",
+    "expectedSentiment": "negative",
+    "expectedMoodFamily": "sadness"
+  },
+  {
+    "id": "neg-02",
+    "label": "Anger",
+    "lyrics": "Hate burning, rage in my chest, angry at the world. Hurt and pain and dark, scream and shout and break it all.",
+    "expectedSentiment": "negative",
+    "expectedMoodFamily": "anger"
+  },
+  {
+    "id": "neg-03",
+    "label": "Despair",
+    "lyrics": "Lost in the dark, broken and dead, suffer in the cold. Tears and pain, empty heart, nightmare without end, sad sad sad.",
+    "expectedSentiment": "negative",
+    "expectedMoodFamily": "sadness"
+  },
+  {
+    "id": "neg-04",
+    "label": "Fear",
+    "lyrics": "Fear and nightmare crawling close, dark hell rising. Cold sweat, lonely, broken, afraid to breathe. Empty silence, lost inside.",
+    "expectedSentiment": "negative",
+    "expectedMoodFamily": "fear"
+  },
+  {
+    "id": "neg-05",
+    "label": "Mourning",
+    "lyrics": "Death and tears and goodbye. Cold body, dead heart, lost forever. Sad lonely empty world, broken without you, pain that stays.",
+    "expectedSentiment": "negative",
+    "expectedMoodFamily": "sadness"
+  },
+  {
+    "id": "neg-06",
+    "label": "Rage",
+    "lyrics": "Angry, angry, angry, rage burns hot, hate fills the room. Scream and break, hurt and pain, dark and dead inside.",
+    "expectedSentiment": "negative",
+    "expectedMoodFamily": "anger"
+  },
+  {
+    "id": "neg-07",
+    "label": "Isolation",
+    "lyrics": "Lonely night, cold room, empty bed. Lost, broken, sad and tired. Tears in the dark, nightmare alone, no one to hold.",
+    "expectedSentiment": "negative",
+    "expectedMoodFamily": "sadness"
+  },
+  {
+    "id": "neg-08",
+    "label": "Anxiety",
+    "lyrics": "Fear creeping, dark thoughts, nightmare won't stop. Cold hands, broken sleep, lost and empty. Pain and dread, hell of the mind.",
+    "expectedSentiment": "negative",
+    "expectedMoodFamily": "fear"
+  },
+  {
+    "id": "neg-09",
+    "label": "Bitter",
+    "lyrics": "Hate everything, angry world, dark heart. Hurt me again, pain on pain, dead to it all. Cold rage, broken trust, lost cause.",
+    "expectedSentiment": "negative",
+    "expectedMoodFamily": "anger"
+  },
+  {
+    "id": "neg-10",
+    "label": "Hopeless",
+    "lyrics": "Empty, empty, empty, sad sad sad. Broken dreams, dead future, lost and cold. Pain and tears, lonely dark, suffer endless.",
+    "expectedSentiment": "negative",
+    "expectedMoodFamily": "sadness"
+  }
+]

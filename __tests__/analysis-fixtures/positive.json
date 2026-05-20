@@ -1,0 +1,72 @@
+[
+  {
+    "id": "pos-01",
+    "label": "Clear joy",
+    "lyrics": "I'm alive, I'm free, dancing in the sunshine. Beautiful day, hopeful heart, smile so bright. Happy now, blessed and alive, joy is all I know.",
+    "expectedSentiment": "positive",
+    "expectedMoodFamily": "joy"
+  },
+  {
+    "id": "pos-02",
+    "label": "Romantic love",
+    "lyrics": "Love so sweet it fills my heart, beautiful you, blessed dream. Hold me close, alive in your arms, hope and light forever.",
+    "expectedSentiment": "positive",
+    "expectedMoodFamily": "love"
+  },
+  {
+    "id": "pos-03",
+    "label": "Triumphant freedom",
+    "lyrics": "Free at last, alive and bright, dancing through the heaven of the day. Run and jump and rock the world, beautiful, amazing, free.",
+    "expectedSentiment": "positive",
+    "expectedMoodFamily": "joy"
+  },
+  {
+    "id": "pos-04",
+    "label": "Peaceful hope",
+    "lyrics": "Peace, peace, sweet peace, hope and light returning. Blessed quiet day, beautiful sunshine warm, dream of better tomorrow.",
+    "expectedSentiment": "positive",
+    "expectedMoodFamily": "joy"
+  },
+  {
+    "id": "pos-05",
+    "label": "Celebration",
+    "lyrics": "Dance and shout and rock the night, happy, alive, amazing. Wonderful, beautiful, sweet sweet life, smile and love and hope.",
+    "expectedSentiment": "positive",
+    "expectedMoodFamily": "joy"
+  },
+  {
+    "id": "pos-06",
+    "label": "Sunrise hope",
+    "lyrics": "Sunshine breaks through, hope returns, alive again. Beautiful morning, sweet light, blessed and free. Bright dream, smile through the dawn.",
+    "expectedSentiment": "positive",
+    "expectedMoodFamily": "joy"
+  },
+  {
+    "id": "pos-07",
+    "label": "Soft love",
+    "lyrics": "Love light shining sweet on you, beautiful in the soft glow. Hope alive between us, dream of forever, blessed every day.",
+    "expectedSentiment": "positive",
+    "expectedMoodFamily": "love"
+  },
+  {
+    "id": "pos-08",
+    "label": "Empowered",
+    "lyrics": "Alive, alive, alive, rock and shake and run, free at last. Beautiful fight, amazing strength, bright light leading.",
+    "expectedSentiment": "positive",
+    "expectedMoodFamily": "joy"
+  },
+  {
+    "id": "pos-09",
+    "label": "Grateful",
+    "lyrics": "Blessed, blessed, blessed, happy heart, joy filling. Beautiful gift, sweet hope, alive and free and great.",
+    "expectedSentiment": "positive",
+    "expectedMoodFamily": "joy"
+  },
+  {
+    "id": "pos-10",
+    "label": "Bright optimism",
+    "lyrics": "Bright tomorrow, hope and light, dream that never dies. Beautiful sunshine, sweet alive, amazing peace and free.",
+    "expectedSentiment": "positive",
+    "expectedMoodFamily": "joy"
+  }
+]

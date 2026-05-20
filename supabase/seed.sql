@@ -1,0 +1,7 @@
+-- Seed data for local Supabase.
+--
+-- Stream F (Mood Atlas) populates ~200 system_seed analyses here.
+-- For now this file is intentionally minimal so `supabase db reset` succeeds
+-- without surprises.
+--
+-- Add seed inserts BELOW this line.
