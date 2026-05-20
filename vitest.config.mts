@@ -5,6 +5,9 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
+    // The Playwright E2E suite lives under playwright/ and is run via
+    // `npm run test:e2e` — don't let Vitest try to import its specs.
+    exclude: ['node_modules/**', 'playwright/**', '.next/**'],
   },
   resolve: {
     alias: {
