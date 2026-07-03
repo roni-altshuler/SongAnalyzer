@@ -26,42 +26,50 @@ export async function updateSession(request: NextRequest) {
     return response;
   }
 
-  const supabase = createServerClient<Database>(url, anonKey, {
-    cookies: {
-      getAll() {
-        return request.cookies.getAll();
+  // Fail-soft: session refresh is an enhancement, never a gate. A malformed
+  // URL/key (or a Supabase outage) must not 500 every matched route — the
+  // middleware crashing takes the page down before its own fail-soft
+  // handling can run.
+  try {
+    const supabase = createServerClient<Database>(url, anonKey, {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(
+          cookiesToSet: Array<{
+            name: string;
+            value: string;
+            options: CookieOptions;
+          }>,
+        ) {
+          // Mirror new cookies into both the incoming request (so subsequent
+          // logic in this middleware sees them) and the outgoing response.
+          cookiesToSet.forEach(({ name, value }) => {
+            request.cookies.set(name, value);
+          });
+
+          response = NextResponse.next({
+            request: {
+              headers: request.headers,
+            },
+          });
+
+          cookiesToSet.forEach(({ name, value, options }) => {
+            response.cookies.set(name, value, options);
+          });
+        },
       },
-      setAll(
-        cookiesToSet: Array<{
-          name: string;
-          value: string;
-          options: CookieOptions;
-        }>,
-      ) {
-        // Mirror new cookies into both the incoming request (so subsequent
-        // logic in this middleware sees them) and the outgoing response.
-        cookiesToSet.forEach(({ name, value }) => {
-          request.cookies.set(name, value);
-        });
+    });
 
-        response = NextResponse.next({
-          request: {
-            headers: request.headers,
-          },
-        });
-
-        cookiesToSet.forEach(({ name, value, options }) => {
-          response.cookies.set(name, value, options);
-        });
-      },
-    },
-  });
-
-  // Touch the session so Supabase issues a refreshed access token cookie
-  // when the old one is near expiry. We intentionally don't gate the
-  // response on the result — anonymous users are allowed through here;
-  // page-level redirects are the right place for auth gates.
-  await supabase.auth.getUser();
+    // Touch the session so Supabase issues a refreshed access token cookie
+    // when the old one is near expiry. We intentionally don't gate the
+    // response on the result — anonymous users are allowed through here;
+    // page-level redirects are the right place for auth gates.
+    await supabase.auth.getUser();
+  } catch (err) {
+    console.error('[middleware] session refresh failed; passing through:', err);
+  }
 
   return response;
 }
