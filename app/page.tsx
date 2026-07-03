@@ -15,6 +15,11 @@ import { Spectrum } from './components/ui/Spectrum';
  * inline — the same cascade mechanism the analysis flows use globally.
  */
 
+// ISR: without this the page is fully static and the Atlas stats band is
+// frozen at build time (or hidden forever if the DB was unreachable during
+// the build). Hourly matches /atlas.
+export const revalidate = 3600;
+
 /** Fail-soft Atlas stats (CLAUDE.md pattern) — null hides the stats band. */
 async function tryGetOverview() {
   try {
