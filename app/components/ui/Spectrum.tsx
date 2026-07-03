@@ -16,14 +16,25 @@ export interface SpectrumProps extends Omit<SVGAttributes<SVGSVGElement>, 'child
   width?: number;
   /** Bar rounded-cap radius. */
   cornerRadius?: number;
+  /**
+   * Controlled mode: per-bar levels in 0..1 (e.g. live AnalyserNode data via
+   * `LiveSpectrum`). When set, SMIL animation is bypassed and bar heights
+   * track the array directly. Extra bars beyond `levels.length` render at a
+   * resting height.
+   */
+  levels?: number[];
 }
 
 /**
- * Decorative equalizer SVG.
+ * Equalizer SVG.
  *
- * Pure visual — no audio analysis. Uses the current mood accent gradient.
- * Pass `animated` to loop heights via `<animate>` SMIL (no JS, no Framer).
- * Deterministic per `seed` so server-render and client hydrate match.
+ * Two modes:
+ *  - Decorative (default): deterministic pseudo-random bars per `seed`,
+ *    optionally looping via `<animate>` SMIL (no JS, no Framer).
+ *  - Controlled: pass `levels` (0..1 per bar) to drive heights from real
+ *    audio — see `app/components/LiveSpectrum.tsx`.
+ *
+ * Always uses the current mood accent gradient.
  */
 export function Spectrum({
   bars = 48,
@@ -32,6 +43,7 @@ export function Spectrum({
   height = 80,
   width = 320,
   cornerRadius = 2,
+  levels,
   className,
   ...rest
 }: SpectrumProps) {
@@ -76,8 +88,26 @@ export function Spectrum({
       </defs>
 
       {bardata.map((b, i) => {
-        const baseH = b.h * height;
         const x = i * (barWidth + gap);
+
+        // Controlled mode: heights track the provided levels directly.
+        if (levels) {
+          const level = Math.min(1, Math.max(0, levels[i] ?? 0.04));
+          const h = Math.max(2, level * height);
+          return (
+            <rect
+              key={i}
+              x={x}
+              y={height - h}
+              width={barWidth}
+              height={h}
+              rx={cornerRadius}
+              fill={`url(#${gradientId})`}
+            />
+          );
+        }
+
+        const baseH = b.h * height;
         const y = height - baseH;
 
         if (!animated) {

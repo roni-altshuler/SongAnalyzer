@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { clientIpFrom, rateLimit } from '@/lib/rate-limit';
 import { isSpotifyConfigured, searchSpotify } from '@/lib/sources/spotify';
 
 /**
@@ -24,6 +25,11 @@ export async function GET(request: NextRequest) {
   const q = request.nextUrl.searchParams.get('q');
   if (!q || !q.trim()) {
     return NextResponse.json({ error: 'missing_query' }, { status: 400 });
+  }
+
+  const limit = await rateLimit('search', clientIpFrom(request));
+  if (!limit.success) {
+    return NextResponse.json({ error: 'rate_limited' }, { status: 429 });
   }
 
   if (!isSpotifyConfigured()) {

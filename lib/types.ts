@@ -67,6 +67,20 @@ export interface AudioAnalysisResult {
   };
 }
 
+/** Which audio engine produced a result (v2 MIR worker or the v1 fallback). */
+export type AudioEngineVersion = 'v2' | 'v1-fallback';
+
+/**
+ * Additive superset of `AudioAnalysisResult` produced by
+ * `lib/audio/analyze.ts`. Existing renderers keep reading the v1 fields;
+ * v2-aware components check `engineVersion` and read `v2` (beat grid,
+ * key/scale, MFCC/chroma stats, valence/arousal).
+ */
+export interface AudioAnalysisResultV2 extends AudioAnalysisResult {
+  engineVersion: AudioEngineVersion;
+  v2?: import('@/lib/audio/features').AudioFeaturesV2;
+}
+
 export interface HistoryEntry {
   id: string;
   timestamp: number;
