@@ -16,6 +16,9 @@ npm test -- -t "blend"    # Run tests whose name matches a pattern
 npm run test:watch        # Vitest interactive
 npm run test:e2e          # Playwright (boots `next dev` via webServer)
 npm run seed:atlas        # tsx lib/seeds/build-seed-sql.ts > supabase/seed.sql
+npm run seed:fingerprints # bulk-index Spotify previews into the Identify catalog
+                          # (runs tsx with --conditions=react-server so `server-only`
+                          #  modules resolve outside Next — don't drop that flag)
 
 # Local Supabase (Docker required)
 npx supabase start                    # boot Postgres + Auth + Storage locally
@@ -38,6 +41,36 @@ SUPABASE_LOCAL=1 npm test             # also runs the otherwise-skipped RLS suit
 `lib/analysis/blend.ts` merges them: when the transformer succeeds, its top emotion drives `mood`/`sentiment`; the keyword engine always provides `themes`; confidence is a 70/30 weighted average. **The route always returns 200 with engines metadata** — when the transformer fails (timeout, 503, no token), `engines.transformer.status` records the reason ('skipped' | 'unavailable' | 'timeout' | 'error') so the UI can show transparent provenance. Never throw from `/api/analyze` — fall back to the keyword result.
 
 `lib/analysis/palette.ts` maps the resulting mood to a `{ from, to, glow }` hex triplet that propagates into the UI as CSS variables. `lib/analysis/cache.ts` exposes an `AnalysisCacheStore` interface and a SHA-256-keyed in-memory store; a Supabase-backed store can plug in via `setAnalysisCache(...)`.
+
+### The audio engine (`lib/audio/*`, `lib/fingerprint/*`, `app/workers/*`)
+
+Two client-side Web Worker pipelines, both fed from one decode
+(`decodeFileToMono` in `lib/audio/analyze.ts`):
+
+1. **Feature extraction (v2)** — `app/workers/audio-features.worker.ts` runs
+   `lib/audio/features.ts`: Meyda (MFCC/chroma/rms/zcr) + hand-rolled tempo
+   (`tempo.ts`, autocorrelation + octave correction + beat grid), key
+   (`key.ts`, Krumhansl-Schmuckler), valence/arousal (`mood-map.ts`), and the
+   48-dim sonic vector (`vector.ts`). **`lib/audio-analysis.ts` (the v1
+   engine) is preserved verbatim as the fail-soft fallback** — any v2 failure
+   returns a v1 result tagged `engineVersion: 'v1-fallback'`. Don't modify v1.
+2. **Fingerprinting (Identify)** — `app/workers/fingerprint.worker.ts` runs
+   `lib/fingerprint/constellation.ts` (Wang-2003 spectral-peak pairs, 24-bit
+   packed hashes). Matching happens in the `match_fingerprints` Postgres RPC
+   (service-role only); ingest is validated + first-write-wins in
+   `lib/fingerprint/ingest.ts`. `/api/identify` mirrors `/api/analyze`'s
+   always-200 posture. AudD is the env-gated (`AUDD_API_TOKEN`) world-catalog
+   fallback — never required.
+
+`app/hooks/useSongAnalysis.ts` is the one shared client pipeline: decode →
+analyze (v2→v1) → fire-and-forget persistence (`/api/analyses`,
+`/api/fingerprints`, `/api/songs/[id]/features`). All three feature pages
+(/identify, /analyze, /discover) go through it — don't fork the flow.
+
+Shared circumplex vocabulary: `MOOD_COORDS` in `lib/audio/mood-map.ts` places
+the 13 palette moods on the valence/arousal plane; `lib/analysis/affect.ts`
+projects lyrics results onto the same plane. The CombinedView agreement score
+is a distance in that space — never reintroduce string-based agreement.
 
 ### The mood-color cascade
 
@@ -105,6 +138,11 @@ If you add or change a seed row, regenerate the SQL — don't hand-edit `supabas
 - **`server-only` imports**. Vitest doesn't go through the Next bundler, so the `server-only` marker module would be unresolvable in unit tests. `vitest.config.mts` aliases it to Next's compiled empty stub. If you write a new server-only module imported by a test, the alias already covers you — don't add a second one.
 - **OG image at `app/share/[slug]/opengraph-image.tsx` runs on the Edge runtime**. Don't import Node-only modules there (no `node:crypto`, no `fs`). System fonts only — `next/font/google` results don't make it to edge.
 - **Email/auth callbacks live at `/api/auth/callback`**, registered with Supabase as the redirect URL. The middleware (`middleware.ts`) refreshes session cookies on `/account/:path*`, `/api/auth/:path*`, `/atlas/:path*`.
+- **Workers must be instantiated as `new Worker(new URL('./x.worker.ts', import.meta.url))`** so Turbopack code-splits them. The runner helpers live in `app/workers/client.ts` — go through them.
+- **Worker `postMessage` transfers the PCM buffer** — the `Float32Array` is unusable afterwards. `pcm.slice()` first if you need the samples twice (see `useSongAnalysis`).
+- **`songs.sonic_vector` is locked at `vector(48)`** (pgvector dimension is part of the column type). Any change to the embedding layout must bump `EXTRACTOR_VERSION` in `lib/audio/vector.ts` and re-embed via a migration — never mix layouts under one version.
+- **`/api/songs/[id]` takes a Spotify track ID, but `/api/songs/[id]/features` and `/similar` take the DB uuid** (returned by `POST /api/analyses` or `/api/identify`). The uuid check makes a mixed-up call fail with a clear 400.
+- **Rate limiting is env-gated on Upstash** (`UPSTASH_REDIS_REST_URL/TOKEN`) with an in-memory per-instance fallback, and **fails open** — see `lib/rate-limit.ts`. Never let a limiter outage take a route down.
 
 ## Working in parallel
 
@@ -114,7 +152,8 @@ This repo was built in three waves on the `v2-overhaul` branch, with multiple su
 - **Design system**: `app/globals.css`, `app/components/ui/*`, `app/providers/mood-theme-provider.tsx`, `app/dev/components/page.tsx`, font registration in `app/layout.tsx`
 - **Analysis engine**: `app/api/analyze/route.ts`, `lib/analysis/*`, `__tests__/engine-blend.test.ts`, fixtures under `__tests__/analysis-fixtures/`
 - **External sources**: `lib/sources/*`, `app/api/songs/**`, `__tests__/sources/*`
-- **Composed UI + share**: `app/page.tsx`, `app/components/{SongHero,SongSearch,CombinedView,WaveformPlayer,EngineProvenance,MoodRadarV2,AnalysisResults,...}.tsx`, `app/share/**`, `app/api/analyses/share/route.ts`
+- **Composed UI + share**: `app/page.tsx` (landing), `app/analyze/**`, `app/discover/**`, `app/components/{SongHero,SongSearch,CombinedView,WaveformPlayer,EngineProvenance,MoodRadarV2,AnalysisResults,SimilarSongs,...}.tsx`, `app/components/shell/*`, `app/hooks/useSongAnalysis.ts`, `app/share/**`, `app/api/analyses/**`
 - **Mood Atlas**: `app/atlas/**`, `lib/atlas/*`, `lib/seeds/*`, `supabase/migrations/0002_*`, `0003_*`, `supabase/seed.sql`
+- **Audio engine (v3)**: `lib/audio/*` (except the untouched `lib/audio-analysis.ts`), `lib/fingerprint/*`, `app/workers/*`, `app/identify/**`, `app/components/{IdentifyListener,LiveSpectrum}.tsx`, `app/api/identify/**`, `app/api/fingerprints/**`, `app/api/songs/[id]/{features,similar}/**`, `scripts/index-previews.ts`, migrations `0004_*`, `0005_*`, `0006_*`, `__tests__/{fingerprint,audio}/**`
 
 The `SongRow` ↔ `Song` adapter (`lib/db/song-store-adapter.ts`) is the only file that intentionally bridges two layers' types.

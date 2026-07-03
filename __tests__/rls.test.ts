@@ -287,4 +287,65 @@ describe.skipIf(!SUPABASE_LOCAL)('RLS contracts (local Supabase only)', () => {
     expect(error).not.toBeNull();
     expect(data ?? []).toHaveLength(0);
   });
+
+  // ── Identify catalog (0004) + analysis cache (0005): service-role only ──
+
+  it('song_fingerprints is invisible and unwritable to anonymous clients', async () => {
+    // Seed one row via the service role so there is something to hide.
+    const seed = await admin
+      .from('song_fingerprints')
+      .upsert(
+        { song_id: songId, hash: 12345, offset_ms: 100, source: 'seed' },
+        { onConflict: 'song_id,hash,offset_ms', ignoreDuplicates: true },
+      );
+    expect(seed.error).toBeNull();
+
+    // RLS with no policies: reads come back empty (not an error), writes fail.
+    const read = await anonClient.from('song_fingerprints').select('hash').eq('song_id', songId);
+    expect(read.data ?? []).toHaveLength(0);
+
+    const write = await anonClient
+      .from('song_fingerprints')
+      .insert({ song_id: songId, hash: 999, offset_ms: 5, source: 'preview' })
+      .select('hash');
+    expect(write.error).not.toBeNull();
+    expect(write.data ?? []).toHaveLength(0);
+
+    await admin.from('song_fingerprints').delete().eq('song_id', songId);
+  });
+
+  it('the match_fingerprints RPC is revoked from anonymous clients', async () => {
+    const anonCall = await anonClient.rpc('match_fingerprints', {
+      q_hashes: [12345],
+      q_offsets: [0],
+    });
+    expect(anonCall.error).not.toBeNull();
+
+    // The service role can still execute it.
+    const adminCall = await admin.rpc('match_fingerprints', {
+      q_hashes: [12345],
+      q_offsets: [0],
+    });
+    expect(adminCall.error).toBeNull();
+  });
+
+  it('analysis_cache is invisible and unwritable to anonymous clients', async () => {
+    const hash = 'rls-test-hash';
+    const seed = await admin
+      .from('analysis_cache')
+      .upsert({ lyrics_hash: hash, result: { mood: 'Peaceful' } });
+    expect(seed.error).toBeNull();
+
+    const read = await anonClient.from('analysis_cache').select('lyrics_hash').eq('lyrics_hash', hash);
+    expect(read.data ?? []).toHaveLength(0);
+
+    const write = await anonClient
+      .from('analysis_cache')
+      .insert({ lyrics_hash: 'sneaky', result: { mood: 'x' } })
+      .select('lyrics_hash');
+    expect(write.error).not.toBeNull();
+    expect(write.data ?? []).toHaveLength(0);
+
+    await admin.from('analysis_cache').delete().eq('lyrics_hash', hash);
+  });
 });

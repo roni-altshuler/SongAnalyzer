@@ -448,7 +448,7 @@ export default function DevComponentsShowcase() {
           {/* ───── Spectrum ───── */}
           <Section
             title="Spectrum"
-            description="Decorative equalizer. SVG, deterministic per seed, animation pauses on prefers-reduced-motion."
+            description="Equalizer. SVG, deterministic per seed, animation pauses on prefers-reduced-motion. The `levels` prop switches to controlled mode — bar heights track a 0..1 array (see LiveSpectrum for real AnalyserNode wiring)."
           >
             <div className="space-y-4">
               <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elev1)] h-24 overflow-hidden">
@@ -459,6 +459,12 @@ export default function DevComponentsShowcase() {
               </div>
               <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elev1)] h-16 overflow-hidden">
                 <Spectrum bars={32} animated={false} seed={3} />
+              </div>
+              <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elev1)] h-16 overflow-hidden">
+                <Spectrum
+                  bars={24}
+                  levels={[0.1, 0.3, 0.55, 0.8, 0.95, 0.7, 0.45, 0.6, 0.85, 0.5, 0.3, 0.65, 0.9, 0.75, 0.5, 0.35, 0.55, 0.7, 0.4, 0.25, 0.45, 0.3, 0.15, 0.08]}
+                />
               </div>
             </div>
           </Section>

@@ -1,33 +1,41 @@
 /**
- * Smoke E2E for the SongAnalyzer v2 happy path.
+ * Smoke E2E for the SongAnalyzer v3 happy path.
  *
  * The suite intentionally runs without any environment configuration —
- * no Supabase, no Hugging Face token, no Spotify creds — so it exercises
- * the keyword-fallback engine and the fail-soft data-layer paths.
+ * no Supabase, no Hugging Face token, no Spotify creds, no AudD — so it
+ * exercises the keyword-fallback engine, the fail-soft data-layer paths,
+ * and the Identify flow's degraded states.
  *
  * Coverage:
- *   1. Home page renders the new dark hero with display-serif headline
- *   2. Lyrics analyze flow returns a result, surfaces engine provenance,
- *      and cascades a mood accent gradient through the page
- *   3. Design-system showcase loads
- *   4. Mood Atlas overview renders (empty-state or seeded — both fine)
- *   5. Share page with a bogus slug returns a 404 (not 500)
+ *   1. Landing page renders the hero + nav shell with the four sections
+ *   2. /analyze lyrics flow returns a result via the keyword fallback and
+ *      cascades a mood accent gradient through the page
+ *   3. /identify renders, mic capture starts (fake media stream), and the
+ *      no-match/degraded state resolves without a crash
+ *   4. /discover renders its empty state
+ *   5. Design-system showcase loads
+ *   6. Mood Atlas overview renders (empty-state or seeded — both fine)
+ *   7. Share page with a bogus slug returns a 404 (not 500)
  */
 
 import { expect, test } from '@playwright/test';
 
-test.describe('SongAnalyzer v2 smoke', () => {
-  test('home renders the dark v2 hero', async ({ page }) => {
+test.describe('SongAnalyzer v3 smoke', () => {
+  test('landing renders the hero and nav shell', async ({ page }) => {
     await page.goto('/');
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('The mood of');
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('decoded');
-    await expect(page.getByRole('tab', { name: /Lyrics/i })).toBeVisible();
-    await expect(page.getByRole('tab', { name: /Audio/i })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('fingerprint');
+    const nav = page.getByRole('navigation', { name: 'Primary' });
+    for (const label of ['Identify', 'Analyze', 'Discover', 'Atlas']) {
+      await expect(nav.getByRole('link', { name: label })).toBeVisible();
+    }
   });
 
-  test('lyrics analyze flow returns a result via the keyword fallback', async ({ page }) => {
-    await page.goto('/');
+  test('analyze lyrics flow returns a result via the keyword fallback', async ({ page }) => {
+    await page.goto('/analyze');
+
+    await expect(page.getByRole('tab', { name: /Lyrics/i })).toBeVisible();
+    await expect(page.getByRole('tab', { name: /Audio/i })).toBeVisible();
 
     const textarea = page.getByRole('textbox');
     await textarea.fill(
@@ -37,7 +45,6 @@ test.describe('SongAnalyzer v2 smoke', () => {
 
     await page.getByRole('button', { name: /^Analyze lyrics/i }).click();
 
-    // Wait for the analysis card to land — its accent dot has a known style.
     await expect(page.getByRole('heading', { name: 'Analysis' })).toBeVisible({
       timeout: 20_000,
     });
@@ -53,17 +60,45 @@ test.describe('SongAnalyzer v2 smoke', () => {
     expect(accentFrom).toMatch(/^#[0-9a-f]{3,8}$/i);
   });
 
+  test('analyze mode is deep-linkable via ?mode=audio', async ({ page }) => {
+    await page.goto('/analyze?mode=audio');
+    await expect(page.getByText(/Ready to listen/i)).toBeVisible();
+  });
+
+  test('identify listens on a fake mic and resolves without crashing', async ({ page }) => {
+    await page.goto('/identify');
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('beat');
+
+    // Start listening — fake media stream grants a silent mic.
+    await page.getByRole('button', { name: /Start listening/i }).click();
+    await expect(page.getByText(/Listening…/)).toBeVisible({ timeout: 10_000 });
+
+    // Cut the capture short and let the pipeline resolve. With no Supabase
+    // configured the store degrades to no_match; silence may also fail to
+    // produce hashes. Either terminal state is fine — never a crash.
+    await page.getByRole('button', { name: /Match now/i }).click();
+    await expect(
+      page
+        .getByText(/Not in the catalog yet|Still no match|didn’t work|Hmm/i)
+        .first(),
+    ).toBeVisible({ timeout: 30_000 });
+  });
+
+  test('discover renders its empty state', async ({ page }) => {
+    await page.goto('/discover');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('feels the same');
+    await expect(page.getByText(/Every analysis grows the map/i)).toBeVisible();
+  });
+
   test('design-system showcase renders', async ({ page }) => {
     await page.goto('/dev/components');
     await expect(page).toHaveURL(/\/dev\/components$/);
-    // Showcase always renders the wordmark / heading region.
     await expect(page.locator('body')).toBeVisible();
   });
 
   test('Mood Atlas overview responds with 200', async ({ page }) => {
     const response = await page.goto('/atlas');
-    // 200 whether or not Supabase is configured — Atlas pages render an
-    // empty-state Card on missing data instead of crashing.
     expect(response?.status()).toBe(200);
   });
 

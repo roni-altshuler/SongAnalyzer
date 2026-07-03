@@ -1,8 +1,8 @@
 # SongAnalyzer
 
-> Decode the mood of a song from its lyrics, its audio, or both — and let the song tint the page.
+> Identify a song from ten seconds of its beat. Decode its mood from lyrics and audio. Discover what feels the same — and let the song tint the page.
 
-SongAnalyzer is a music-streaming-dark Next.js app that reads songs through two engines and one feeling. Lyrics flow through a hybrid pipeline (a Hugging Face transformer falling back to deterministic keyword rules); audio goes through the Web Audio API client-side. The dominant emotion drives an accent gradient that cascades through the entire UI in real time.
+SongAnalyzer is a music-streaming-dark Next.js app built around three surfaces. **Identify** (`/identify`) fingerprints instrumental audio in your browser — a Wang-2003 spectral-peak constellation computed in a Web Worker; only integer hashes reach the server — and matches it against the catalog of everything the app has analyzed, with an optional AudD world-catalog fallback. **Analyze** (`/analyze`) reads songs through two engines: lyrics via a hybrid transformer + keyword pipeline, audio via a real MIR engine (Meyda MFCC/chroma, beat grid, key detection, valence/arousal) with the original DSP engine as a fail-soft fallback. **Discover** (`/discover`) walks a 48-dimension sonic-fingerprint space (pgvector) to find songs that *feel* the same. The dominant emotion drives an accent gradient that cascades through the entire UI in real time.
 
 **Live:** [songanalyzer.vercel.app](https://songanalyzer.vercel.app)
 
@@ -12,12 +12,14 @@ SongAnalyzer is a music-streaming-dark Next.js app that reads songs through two 
 
 | | |
 |---|---|
+| **Identify a song** | Hold your device to the music (or upload a clip). A constellation fingerprint is computed in a Web Worker and matched via a Postgres RPC against every song the app has analyzed — audio never leaves the browser for catalog matches. Env-gated AudD fallback covers the world catalog. |
 | **Paste lyrics** | Hybrid transformer + keyword engine returns mood, vibe, energy, sentiment, themes, and a per-engine provenance trail. Confidence calibrated, dominant emotion mapped, mood color computed server-side. |
-| **Upload audio** | Client-side Web Audio analyser extracts BPM (onset autocorrelation), RMS energy, spectral centroid, dynamic range, and zero-crossing rate; maps them to mood/vibe/energy through deterministic rules. |
+| **Upload audio** | The v2 MIR engine (Web Worker) extracts a beat grid + tempo (octave-corrected autocorrelation), musical key (Krumhansl-Schmuckler over chroma), MFCC timbre stats, spectral flux, and a valence/arousal reading — with the original lightweight DSP engine as an automatic fallback. |
+| **Discover similar songs** | Every analysis persists a 48-dim sonic fingerprint (pgvector, HNSW cosine). The "feels like this" rail walks the catalog by sound, not genre tags. |
 | **Search a song** | Typeahead against Spotify (Client Credentials) returns metadata, cover art, and 30-second previews. Genius enrichment for IDs and album info only — never lyrics, by ToS. MusicBrainz + AcousticBrainz fill in open audio features when available. |
 | **Share a result** | Each analysis can be marked public; you get a permalink (`/share/<slug>`) and a 1200×630 OG image generated at the edge using the song's mood-color palette. |
 | **Mood Atlas** | A public dashboard (`/atlas`) aggregating every visible analysis into a global mood distribution, browseable genres, per-artist mood-over-time, and theme clouds. |
-| **Combined view** | When the same song has both a lyrics analysis and an audio analysis, an Agreement Meter shows how closely the two engines agree on its mood — surfacing the classic "happy melody / sad lyrics" tension. |
+| **Combined view** | When the same song has both a lyrics analysis and an audio analysis, both are projected onto a shared valence/arousal plane — the agreement score is a distance in emotion space, drawn on a live circumplex map, surfacing the classic "happy melody / sad lyrics" tension. |
 | **Mood-color cascade** | When a result lands, `--accent-from / --accent-to / --accent-glow` are written to `<html>` and every primitive (cards, buttons, badges, charts, hero glow) repaints in the song's color. |
 | **Multi-language** | Built-in detection across 11+ languages; auto-translates via Helsinki-NLP through the Hugging Face Inference API when a token is configured. |
 | **History** | Local analyses persist to `localStorage`; signed-in users get a Supabase-backed list. |
@@ -97,9 +99,11 @@ cp .env.example .env.local
 |---|---|
 | `HUGGINGFACE_API_KEY` | Transformer engine is `skipped`; keyword fallback runs alone. No non-English translation. |
 | `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` | No persistence, no auth, no share URLs (`/share/<bad-slug>` returns a clean 404). Atlas pages show an empty state. |
-| `SUPABASE_SERVICE_ROLE_KEY` | Server-side writes (anonymous analyses, song upserts, atlas refresh) fail. Reads still work. |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server-side writes (anonymous analyses, song upserts, fingerprint catalog, atlas refresh) fail. Reads still work. |
 | `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` | `/api/songs/search` returns 503 (`spotify_not_configured`); SongSearch shows an inline notice. |
 | `GENIUS_ACCESS_TOKEN` | Genius enrichment skipped in `resolveSong`; everything else still resolves. |
+| `AUDD_API_TOKEN` | Identify's world-catalog fallback is skipped — misses show a clean "not in catalog yet" state. |
+| `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | Rate limiting falls back to an in-memory per-instance sliding window (fine for dev). |
 | `SUPABASE_LOCAL=1` | Enables the RLS test suite (`__tests__/rls.test.ts`). Requires a running `supabase start`. |
 
 ### Develop

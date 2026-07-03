@@ -1,382 +1,240 @@
-'use client';
+import Link from 'next/link';
 
-import { useState, useCallback } from 'react';
-import { AnalysisResult, AudioAnalysisResult, HistoryEntry } from '@/lib/types';
-import { saveToHistory } from '@/lib/history';
-import { analyzeAudioFile } from '@/lib/audio-analysis';
-import ThemeToggle from './components/ThemeToggle';
-import LyricsInput from './components/LyricsInput';
-import AnalysisResults from './components/AnalysisResults';
-import AnalysisSkeleton from './components/AnalysisSkeleton';
-import EmptyState from './components/EmptyState';
-import SampleLyricPicker from './components/SampleLyricPicker';
-import SongSearch from './components/SongSearch';
-import HistoryPanel from './components/HistoryPanel';
-import ModeTabs, { AnalysisMode } from './components/ModeTabs';
-import AudioUpload from './components/AudioUpload';
-import AudioAnalysisResultsView from './components/AudioAnalysisResults';
+import { moodToColor } from '@/lib/analysis/palette';
+import { getAtlasOverview } from '@/lib/atlas/queries';
+import { Button } from './components/ui/Button';
 import { Card } from './components/ui/Card';
 import { Spectrum } from './components/ui/Spectrum';
-import { toast } from './components/ui/Toast';
-import type { SearchHit } from '@/lib/sources/types';
 
-export default function Home() {
-  const [mode, setMode] = useState<AnalysisMode>('lyrics');
+/**
+ * Landing page — the product's front door.
+ *
+ * Server component: the workbench lives at /analyze now (see that page),
+ * identification at /identify, similarity exploration at /discover. Each
+ * feature panel scopes its own mood palette by setting the accent CSS vars
+ * inline — the same cascade mechanism the analysis flows use globally.
+ */
 
-  // ── Lyrics state ──
-  const [lyrics, setLyrics] = useState('');
-  const [lyricsAnalysis, setLyricsAnalysis] = useState<AnalysisResult | null>(null);
-  const [lyricsLoading, setLyricsLoading] = useState(false);
-  const [lyricsError, setLyricsError] = useState('');
-  const [historyKey, setHistoryKey] = useState(0);
-  // The user-picked Spotify track (metadata only — Genius ToS bars storing lyrics).
-  const [pickedSong, setPickedSong] = useState<SearchHit['song'] | null>(null);
+/** Fail-soft Atlas stats (CLAUDE.md pattern) — null hides the stats band. */
+async function tryGetOverview() {
+  try {
+    return await getAtlasOverview();
+  } catch {
+    return null;
+  }
+}
 
-  // ── Audio state ──
-  const [audioAnalysis, setAudioAnalysis] = useState<AudioAnalysisResult | null>(null);
-  const [audioLoading, setAudioLoading] = useState(false);
-  const [audioError, setAudioError] = useState('');
-  const [audioFileName, setAudioFileName] = useState<string | null>(null);
+function accentStyle(mood: string): React.CSSProperties {
+  const { from, to, glow } = moodToColor(mood);
+  return {
+    '--accent-from': from,
+    '--accent-to': to,
+    '--accent-glow': glow,
+  } as React.CSSProperties;
+}
 
-  const analyzeLyrics = useCallback(async () => {
-    if (!lyrics.trim()) {
-      setLyricsError('Please enter some lyrics to analyze');
-      return;
-    }
+const PANELS = [
+  {
+    mood: 'Euphoric',
+    eyebrow: 'Identify',
+    title: 'Name that beat.',
+    body: 'Hold your device to the music. A spectral-peak constellation — the same math behind the classic recognizers — is fingerprinted in your browser and matched in milliseconds. No audio ever leaves your device.',
+    href: '/identify',
+    cta: 'Start listening',
+  },
+  {
+    mood: 'Romantic',
+    eyebrow: 'Analyze',
+    title: 'Two engines, one feeling.',
+    body: 'Lyrics flow through a transformer-plus-keyword hybrid; audio through a real MIR pipeline — beat grid, key detection, timbre, valence and arousal. Where words and sound disagree, the combined view shows the tension.',
+    href: '/analyze',
+    cta: 'Analyze a song',
+  },
+  {
+    mood: 'Peaceful',
+    eyebrow: 'Discover',
+    title: 'Follow the feeling.',
+    body: 'Every analysis becomes a 48-dimension sonic fingerprint in a shared mood space. Start anywhere and walk to what feels the same — by sound, not genre tags — then zoom out on the public Mood Atlas.',
+    href: '/discover',
+    cta: 'Explore the space',
+  },
+] as const;
 
-    setLyricsLoading(true);
-    setLyricsError('');
-    setLyricsAnalysis(null);
-
-    try {
-      const response = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ lyrics }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.error ?? 'Failed to analyze lyrics');
-      }
-
-      const result: AnalysisResult = await response.json();
-      setLyricsAnalysis(result);
-
-      saveToHistory(lyrics, result);
-      setHistoryKey((k) => k + 1);
-    } catch (err) {
-      setLyricsError(err instanceof Error ? err.message : 'An error occurred');
-    } finally {
-      setLyricsLoading(false);
-    }
-  }, [lyrics]);
-
-  const handleLyricsChange = useCallback(
-    (value: string) => {
-      setLyrics(value);
-      if (lyricsAnalysis) {
-        setLyricsAnalysis(null);
-        setLyricsError('');
-      }
-    },
-    [lyricsAnalysis],
-  );
-
-  const handleRestoreHistory = useCallback((entry: HistoryEntry) => {
-    setLyricsAnalysis(entry.result);
-    setLyricsError('');
-  }, []);
-
-  const handleLyricsExport = useCallback(() => {
-    if (!lyricsAnalysis) return;
-    const text = [
-      `Song Lyric Analysis`,
-      `───────────────────`,
-      `Mood:      ${lyricsAnalysis.mood}`,
-      `Vibe:      ${lyricsAnalysis.vibe}`,
-      `Energy:    ${lyricsAnalysis.energy}`,
-      `Sentiment: ${lyricsAnalysis.sentiment}`,
-      `Themes:    ${lyricsAnalysis.themes.join(', ')}`,
-      `Confidence: ${Math.round(lyricsAnalysis.confidence * 100)}%`,
-      ``,
-      lyricsAnalysis.detailedAnalysis,
-      ``,
-      `— Generated by SongAnalyzer`,
-    ].join('\n');
-    navigator.clipboard.writeText(text).then(() => {
-      toast.success('Copied to clipboard');
-    });
-  }, [lyricsAnalysis]);
-
-  const handleAudioFile = useCallback(async (file: File) => {
-    setAudioFileName(file.name);
-    setAudioLoading(true);
-    setAudioError('');
-    setAudioAnalysis(null);
-
-    try {
-      const result = await analyzeAudioFile(file);
-      setAudioAnalysis(result);
-    } catch (err) {
-      setAudioError(
-        err instanceof Error
-          ? err.message
-          : 'Could not analyze the audio file. Make sure it contains valid audio.',
-      );
-    } finally {
-      setAudioLoading(false);
-    }
-  }, []);
-
-  /**
-   * Auto-analyze a picked song.
-   *
-   * We can't fetch lyrics from Genius (ToS), so the analysis path is:
-   *   - Spotify ships a 30-second `preview_url` → fetch + decode + analyze
-   *     via the existing client-side Web Audio pipeline. Switch to audio
-   *     mode so the result lands in the right surface.
-   *   - No preview URL (some markets / labels strip it) → leave the user
-     in lyrics mode with a clear notice to paste lyrics.
-   */
-  const handleSongPicked = useCallback(
-    async (hit: SearchHit) => {
-      setPickedSong(hit.song);
-
-      const previewUrl = hit.song.previewUrl;
-      if (!previewUrl) {
-        toast.message(`${hit.song.title}`, {
-          description: 'No 30s preview available — paste lyrics to analyze.',
-        });
-        return;
-      }
-
-      // Move to the audio surface so the loading skeleton + result render
-      // in the correct mode.
-      setMode('audio');
-      const filename = `${hit.song.artist} — ${hit.song.title}.mp3`;
-      setAudioFileName(filename);
-      setAudioLoading(true);
-      setAudioError('');
-      setAudioAnalysis(null);
-
-      try {
-        const res = await fetch(previewUrl);
-        if (!res.ok) {
-          throw new Error(`Could not fetch preview (${res.status})`);
-        }
-        const blob = await res.blob();
-        const file = new File([blob], filename, {
-          type: blob.type || 'audio/mpeg',
-        });
-        const result = await analyzeAudioFile(file);
-        setAudioAnalysis(result);
-        toast.success(`Analyzed ${hit.song.title}`);
-      } catch (err) {
-        setAudioError(
-          err instanceof Error
-            ? err.message
-            : 'Could not analyze the Spotify preview.',
-        );
-      } finally {
-        setAudioLoading(false);
-      }
-    },
-    [],
-  );
-
-  const handleAudioExport = useCallback(() => {
-    if (!audioAnalysis) return;
-    const text = [
-      `Audio Analysis`,
-      `──────────────`,
-      `Mood:      ${audioAnalysis.mood}`,
-      `Vibe:      ${audioAnalysis.vibe}`,
-      `Energy:    ${audioAnalysis.energy}`,
-      `Sentiment: ${audioAnalysis.sentiment}`,
-      `Tempo:     ${audioAnalysis.bpm} BPM (${audioAnalysis.tempo})`,
-      `Duration:  ${Math.round(audioAnalysis.duration)}s`,
-      `Chars:     ${audioAnalysis.characteristics.join(', ')}`,
-      `Confidence: ${Math.round(audioAnalysis.confidence * 100)}%`,
-      ``,
-      audioAnalysis.detailedAnalysis,
-      ``,
-      `— Generated by SongAnalyzer`,
-    ].join('\n');
-    navigator.clipboard.writeText(text).then(() => {
-      toast.success('Copied to clipboard');
-    });
-  }, [audioAnalysis]);
+export default async function LandingPage() {
+  const overview = await tryGetOverview();
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[var(--bg-base)] text-[var(--text-hi)]">
-      {/* Ambient gradient backdrop driven by the mood-theme provider. */}
+    <main className="relative overflow-hidden bg-[var(--bg-base)] text-[var(--text-hi)]">
+      {/* Ambient mood backdrop */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10"
         style={{
           background:
-            'radial-gradient(ellipse 80% 50% at 50% -10%, color-mix(in_oklab, var(--accent-glow) 70%, transparent), transparent 60%), radial-gradient(ellipse 40% 30% at 80% 80%, color-mix(in_oklab, var(--accent-to) 18%, transparent), transparent 70%)',
+            'radial-gradient(ellipse 80% 50% at 50% -10%, color-mix(in_oklab, var(--accent-glow) 70%, transparent), transparent 60%), radial-gradient(ellipse 40% 30% at 85% 70%, color-mix(in_oklab, var(--accent-to) 16%, transparent), transparent 70%)',
         }}
       />
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10 opacity-[0.025]"
         style={{
-          backgroundImage:
-            'radial-gradient(rgba(255,255,255,0.7) 1px, transparent 1px)',
+          backgroundImage: 'radial-gradient(rgba(255,255,255,0.7) 1px, transparent 1px)',
           backgroundSize: '32px 32px',
         }}
       />
 
-      <div className="absolute top-5 right-5 z-10">
-        <ThemeToggle />
-      </div>
-
-      <div className="container mx-auto px-4 pt-20 pb-16 max-w-6xl">
-        {/* ── Hero ── */}
-        <header className="text-center mb-10 space-y-5">
-          <div className="flex items-center justify-center gap-3 text-[var(--text-low)] text-xs uppercase tracking-[0.32em]">
-            <span aria-hidden className="inline-block h-px w-8 bg-[var(--border-strong)]" />
-            Beat · Lyric · Mood
-            <span aria-hidden className="inline-block h-px w-8 bg-[var(--border-strong)]" />
-          </div>
-
-          <h1 className="font-display text-6xl md:text-7xl leading-[0.95] tracking-tight">
-            <span className="text-[var(--text-hi)]">The mood of</span>
-            <br />
-            <span className="text-accent-gradient italic">a song,</span>{' '}
-            <span className="text-[var(--text-med)]">decoded.</span>
-          </h1>
-
-          <p className="mx-auto max-w-xl text-base md:text-lg text-[var(--text-med)] leading-relaxed">
-            Search for a song, paste lyrics, or drop an audio file. A hybrid keyword-plus-transformer
-            engine reads the emotion, themes, and energy — and tints the page with the song&rsquo;s
-            color.
-          </p>
-
-          <div className="flex justify-center pt-2">
-            <Spectrum bars={18} className="w-44 h-10 opacity-60" />
-          </div>
-        </header>
-
-        {/* Song search is global — picking a track auto-analyzes its 30s preview,
-            so it makes sense to show it above the mode tabs. */}
-        <div className="mb-6">
-          <SongSearch onSelect={handleSongPicked} />
+      {/* ── Hero ── */}
+      <section className="container mx-auto max-w-6xl px-4 pb-20 pt-20 text-center md:pt-28">
+        <div className="mb-6 flex items-center justify-center gap-3 text-xs uppercase tracking-[0.32em] text-[var(--text-low)]">
+          <span aria-hidden className="inline-block h-px w-8 bg-[var(--border-strong)]" />
+          Identify · Analyze · Discover
+          <span aria-hidden className="inline-block h-px w-8 bg-[var(--border-strong)]" />
         </div>
 
-        {pickedSong && (
-          <div className="mb-6 flex items-center gap-3 rounded-xl px-4 py-3 border border-[var(--border-subtle)] bg-[var(--bg-elev1)] ring-inset-soft">
-            {pickedSong.coverUrl && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={pickedSong.coverUrl}
-                alt=""
-                width={36}
-                height={36}
-                className="h-9 w-9 rounded-md border border-[var(--border-subtle)] object-cover"
-              />
-            )}
-            <div className="min-w-0 flex-1">
-              <p className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-low)]">
-                Now analyzing
-              </p>
-              <p className="truncate text-sm text-[var(--text-hi)]">
-                <span className="font-display">{pickedSong.title}</span>
-                <span className="text-[var(--text-med)]"> · {pickedSong.artist}</span>
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setPickedSong(null)}
-              className="text-xs text-[var(--text-low)] hover:text-[var(--state-error)] transition-colors"
-            >
-              Clear
-            </button>
-          </div>
-        )}
+        <h1 className="font-display text-6xl leading-[0.95] tracking-tight md:text-8xl">
+          <span className="text-[var(--text-hi)]">Every song has a</span>
+          <br />
+          <span className="text-accent-gradient italic">fingerprint.</span>
+        </h1>
 
-        <ModeTabs mode={mode} onChange={setMode} />
+        <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-[var(--text-med)] md:text-lg">
+          Identify a track from ten seconds of its beat. Decode its mood from lyrics and audio
+          with dual engines. Discover what feels the same — while the song&rsquo;s color washes
+          over the page.
+        </p>
 
-        {/* ── Lyrics mode ── */}
-        {mode === 'lyrics' && (
-          <>
-            <SampleLyricPicker onSelect={(s) => handleLyricsChange(s)} />
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <Button asChild size="lg">
+            <Link href="/identify">Identify a song</Link>
+          </Button>
+          <Button asChild variant="secondary" size="lg">
+            <Link href="/analyze">Analyze lyrics or audio</Link>
+          </Button>
+        </div>
 
-            <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
-              <div className="space-y-6">
-                <LyricsInput
-                  lyrics={lyrics}
-                  onLyricsChange={handleLyricsChange}
-                  onAnalyze={analyzeLyrics}
-                  loading={lyricsLoading}
-                  error={lyricsError}
-                />
-                <HistoryPanel onRestore={handleRestoreHistory} refreshKey={historyKey} />
-              </div>
+        <div className="mx-auto mt-12 h-14 w-full max-w-lg opacity-70">
+          <Spectrum bars={48} className="h-full w-full" />
+        </div>
+      </section>
 
-              <div>
-                {lyricsLoading ? (
-                  <AnalysisSkeleton />
-                ) : lyricsAnalysis ? (
-                  <AnalysisResults analysis={lyricsAnalysis} onExport={handleLyricsExport} />
-                ) : (
-                  <EmptyState />
-                )}
-              </div>
-            </div>
-          </>
-        )}
-
-        {/* ── Audio mode ── */}
-        {mode === 'audio' && (
-          <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
-            <div>
-              <AudioUpload
-                onFileSelected={handleAudioFile}
-                loading={audioLoading}
-                error={audioError}
-                fileName={audioFileName}
-              />
-            </div>
-
-            <div>
-              {audioLoading ? (
-                <AnalysisSkeleton />
-              ) : audioAnalysis ? (
-                <AudioAnalysisResultsView analysis={audioAnalysis} onExport={handleAudioExport} />
-              ) : (
-                <Card variant="elev1" className="text-center py-14">
-                  <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--bg-elev3)] border border-[var(--border-subtle)]">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--text-med)]" aria-hidden="true">
-                      <path d="M9 18V5l12-2v13" />
-                      <circle cx="6" cy="18" r="3" />
-                      <circle cx="18" cy="16" r="3" />
-                    </svg>
-                  </div>
-                  <h3 className="font-display text-xl text-[var(--text-hi)] mb-2">
-                    Ready to listen
-                  </h3>
-                  <p className="text-sm text-[var(--text-med)] mx-auto max-w-sm">
-                    Upload an audio file to detect mood from the music itself — beat, rhythm,
-                    energy, and tone.
+      {/* ── Feature panels — each scoped to its own mood palette ── */}
+      <section className="container mx-auto max-w-6xl px-4 pb-20">
+        <div className="grid gap-6 md:grid-cols-3">
+          {PANELS.map((panel) => (
+            <div key={panel.href} style={accentStyle(panel.mood)}>
+              <Card variant="elev1" interactive className="flex h-full flex-col gap-4 p-7">
+                <div className="flex items-center justify-between">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--text-low)]">
+                    {panel.eyebrow}
                   </p>
-                </Card>
-              )}
+                  <span
+                    aria-hidden
+                    className="h-2.5 w-2.5 rounded-full"
+                    style={{
+                      background: 'linear-gradient(135deg, var(--accent-from), var(--accent-to))',
+                      boxShadow: '0 0 12px var(--accent-glow)',
+                    }}
+                  />
+                </div>
+                <h2 className="font-display text-3xl leading-tight">
+                  <span className="text-accent-gradient">{panel.title}</span>
+                </h2>
+                <p className="flex-1 text-sm leading-relaxed text-[var(--text-med)]">{panel.body}</p>
+                <Link
+                  href={panel.href}
+                  className="group inline-flex items-center gap-1.5 text-sm text-[var(--text-hi)] underline-offset-4 hover:underline"
+                >
+                  {panel.cta}
+                  <span aria-hidden className="transition-transform duration-200 group-hover:translate-x-0.5">
+                    →
+                  </span>
+                </Link>
+              </Card>
             </div>
-          </div>
-        )}
+          ))}
+        </div>
+      </section>
 
-        <footer className="mt-20 pt-8 border-t border-[var(--border-subtle)] text-center text-xs text-[var(--text-low)] space-y-2">
-          <p className="tracking-wide">
-            Multi-language · keyword + transformer · audio + lyrics
-          </p>
-          <p className="tracking-wide opacity-70">
-            More lyrics or longer audio → sharper analysis.
-          </p>
-        </footer>
-      </div>
+      {/* ── How identification works ── */}
+      <section className="border-y border-[var(--border-subtle)] bg-[var(--bg-elev1)]/40">
+        <div className="container mx-auto max-w-6xl px-4 py-16">
+          <div className="grid gap-10 md:grid-cols-3">
+            {[
+              {
+                step: '01',
+                title: 'Listen',
+                body: 'Ten seconds of audio, captured locally. The signal is reduced to its loudest spectral peaks — a constellation unique to the recording, robust to noise.',
+              },
+              {
+                step: '02',
+                title: 'Hash',
+                body: 'Peak pairs pack into 24-bit hashes inside a Web Worker. Only these integers travel to the server — the audio itself never does.',
+              },
+              {
+                step: '03',
+                title: 'Align',
+                body: 'Thousands of catalog hashes vote on time alignment. A true match is a sharp spike; everything else is noise. Then the mood engines take over.',
+              },
+            ].map((item) => (
+              <div key={item.step} className="space-y-3">
+                <p className="font-mono text-xs tracking-[0.3em] text-[var(--text-low)]">{item.step}</p>
+                <h3 className="font-display text-2xl text-[var(--text-hi)]">{item.title}</h3>
+                <p className="text-sm leading-relaxed text-[var(--text-med)]">{item.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Atlas stats teaser (fail-soft) ── */}
+      {overview && overview.totalAnalyses > 0 && (
+        <section className="container mx-auto max-w-6xl px-4 py-16">
+          <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
+            <div className="flex gap-10 text-center md:gap-14 md:text-left">
+              <div>
+                <p className="font-display text-4xl text-[var(--text-hi)]">
+                  {overview.totalAnalyses.toLocaleString()}
+                </p>
+                <p className="mt-1 text-xs uppercase tracking-[0.18em] text-[var(--text-low)]">
+                  analyses
+                </p>
+              </div>
+              <div>
+                <p className="font-display text-4xl text-[var(--text-hi)]">
+                  {overview.totalArtists.toLocaleString()}
+                </p>
+                <p className="mt-1 text-xs uppercase tracking-[0.18em] text-[var(--text-low)]">
+                  artists
+                </p>
+              </div>
+              <div>
+                <p className="font-display text-4xl text-[var(--text-hi)]">
+                  {overview.moodDistribution.length}
+                </p>
+                <p className="mt-1 text-xs uppercase tracking-[0.18em] text-[var(--text-low)]">
+                  moods mapped
+                </p>
+              </div>
+            </div>
+            <Button asChild variant="secondary">
+              <Link href="/atlas">Open the Mood Atlas</Link>
+            </Button>
+          </div>
+        </section>
+      )}
+
+      {/* ── Final CTA ── */}
+      <section className="container mx-auto max-w-6xl px-4 pb-24 pt-8 text-center">
+        <h2 className="font-display text-4xl tracking-tight md:text-5xl">
+          <span className="text-[var(--text-med)]">Something playing?</span>{' '}
+          <span className="text-accent-gradient italic">Catch it.</span>
+        </h2>
+        <div className="mt-6">
+          <Button asChild size="lg">
+            <Link href="/identify">Identify what&rsquo;s playing</Link>
+          </Button>
+        </div>
+      </section>
     </main>
   );
 }

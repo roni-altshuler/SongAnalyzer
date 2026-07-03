@@ -9,8 +9,9 @@
  *
  *   2. SHA-256 cache lookup. Lyrics are normalized (lowercase + collapsed
  *      whitespace) and hashed; if a cached result is present we short-circuit.
- *      The active store is the in-memory LRU from `lib/analysis/cache.ts`;
- *      TODO: wire Stream A's `lib/db/analyses` Supabase store here once ready.
+ *      With Supabase admin credentials the durable two-tier store from
+ *      `lib/db/analysis-cache.ts` is wired in at module load; otherwise the
+ *      in-memory LRU from `lib/analysis/cache.ts` stands alone.
  *
  *   3. Keyword engine (`lib/analysis/keyword.ts`). Synchronous, deterministic,
  *      always succeeds. This is the v1 logic preserved verbatim.
@@ -45,11 +46,19 @@ import { moodToColor } from '@/lib/analysis/palette';
 import {
   getCachedAnalysis,
   hashLyrics,
+  setAnalysisCache,
   setCachedAnalysis,
 } from '@/lib/analysis/cache';
 import type { TransformerResult } from '@/lib/analysis/types';
+import { createDurableAnalysisCache } from '@/lib/db/analysis-cache';
+import { clientIpFrom, rateLimit } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
+
+// Wire the durable Supabase-backed cache when admin credentials exist.
+// Falls back to the default in-memory LRU otherwise.
+const durableCache = createDurableAnalysisCache();
+if (durableCache) setAnalysisCache(durableCache);
 
 /**
  * Translate non-English lyrics to English using HF Helsinki-NLP, if a token is
@@ -157,6 +166,14 @@ export async function analyzeLyrics(lyrics: string): Promise<AnalysisResult> {
 }
 
 export async function POST(request: NextRequest) {
+  const limit = await rateLimit('analyze', clientIpFrom(request));
+  if (!limit.success) {
+    return NextResponse.json(
+      { error: 'Rate limit reached — please wait a moment and try again.' },
+      { status: 429 },
+    );
+  }
+
   try {
     const { lyrics } = await request.json();
 

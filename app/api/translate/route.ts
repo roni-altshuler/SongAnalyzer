@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { detectLanguage, LANGUAGE_CODE_MAP } from '@/lib/language';
+import { clientIpFrom, rateLimit } from '@/lib/rate-limit';
 
 // Simple translation using Hugging Face's free models (when HF_TOKEN is available)
 // Otherwise, returns original text with detection info
@@ -98,6 +99,11 @@ async function translateText(text: string): Promise<{ translatedText: string; de
 }
 
 export async function POST(request: NextRequest) {
+  const limit = await rateLimit('translate', clientIpFrom(request));
+  if (!limit.success) {
+    return NextResponse.json({ error: 'rate_limited' }, { status: 429 });
+  }
+
   try {
     const { text } = await request.json();
 

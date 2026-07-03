@@ -5,6 +5,8 @@ import './globals.css';
 import { ThemeProvider } from './providers/theme-provider';
 import { MoodThemeProvider } from './providers/mood-theme-provider';
 import { Toaster } from './components/ui/Toast';
+import NavBar from './components/shell/NavBar';
+import SiteFooter from './components/shell/SiteFooter';
 
 // Display serif for hero/editorial headings (Apple-Music-style)
 const instrumentSerif = Instrument_Serif({
@@ -29,9 +31,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Song Analyzer — Lyrics & Audio Mood Detection',
+  title: 'SongAnalyzer — Identify Songs & Decode Their Mood',
   description:
-    'Analyze song lyrics or audio files to determine mood, vibe, energy, and emotional insights',
+    'Identify songs from their instrumental beats, decode mood from lyrics and audio, and discover music that feels the same — all analyzed in your browser.',
   // Favicon: Next.js auto-detects app/icon.svg, no explicit `icons` field
   // needed. The previous inline 🎵 emoji icon felt cartoony; the SVG at
   // app/icon.svg is the spectrum-bars mark from the design system.
@@ -80,7 +82,13 @@ export default function RootLayout({
             to <html>. Wrapping it OUTSIDE ThemeProvider so the mood accents
             survive light/dark toggles. */}
         <MoodThemeProvider>
-          <ThemeProvider>{children}</ThemeProvider>
+          <ThemeProvider>
+            <div className="flex min-h-screen flex-col">
+              <NavBar />
+              <div className="flex-1">{children}</div>
+              <SiteFooter />
+            </div>
+          </ThemeProvider>
         </MoodThemeProvider>
         <Toaster />
         <Analytics />

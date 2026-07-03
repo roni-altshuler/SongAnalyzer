@@ -85,6 +85,11 @@ export interface Database {
           cover_url: string | null;
           preview_url: string | null;
           acousticbrainz_features: Json | null;
+          // pgvector columns (0006). PostgREST serialises vectors as strings;
+          // writes accept a number[] payload.
+          sonic_vector: string | number[] | null;
+          sonic_vector_version: string | null;
+          audio_features_v2: Json | null;
           created_at: string;
         };
         Insert: {
@@ -99,6 +104,9 @@ export interface Database {
           cover_url?: string | null;
           preview_url?: string | null;
           acousticbrainz_features?: Json | null;
+          sonic_vector?: string | number[] | null;
+          sonic_vector_version?: string | null;
+          audio_features_v2?: Json | null;
           created_at?: string;
         };
         Update: {
@@ -113,6 +121,9 @@ export interface Database {
           cover_url?: string | null;
           preview_url?: string | null;
           acousticbrainz_features?: Json | null;
+          sonic_vector?: string | number[] | null;
+          sonic_vector_version?: string | null;
+          audio_features_v2?: Json | null;
           created_at?: string;
         };
         Relationships: [];
@@ -206,12 +217,79 @@ export interface Database {
           },
         ];
       };
+      song_fingerprints: {
+        Row: {
+          song_id: string;
+          hash: number;
+          offset_ms: number;
+          source: 'preview' | 'upload' | 'seed';
+        };
+        Insert: {
+          song_id: string;
+          hash: number;
+          offset_ms: number;
+          source?: 'preview' | 'upload' | 'seed';
+        };
+        Update: {
+          song_id?: string;
+          hash?: number;
+          offset_ms?: number;
+          source?: 'preview' | 'upload' | 'seed';
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'song_fingerprints_song_id_fkey';
+            columns: ['song_id'];
+            referencedRelation: 'songs';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      analysis_cache: {
+        Row: {
+          lyrics_hash: string;
+          result: Json;
+          hit_count: number;
+          created_at: string;
+          last_hit_at: string | null;
+        };
+        Insert: {
+          lyrics_hash: string;
+          result: Json;
+          hit_count?: number;
+          created_at?: string;
+          last_hit_at?: string | null;
+        };
+        Update: {
+          lyrics_hash?: string;
+          result?: Json;
+          hit_count?: number;
+          created_at?: string;
+          last_hit_at?: string | null;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
       profile_has_public_analysis: {
         Args: { profile_id: string };
         Returns: boolean;
+      };
+      match_fingerprints: {
+        Args: { q_hashes: number[]; q_offsets: number[] };
+        Returns: Array<{ song_id: string; votes: number; delta_bucket: number }>;
+      };
+      match_similar_songs: {
+        Args: { source_song: string; match_limit?: number };
+        Returns: Array<{
+          id: string;
+          title: string;
+          artist: string;
+          cover_url: string | null;
+          preview_url: string | null;
+          distance: number;
+        }>;
       };
     };
     Enums: Record<string, never>;
@@ -226,3 +304,6 @@ export type SongInsert = Database['public']['Tables']['songs']['Insert'];
 export type AnalysisRow = Database['public']['Tables']['analyses']['Row'];
 export type AnalysisInsert = Database['public']['Tables']['analyses']['Insert'];
 export type ShareRow = Database['public']['Tables']['shares']['Row'];
+export type SongFingerprintRow = Database['public']['Tables']['song_fingerprints']['Row'];
+export type SongFingerprintInsert = Database['public']['Tables']['song_fingerprints']['Insert'];
+export type AnalysisCacheRow = Database['public']['Tables']['analysis_cache']['Row'];

@@ -12,6 +12,13 @@ export interface WaveformPlayerProps {
   src: string | File;
   /** Wave height in px. Defaults to 64. */
   height?: number;
+  /**
+   * Beat instants in seconds (from the v2 audio engine's beat grid).
+   * Rendered as faint tick marks over the waveform. Requires `duration`.
+   */
+  beatGrid?: number[];
+  /** Clip duration in seconds — needed to place beat ticks. */
+  duration?: number;
   className?: string;
 }
 
@@ -34,6 +41,8 @@ function readCssVar(name: string, fallback: string): string {
 export default function WaveformPlayer({
   src,
   height = 64,
+  beatGrid,
+  duration,
   className,
 }: WaveformPlayerProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -156,6 +165,22 @@ export default function WaveformPlayer({
             ready ? 'opacity-100' : 'opacity-0',
           )}
         />
+        {/* Beat-grid ticks from the v2 engine. Capped so a long upload's
+            grid doesn't turn into a solid wall of lines. */}
+        {ready && beatGrid && beatGrid.length > 0 && duration && duration > 0 && (
+          <div aria-hidden className="pointer-events-none absolute inset-0">
+            {beatGrid.slice(0, 120).map((t) => (
+              <span
+                key={t}
+                className="absolute top-0 h-full w-px opacity-25"
+                style={{
+                  left: `${Math.min(100, (t / duration) * 100)}%`,
+                  background: 'var(--accent-glow)',
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
