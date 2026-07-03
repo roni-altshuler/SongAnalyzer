@@ -4,7 +4,7 @@
 
 SongAnalyzer is a music-streaming-dark Next.js app built around three surfaces. **Identify** (`/identify`) fingerprints instrumental audio in your browser — a Wang-2003 spectral-peak constellation computed in a Web Worker; only integer hashes reach the server — and matches it against the catalog of everything the app has analyzed, with an optional AudD world-catalog fallback. **Analyze** (`/analyze`) reads songs through two engines: lyrics via a hybrid transformer + keyword pipeline, audio via a real MIR engine (Meyda MFCC/chroma, beat grid, key detection, valence/arousal) with the original DSP engine as a fail-soft fallback. **Discover** (`/discover`) walks a 48-dimension sonic-fingerprint space (pgvector) to find songs that *feel* the same. The dominant emotion drives an accent gradient that cascades through the entire UI in real time.
 
-**Live:** [songanalyzer.vercel.app](https://songanalyzer.vercel.app)
+**Live:** [song-analyzer-roni-altshulers-projects.vercel.app](https://song-analyzer-roni-altshulers-projects.vercel.app)
 
 ---
 

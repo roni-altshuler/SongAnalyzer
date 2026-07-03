@@ -38,7 +38,11 @@ export default async function GenreAtlasPage({ params }: PageParams) {
   const canonicalGenre = deslugifyGenre(name);
   if (!canonicalGenre) notFound();
 
-  const atlas = await getGenreAtlas(canonicalGenre);
+  // Fail-soft: a broken Supabase connection renders the empty state, not a 500.
+  const atlas = await getGenreAtlas(canonicalGenre).catch((err) => {
+    console.error('[atlas/genre] getGenreAtlas failed:', err);
+    return null;
+  });
 
   // Genre may resolve canonically but still have zero rows in this DB.
   // Render an empty-state Card rather than a 404 so the page is still

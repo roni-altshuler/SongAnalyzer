@@ -25,8 +25,27 @@ export const metadata: Metadata = {
     'A cross-catalog view of how songs feel — mood distributions by genre, top artists, and recurring themes.',
 };
 
+/**
+ * Fail-soft (CLAUDE.md contract): a broken/misconfigured Supabase connection
+ * renders the empty-state Atlas, never a 500.
+ */
+async function tryGetOverview() {
+  try {
+    return await getAtlasOverview();
+  } catch (err) {
+    console.error('[atlas] getAtlasOverview failed:', err);
+    return {
+      totalAnalyses: 0,
+      totalArtists: 0,
+      moodDistribution: [],
+      genreDistribution: [],
+      topArtists: [],
+    };
+  }
+}
+
 export default async function AtlasPage() {
-  const overview = await getAtlasOverview();
+  const overview = await tryGetOverview();
 
   const empty = overview.totalAnalyses === 0;
 

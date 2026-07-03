@@ -39,7 +39,12 @@ export default async function ArtistAtlasPage({ params }: PageParams) {
   const artistName = await deslugifyArtist(slug);
   if (!artistName) notFound();
 
-  const atlas = await getArtistAtlas(artistName);
+  // Fail-soft: treat a broken Supabase connection like an unknown artist
+  // (404) rather than a 500 — same tryGet pattern as the share page.
+  const atlas = await getArtistAtlas(artistName).catch((err) => {
+    console.error('[atlas/artist] getArtistAtlas failed:', err);
+    return null;
+  });
   if (!atlas) notFound();
 
   return (
