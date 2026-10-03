@@ -13,7 +13,7 @@
  *   the real valence/arousal agreement below the grid.
  */
 
-import { Suspense, useCallback, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 import type { AnalysisResult, HistoryEntry } from '@/lib/types';
@@ -52,6 +52,7 @@ function AnalyzeWorkbench() {
 
   // ── Audio pipeline (shared hook) ──
   const audio = useSongAnalysis();
+  const resetAudio = audio.reset;
 
   // ── Lyrics state ──
   const [lyrics, setLyrics] = useState('');
@@ -60,6 +61,9 @@ function AnalyzeWorkbench() {
   const [lyricsLoading, setLyricsLoading] = useState(false);
   const [lyricsError, setLyricsError] = useState('');
   const [historyKey, setHistoryKey] = useState(0);
+  const lyricsRunRef = useRef(0);
+
+  useEffect(() => () => { lyricsRunRef.current++; }, []);
 
   const analyzeLyrics = useCallback(async () => {
     if (!lyrics.trim()) {
@@ -67,6 +71,7 @@ function AnalyzeWorkbench() {
       return;
     }
 
+    const run = ++lyricsRunRef.current;
     setLyricsLoading(true);
     setLyricsError('');
     setLyricsAnalysis(null);
@@ -85,6 +90,7 @@ function AnalyzeWorkbench() {
       }
 
       const result: AnalysisResult = await response.json();
+      if (lyricsRunRef.current !== run) return;
       setLyricsAnalysis(result);
       saveToHistory(lyrics, result);
       setHistoryKey((k) => k + 1);
@@ -104,32 +110,42 @@ function AnalyzeWorkbench() {
       })
         .then((res) => (res.ok ? res.json() : null))
         .then((data: { status?: string; id?: string } | null) => {
-          if (data?.status === 'ok' && data.id) setLyricsAnalysisId(data.id);
+          if (lyricsRunRef.current === run && data?.status === 'ok' && data.id) {
+            setLyricsAnalysisId(data.id);
+          }
         })
         .catch(() => undefined);
     } catch (err) {
+      if (lyricsRunRef.current !== run) return;
       setLyricsError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
-      setLyricsLoading(false);
+      if (lyricsRunRef.current === run) setLyricsLoading(false);
     }
   }, [lyrics, audio.song]);
 
   const handleLyricsChange = useCallback(
     (value: string) => {
       setLyrics(value);
-      if (lyricsAnalysis) {
-        setLyricsAnalysis(null);
-        setLyricsAnalysisId(null);
-        setLyricsError('');
-      }
+      lyricsRunRef.current++;
+      setLyricsLoading(false);
+      setLyricsAnalysis(null);
+      setLyricsAnalysisId(null);
+      setLyricsError('');
     },
-    [lyricsAnalysis],
+    [],
   );
 
   const handleRestoreHistory = useCallback((entry: HistoryEntry) => {
+    lyricsRunRef.current++;
+    // Local history has neither full lyrics nor a server persistence id.
+    // Keep its result visible without attaching another analysis's Share id.
+    setLyrics('');
     setLyricsAnalysis(entry.result);
+    setLyricsAnalysisId(null);
+    setLyricsLoading(false);
     setLyricsError('');
-  }, []);
+    resetAudio();
+  }, [resetAudio]);
 
   const handleLyricsExport = useCallback(() => {
     if (!lyricsAnalysis) return;

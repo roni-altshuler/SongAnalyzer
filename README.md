@@ -22,7 +22,7 @@ SongAnalyzer is a music-streaming-dark Next.js app built around three surfaces. 
 | **Combined view** | When the same song has both a lyrics analysis and an audio analysis, both are projected onto a shared valence/arousal plane — the agreement score is a distance in emotion space, drawn on a live circumplex map, surfacing the classic "happy melody / sad lyrics" tension. |
 | **Mood-color cascade** | When a result lands, `--accent-from / --accent-to / --accent-glow` are written to `<html>` and every primitive (cards, buttons, badges, charts, hero glow) repaints in the song's color. |
 | **Multi-language** | Built-in detection across 11+ languages; auto-translates via Helsinki-NLP through the Hugging Face Inference API when a token is configured. |
-| **History** | Local analyses persist to `localStorage`; signed-in users get a Supabase-backed list. |
+| **History** | Local result previews persist to `localStorage`; restoring one clears the current song/audio context and Share id. Full lyrics and a server analysis id are not retained locally, so a restored result can be copied but must be re-analyzed from its lyrics to enable sharing. |
 
 ## Architecture in one breath
 
