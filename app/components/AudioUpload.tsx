@@ -87,6 +87,7 @@ export default function AudioUpload({
         )}
       >
         <input
+          id="audio-file"
           ref={inputRef}
           type="file"
           accept={ACCEPTED_EXTENSIONS}
@@ -134,7 +135,7 @@ export default function AudioUpload({
       )}
 
       {error && (
-        <Card variant="flat" className="border-[var(--state-error)] bg-[color-mix(in_oklab,var(--state-error)_10%,transparent)] p-4 animate-fade-in">
+        <Card variant="flat" role="alert" className="border-[var(--state-error)] bg-[color-mix(in_oklab,var(--state-error)_10%,transparent)] p-4 animate-fade-in">
           <p className="text-sm text-[var(--state-error)]">{error}</p>
         </Card>
       )}

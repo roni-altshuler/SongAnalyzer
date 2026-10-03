@@ -31,6 +31,7 @@ export default function ModeTabs({ mode, onChange }: ModeTabsProps) {
           return (
             <button
               key={opt.value}
+              id={`analysis-mode-${opt.value}`}
               type="button"
               role="tab"
               aria-selected={selected}
