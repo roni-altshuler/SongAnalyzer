@@ -60,9 +60,22 @@ test.describe('SongAnalyzer v3 smoke', () => {
     expect(accentFrom).toMatch(/^#[0-9a-f]{3,8}$/i);
   });
 
-  test('analyze mode is deep-linkable via ?mode=audio', async ({ page }) => {
+  test('analyze mode is deep-linkable and engine changes preserve keyboard focus', async ({ page }) => {
     await page.goto('/analyze?mode=audio');
-    await expect(page.getByText(/Ready to listen/i)).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Hear the feeling.' })).toBeVisible();
+    await expect(page.getByRole('tab', { name: /Audio/i })).toHaveAttribute('aria-selected', 'true');
+    await expect(page.getByRole('button', { name: 'Upload audio file' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Toggle color theme' })).toBeVisible();
+
+    await page.getByRole('button', { name: 'Explore lyrics', exact: true }).click();
+    const lyricsTab = page.getByRole('tab', { name: /Lyrics/i });
+    await expect(lyricsTab).toHaveAttribute('aria-selected', 'true');
+    await expect(lyricsTab).toBeFocused();
+    await expect(page).toHaveURL(/mode=lyrics/);
+
+    await page.getByRole('button', { name: 'Start with lyrics', exact: true }).focus();
+    await page.keyboard.press('Enter');
+    await expect(page.getByRole('textbox')).toBeFocused();
   });
 
   test('identify listens on a fake mic and resolves without crashing', async ({ page }) => {

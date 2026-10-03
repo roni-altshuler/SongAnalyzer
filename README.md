@@ -26,6 +26,11 @@ SongAnalyzer is a music-streaming-dark Next.js app built around three surfaces. 
 
 ## Architecture in one breath
 
+The [focused workbench interface pass](docs/WORKBENCH_POLISH.md) documents the
+lyrics/audio start states, keyboard flow and desktop/mobile visual checks.
+See the [October quality priorities](docs/QUALITY_ROADMAP_2026-10.md) for the
+next reliability, music evaluation, discovery and product-interface work.
+
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │ Next.js 16 App Router · TypeScript · Tailwind v4 · React 19      │
