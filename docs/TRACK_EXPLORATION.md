@@ -109,6 +109,46 @@ quality. AudD responses are mocked before any external relay; no provider audio,
 private audio, real microphone recording, paid API request or production job
 was used. The real local audio engine is exercised without fabricated features.
 
+### Recognition readiness follow-up
+
+Parent review found that [CI run 37473470677](https://github.com/roni-altshuler/SongAnalyzer/actions/runs/37473470677)
+reported **20 passed and 1 flaky**, rather than a clean 21-test run. The AudD
+decline test timed out waiting for the fallback button and passed on retry.
+There was no uploaded first-failure trace, so its precise browser state cannot
+be recovered. Fifteen ordinary retries-disabled repeats passed locally.
+
+Holding the Next JavaScript bundles reproduced a concrete lost-selection race:
+the server-rendered hidden input accepted the synthetic file before React
+attached `onChange`; after hydration it still held the file, but the page stayed
+idle and sent zero catalog requests. Recognition now renders disabled microphone,
+chooser and file-input controls with an honest “Preparing recognition…” status
+until its handlers and lifecycle effect are ready. Browser tests use the visible
+file chooser rather than injecting into an unready hidden input. A new regression
+holds the bundles, checks disabled controls, then releases them and verifies one
+real-worker catalog lookup with no AudD upload. Disclosure, decline and explicit
+confirmation assertions remain in place.
+
+All Playwright retries are now **zero**, including CI; traces are retained on
+failure. On the saved cloud `next dev` server, the readiness, AudD decline and
+AudD confirmation tests each passed **20 repetitions: 60 passed, zero retries**
+(1.7 minutes, one worker, system Chromium). The unchanged unit suite still reports
+176 passed and 11 Supabase-gated skips; lint and types pass with the same six
+pre-existing warnings. The earlier 21-test production result above refers to
+the preceding revision, not the flaky hosted run.
+
+The full suite on a separately started cloud dev server passed **22 tests with
+zero retries** (35.8 seconds, one worker), including the new readiness regression.
+The default Next 16.3.6 Turbopack production build also passes after this fix.
+
+The new loading and ready states were checked in actual cloud Chromium, dark
+and light at 390/768/1440px with reduced motion: **12 additional scoped axe
+checks, zero violations**, no horizontal overflow or page errors. Keyboard
+file choice and consent decline returned focus correctly at every viewport;
+each lookup used the real local decoder/fingerprint worker and each mocked AudD
+route received zero uploads. See [readiness QA](RECOGNITION_READINESS_QA.json),
+[mobile dark loading](screenshots/track-exploration/recognition-preparing-dark-390.png)
+and [mobile light loading](screenshots/track-exploration/recognition-preparing-light-390.png).
+
 [Mobile dark](screenshots/track-exploration/identify-dark-390.png) ·
 [Mobile light](screenshots/track-exploration/identify-light-390.png) ·
 [Tablet](screenshots/track-exploration/identify-dark-768.png) ·

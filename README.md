@@ -38,7 +38,9 @@ without provider IDs and direct hook calls. Server routes and ingestion helpers
 reject audio-derived writes even if a caller claims `source: upload`; the old
 preview seed command exits before any network/database access. Microphone and
 recognition operations are cancellable, reject double starts, and suppress late
-callbacks after navigation. AudD requires a separate disclosure/confirmation and
+callbacks after navigation. Recognition controls stay disabled while the page
+prepares its event handlers, so a clip cannot be silently lost before hydration.
+AudD requires a separate disclosure/confirmation and
 a server consent marker. The footer describes each data path accurately.
 
 The [track exploration verification](docs/TRACK_EXPLORATION.md) records the

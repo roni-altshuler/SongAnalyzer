@@ -55,6 +55,9 @@ interface IdentifyListenerProps {
 }
 
 export default function IdentifyListener({ onMatched, onNewAttempt, className }: IdentifyListenerProps) {
+  // The server-rendered file input can otherwise accept a clip before its
+  // change handler is attached, losing the user's selection during hydration.
+  const [ready, setReady] = useState(false);
   const [phase, setPhase] = useState<Phase>({ kind: 'idle' });
   const [elapsed, setElapsed] = useState(0);
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
@@ -107,6 +110,7 @@ export default function IdentifyListener({ onMatched, onNewAttempt, className }:
 
   useEffect(() => {
     mountedRef.current = true;
+    setReady(true);
     return () => { mountedRef.current = false; invalidate(); };
   }, [invalidate]);
 
@@ -296,12 +300,13 @@ export default function IdentifyListener({ onMatched, onNewAttempt, className }:
   const secondsLeft = Math.ceil((RECORD_MS - elapsed) / 1000);
 
   return (
-    <Card variant="glow" role="region" aria-label="Identify recording" className={cn('identify-listener space-y-6 text-center', className)}>
+    <Card variant="glow" role="region" aria-label="Identify recording" aria-busy={!ready} className={cn('identify-listener space-y-6 text-center', className)}>
       <input
         ref={fileInputRef}
         type="file"
         accept="audio/*"
         className="hidden"
+        disabled={!ready}
         onChange={handleUpload}
         aria-label="Upload an audio clip to identify"
       />
@@ -311,6 +316,7 @@ export default function IdentifyListener({ onMatched, onNewAttempt, className }:
           <button
             ref={startButtonRef}
             type="button"
+            disabled={!ready}
             onClick={startListening}
             aria-label="Start listening"
             className={cn(
@@ -331,7 +337,7 @@ export default function IdentifyListener({ onMatched, onNewAttempt, className }:
             </svg>
           </button>
           <div className="space-y-1.5">
-            <p className="font-display text-2xl text-[var(--text-hi)]">Tap to listen</p>
+            <p className="font-display text-2xl text-[var(--text-hi)]" role="status">{ready ? 'Tap to listen' : 'Preparing recognition…'}</p>
             <p className="mx-auto max-w-sm text-sm text-[var(--text-med)]">
               Use audio you have permission to process. Choose a short, clear passage. Catalog matching recognizes indexed recordings
               when the catalog is available.
@@ -339,6 +345,7 @@ export default function IdentifyListener({ onMatched, onNewAttempt, className }:
           </div>
           <button
             type="button"
+            disabled={!ready}
             onClick={() => fileInputRef.current?.click()}
             className="min-h-11 text-xs text-[var(--text-med)] underline-offset-4 transition-colors hover:text-[var(--text-hi)] hover:underline"
           >

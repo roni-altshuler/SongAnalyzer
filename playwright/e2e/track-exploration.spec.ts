@@ -16,11 +16,43 @@ function watchErrors(page: import('@playwright/test').Page) {
   const errors: string[] = []; page.on('pageerror', (error) => errors.push(error.message)); return errors;
 }
 const localClip = { name: 'synthetic.wav', mimeType: 'audio/wav', buffer: syntheticClip() };
+async function chooseIdentifyClip(page: import('@playwright/test').Page) {
+  // Exercise the user's file chooser. Hidden-input injection does not wait
+  // for hydration and can silently set a file before onChange is attached.
+  const chooser = page.waitForEvent('filechooser');
+  await page.getByRole('button', { name: '…or choose a short clip', exact: true }).click();
+  await (await chooser).setFiles(localClip);
+}
+
+test('recognition controls wait for hydration before accepting a clip', async ({ page }) => {
+  let release!: () => void;
+  const scripts = new Promise<void>((resolve) => { release = resolve; });
+  let lookups = 0;
+  let uploads = 0;
+  await page.route('**/*.js*', async (route) => { await scripts; await route.continue(); });
+  await page.route('**/api/identify', (route) => { lookups++; return route.fulfill({ json: { status: 'no_match', fallbackAvailable: true } }); });
+  await page.route('**/api/identify/fallback', (route) => { uploads++; return route.fulfill({ json: { status: 'no_match' } }); });
+  try {
+    await page.goto('/identify', { waitUntil: 'commit' });
+    const listener = page.getByRole('region', { name: 'Identify recording' });
+    await expect(listener).toHaveAttribute('aria-busy', 'true');
+    await expect(listener).toContainText('Preparing recognition…');
+    await expect(listener.getByRole('button', { name: 'Start listening' })).toBeDisabled();
+    await expect(listener.getByRole('button', { name: '…or choose a short clip', exact: true })).toBeDisabled();
+    await expect(listener.getByLabel('Upload an audio clip to identify')).toBeDisabled();
+    expect(lookups).toBe(0); expect(uploads).toBe(0);
+  } finally {
+    release();
+  }
+  await chooseIdentifyClip(page);
+  await expect(page.getByRole('button', { name: 'Try AudD recognition' })).toBeVisible();
+  expect(lookups).toBe(1); expect(uploads).toBe(0);
+});
 
 // Actual zero-config lookup: availability, not recognition accuracy or RLS.
 test('catalog failure is distinct from a genuine no-match', async ({ page }) => {
   const errors = watchErrors(page); await page.goto('/identify');
-  await page.locator('input[type="file"]').setInputFiles(localClip);
+  await chooseIdentifyClip(page);
   await expect(page.getByRole('status')).toContainText('Recognition catalog unavailable.', { timeout: 30_000 });
   await expect(page.getByText('No catalog match.', { exact: true })).toHaveCount(0);
   await page.getByRole('link', { name: 'Analyze a local clip', exact: true }).click();
@@ -34,7 +66,7 @@ for (const width of [390, 768, 1440]) {
     const prohibited: string[] = [];
     page.on('request', (r) => { if (r.url().includes('p.scdn.co') || (r.method() === 'POST' && /api\/(analyses|fingerprints|songs\/.*\/features)/.test(r.url()))) prohibited.push(r.url()); });
     await page.route('**/api/identify', (route) => route.fulfill({ json: { status: 'matched', song: spotifySong, match: { votes: 40, confidence: 0.8 } } }));
-    await page.goto('/identify'); await page.locator('input[type="file"]').setInputFiles(localClip);
+    await page.goto('/identify'); await chooseIdentifyClip(page);
     const context = page.getByLabel('Explore selected track'); await expect(context).toBeVisible({ timeout: 30_000 });
     await expect(context.getByRole('status')).toHaveText('Audio insights unavailable');
     await expect(context).toContainText('Track metadata supplied by Spotify');
@@ -62,7 +94,7 @@ test('search selection cannot fetch an unreviewed preview and clears with keyboa
 
 test('a completed lookup shows a genuine no-match', async ({ page }) => {
   await page.route('**/api/identify', (route) => route.fulfill({ json: { status: 'no_match', fallbackAvailable: false } }));
-  await page.goto('/identify'); await page.locator('input[type="file"]').setInputFiles(localClip);
+  await page.goto('/identify'); await chooseIdentifyClip(page);
   await expect(page.getByRole('status')).toContainText('No catalog match.', { timeout: 30_000 });
   await expect(page.getByText('Recognition catalog unavailable.', { exact: true })).toHaveCount(0);
 });
@@ -94,7 +126,7 @@ test('AudD disclosure and declining consent never upload the clip', async ({ pag
   let uploads = 0;
   await page.route('**/api/identify', (route) => route.fulfill({ json: { status: 'no_match', fallbackAvailable: true } }));
   await page.route('**/api/identify/fallback', (route) => { uploads++; return route.fulfill({ json: { status: 'no_match' } }); });
-  await page.goto('/identify'); await page.locator('input[type="file"]').setInputFiles(localClip);
+  await page.goto('/identify'); await chooseIdentifyClip(page);
   await page.getByRole('button', { name: 'Try AudD recognition' }).click();
   const consent = page.getByRole('region', { name: 'AudD audio sharing consent' });
   await expect(consent).toContainText('will leave your device'); expect(uploads).toBe(0);
@@ -106,7 +138,7 @@ test('only explicit AudD confirmation reaches the mocked relay', async ({ page }
   let uploads = 0;
   await page.route('**/api/identify', (route) => route.fulfill({ json: { status: 'no_match', fallbackAvailable: true } }));
   await page.route('**/api/identify/fallback', (route) => { uploads++; expect(route.request().postData()).toContain('audd-recognition'); return route.fulfill({ json: { status: 'no_match' } }); });
-  await page.goto('/identify'); await page.locator('input[type="file"]').setInputFiles(localClip);
+  await page.goto('/identify'); await chooseIdentifyClip(page);
   await page.getByRole('button', { name: 'Try AudD recognition' }).click(); expect(uploads).toBe(0);
   await page.getByRole('button', { name: 'Send clip to AudD' }).click();
   await expect(page.getByRole('status')).toContainText('Still no match.'); expect(uploads).toBe(1);
@@ -117,7 +149,7 @@ test('navigating away during a catalog lookup cannot select or analyze a late ma
   const pending = new Promise<void>((resolve) => { release = resolve; }); const started = new Promise<void>((resolve) => { requested = resolve; });
   const prohibited: string[] = []; page.on('request', (r) => { if (r.url().includes('p.scdn.co') || (r.method() === 'POST' && /api\/(analyses|fingerprints)/.test(r.url()))) prohibited.push(r.url()); });
   await page.route('**/api/identify', async (route) => { requested(); await pending; await route.fulfill({ json: { status: 'matched', song: spotifySong, match: { confidence: 0.8 } } }).catch(() => undefined); });
-  await page.goto('/identify'); await page.locator('input[type="file"]').setInputFiles(localClip); await started;
+  await page.goto('/identify'); await chooseIdentifyClip(page); await started;
   await page.getByRole('navigation', { name: 'Primary', exact: true }).getByRole('link', { name: 'Discover' }).click();
   await expect(page).toHaveURL(/discover$/); release();
   await expect(page.getByLabel('Explore selected track')).toHaveCount(0); expect(prohibited).toEqual([]);
