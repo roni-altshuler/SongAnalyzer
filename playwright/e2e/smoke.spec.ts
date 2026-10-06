@@ -93,7 +93,7 @@ test.describe('SongAnalyzer v3 smoke', () => {
     await page.getByRole('button', { name: /Match now/i }).click();
     await expect(
       page
-        .getByText(/Not in the catalog yet|Still no match|didn’t work|Hmm/i)
+        .getByText(/No catalog match|Recognition catalog unavailable|Still no match|didn’t work|Hmm/i)
         .first(),
     ).toBeVisible({ timeout: 30_000 });
   });

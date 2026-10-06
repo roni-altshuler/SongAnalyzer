@@ -16,7 +16,7 @@
  * match), and /discover (explore loop).
  */
 
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { analyzePcmV2, decodeFileToMono } from '@/lib/audio/analyze';
 import { buildSonicVector, EXTRACTOR_VERSION } from '@/lib/audio/vector';
@@ -36,6 +36,7 @@ export interface UseSongAnalysis {
   song: SongMeta | null;
   analysis: AudioAnalysisResultV2 | null;
   loading: boolean;
+  stage: 'idle' | 'fetching' | 'analyzing';
   error: string;
   /** Source for the persistent WaveformPlayer (preview URL or local file). */
   audioSrc: string | File | null;
@@ -98,6 +99,7 @@ export function useSongAnalysis(): UseSongAnalysis {
   const [song, setSong] = useState<SongMeta | null>(null);
   const [analysis, setAnalysis] = useState<AudioAnalysisResultV2 | null>(null);
   const [loading, setLoading] = useState(false);
+  const [stage, setStage] = useState<UseSongAnalysis['stage']>('idle');
   const [error, setError] = useState('');
   const [audioSrc, setAudioSrc] = useState<string | File | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
@@ -105,15 +107,33 @@ export function useSongAnalysis(): UseSongAnalysis {
   const [analysisId, setAnalysisId] = useState<string | null>(null);
   /** Guards against a stale slow analysis overwriting a newer one. */
   const runRef = useRef(0);
+  const previewAbortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => () => {
+    runRef.current++;
+    previewAbortRef.current?.abort();
+  }, []);
+
+  // Identity starts at selection, before downloading or converting the clip.
+  const beginRun = useCallback((songMeta?: SongMeta) => {
+    const run = ++runRef.current;
+    previewAbortRef.current?.abort();
+    previewAbortRef.current = null;
+    setSong(songMeta ?? null);
+    setAnalysis(null);
+    setAudioSrc(null);
+    setFileName(null);
+    setSongId(null);
+    setAnalysisId(null);
+    setError('');
+    return run;
+  }, []);
 
   const runAnalysis = useCallback(
-    async (file: File, songMeta: SongMeta | undefined, src: string | File) => {
-      const run = ++runRef.current;
+    async (run: number, file: File, songMeta: SongMeta | undefined, src: string | File): Promise<boolean> => {
+      if (runRef.current !== run) return false;
       setLoading(true);
-      setError('');
-      setAnalysis(null);
-      setSongId(null);
-      setAnalysisId(null);
+      setStage('analyzing');
       setFileName(file.name);
 
       try {
@@ -122,21 +142,24 @@ export function useSongAnalysis(): UseSongAnalysis {
 
         try {
           const { pcm, sampleRate } = await decodeFileToMono(file);
+          if (runRef.current !== run) return false;
           // Fingerprint from a copy — analyzePcmV2 transfers `pcm` away.
           const fingerprintPcm = pcm.slice();
           result = await analyzePcmV2(pcm, sampleRate);
+          if (runRef.current !== run) return false;
           hashes = await computeFingerprint(
             fingerprintPcm,
             sampleRate,
             MAX_HASHES_PER_INGEST,
           ).catch(() => null);
         } catch (v2Err) {
+          if (runRef.current !== run) return false;
           console.warn('v2 pipeline failed; falling back to v1:', v2Err);
           const v1 = await analyzeAudioFile(file);
           result = { ...v1, engineVersion: 'v1-fallback' };
         }
 
-        if (runRef.current !== run) return;
+        if (runRef.current !== run) return false;
         setAnalysis(result);
         setAudioSrc(src);
 
@@ -145,15 +168,20 @@ export function useSongAnalysis(): UseSongAnalysis {
           setAnalysisId(ids.analysisId);
           setSongId(ids.songId);
         });
+        return true;
       } catch (err) {
-        if (runRef.current !== run) return;
+        if (runRef.current !== run) return false;
         setError(
           err instanceof Error
             ? err.message
             : 'Could not analyze the audio. Make sure it contains valid audio.',
         );
+        return false;
       } finally {
-        if (runRef.current === run) setLoading(false);
+        if (runRef.current === run) {
+          setLoading(false);
+          setStage('idle');
+        }
       }
     },
     [],
@@ -161,47 +189,52 @@ export function useSongAnalysis(): UseSongAnalysis {
 
   const analyzeSong = useCallback(
     async (songMeta: SongMeta): Promise<boolean> => {
-      setSong(songMeta);
-
+      const run = beginRun(songMeta);
       if (!songMeta.previewUrl) {
-        toast.message(songMeta.title, {
-          description: 'No 30s preview available — paste lyrics to analyze.',
-        });
+        setLoading(false);
+        setStage('idle');
         return false;
       }
 
+      const controller = new AbortController();
+      previewAbortRef.current = controller;
+      setLoading(true);
+      setStage('fetching');
       const filename = `${songMeta.artist} — ${songMeta.title}.mp3`;
       try {
-        const res = await fetch(songMeta.previewUrl);
+        const res = await fetch(songMeta.previewUrl, { signal: controller.signal });
+        if (runRef.current !== run) return false;
         if (!res.ok) throw new Error(`Could not fetch preview (${res.status})`);
         const blob = await res.blob();
+        if (runRef.current !== run) return false;
         const file = new File([blob], filename, { type: blob.type || 'audio/mpeg' });
-        await runAnalysis(file, songMeta, songMeta.previewUrl);
-        toast.success(`Analyzed ${songMeta.title}`);
-        return true;
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : 'Could not analyze the Spotify preview.',
-        );
+        const succeeded = await runAnalysis(run, file, songMeta, songMeta.previewUrl);
+        if (succeeded && runRef.current === run) toast.success(`Analyzed ${songMeta.title}`);
+        return succeeded;
+      } catch {
+        if (runRef.current !== run) return false;
+        setError('Could not load this track’s audio clip. Try again or analyze a local file.');
         setLoading(false);
+        setStage('idle');
         return false;
       }
     },
-    [runAnalysis],
+    [beginRun, runAnalysis],
   );
 
   const analyzeFile = useCallback(
     async (file: File, songMeta?: SongMeta) => {
-      if (songMeta) setSong(songMeta);
-      await runAnalysis(file, songMeta, file);
+      const run = beginRun(songMeta);
+      await runAnalysis(run, file, songMeta, file);
     },
-    [runAnalysis],
+    [beginRun, runAnalysis],
   );
-
-  const clearSong = useCallback(() => setSong(null), []);
 
   const reset = useCallback(() => {
     runRef.current++;
+    previewAbortRef.current?.abort();
+    previewAbortRef.current = null;
+    setStage('idle');
     setSong(null);
     setAnalysis(null);
     setLoading(false);
@@ -216,6 +249,7 @@ export function useSongAnalysis(): UseSongAnalysis {
     song,
     analysis,
     loading,
+    stage,
     error,
     audioSrc,
     fileName,
@@ -223,7 +257,7 @@ export function useSongAnalysis(): UseSongAnalysis {
     analysisId,
     analyzeSong,
     analyzeFile,
-    clearSong,
+    clearSong: reset,
     reset,
   };
 }

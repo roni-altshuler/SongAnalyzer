@@ -13,7 +13,7 @@ SongAnalyzer is a music-streaming-dark Next.js app built around three surfaces. 
 | | |
 |---|---|
 | **Identify a song** | Hold your device to the music (or upload a clip). A constellation fingerprint is computed in a Web Worker and matched via a Postgres RPC against every song the app has analyzed — audio never leaves the browser for catalog matches. Env-gated AudD fallback covers the world catalog. |
-| **Paste lyrics** | Hybrid transformer + keyword engine returns mood, vibe, energy, sentiment, themes, and a per-engine provenance trail. Confidence calibrated, dominant emotion mapped, mood color computed server-side. |
+| **Paste lyrics** | Hybrid transformer + keyword engine returns mood, vibe, energy, sentiment, themes, and a per-engine provenance trail. Heuristic confidence values, dominant emotion mapped, mood color computed server-side; confidence is not measured accuracy. |
 | **Upload audio** | The v2 MIR engine (Web Worker) extracts a beat grid + tempo (octave-corrected autocorrelation), musical key (Krumhansl-Schmuckler over chroma), MFCC timbre stats, spectral flux, and a valence/arousal reading — with the original lightweight DSP engine as an automatic fallback. |
 | **Discover similar songs** | Every analysis persists a 48-dim sonic fingerprint (pgvector, HNSW cosine). The "feels like this" rail walks the catalog by sound, not genre tags. |
 | **Search a song** | Typeahead against Spotify (Client Credentials) returns metadata, cover art, and 30-second previews. Genius enrichment for IDs and album info only — never lyrics, by ToS. MusicBrainz + AcousticBrainz fill in open audio features when available. |
@@ -23,6 +23,21 @@ SongAnalyzer is a music-streaming-dark Next.js app built around three surfaces. 
 | **Mood-color cascade** | When a result lands, `--accent-from / --accent-to / --accent-glow` are written to `<html>` and every primitive (cards, buttons, badges, charts, hero glow) repaints in the song's color. |
 | **Multi-language** | Built-in detection across 11+ languages; auto-translates via Helsinki-NLP through the Hugging Face Inference API when a token is configured. |
 | **History** | Local result previews persist to `localStorage`; restoring one clears the current song/audio context and Share id. Full lyrics and a server analysis id are not retained locally, so a restored result can be copied but must be re-analyzed from its lyrics to enable sharing. |
+
+## Recognition to exploration
+
+A recognized or selected track now keeps a visible exploration card across
+Identify, Analyze and Discover. It distinguishes loading the clip, measuring
+it, ready insights, missing previews and failures. Missing clips offer local
+audio and lyrics analysis; known provider IDs expose outbound Spotify/Genius
+links. A new selection clears previous insights and Share IDs, including slow
+preview downloads. Local uploads are not attributed to an unrelated selection.
+
+Recognition distinguishes a catalog outage from a completed lookup with no
+match. The [track exploration verification](docs/TRACK_EXPLORATION.md) records
+browser checks and the remaining recognition, discovery and provider-rights
+prerequisites. This is a focused handoff improvement, not full catalog playback
+or a personal favorites library.
 
 ## Architecture in one breath
 
@@ -94,7 +109,7 @@ npm install
 
 ### Environment variables
 
-Everything is optional — the app degrades gracefully when keys are missing:
+Optional integrations can be left unconfigured — lyrics and local audio analysis remain usable:
 
 ```bash
 cp .env.example .env.local
@@ -118,7 +133,7 @@ npm run dev      # http://localhost:3000 — boots in ~1.5s
 npm run build    # production build
 npm run start    # serve production build
 npm run lint     # ESLint
-npm test         # Vitest (81 tests, 8 RLS skipped without local Supabase)
+npm test         # Vitest; local Supabase tests are gated on SUPABASE_LOCAL=1
 ```
 
 Visit `/dev/components` for the design-system showcase — every primitive in every variant, with an interactive mood-color picker that repaints the page live.

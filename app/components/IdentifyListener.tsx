@@ -41,16 +41,18 @@ type Phase =
   | { kind: 'listening'; startedAt: number }
   | { kind: 'matching' }
   | { kind: 'matched'; song: Song; confidence?: number }
-  | { kind: 'no_match'; fallbackAvailable: boolean; triedFallback: boolean }
+  | { kind: 'no_match'; reason?: string; fallbackAvailable: boolean; triedFallback: boolean }
   | { kind: 'error'; message: string };
 
 interface IdentifyListenerProps {
   /** Fired when a song is identified (own catalog or AudD fallback). */
   onMatched: (song: Song) => void;
+  /** Clear the previous track before a new recognition attempt. */
+  onNewAttempt?: () => void;
   className?: string;
 }
 
-export default function IdentifyListener({ onMatched, className }: IdentifyListenerProps) {
+export default function IdentifyListener({ onMatched, onNewAttempt, className }: IdentifyListenerProps) {
   const [phase, setPhase] = useState<Phase>({ kind: 'idle' });
   const [elapsed, setElapsed] = useState(0);
   const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
@@ -84,6 +86,7 @@ export default function IdentifyListener({ onMatched, className }: IdentifyListe
   /** Fingerprint a snippet (recorded or uploaded) and query the catalog. */
   const identifyBlob = useCallback(
     async (blob: Blob) => {
+      onNewAttempt?.();
       setPhase({ kind: 'matching' });
       snippetRef.current = blob;
 
@@ -108,7 +111,7 @@ export default function IdentifyListener({ onMatched, className }: IdentifyListe
             onMatched(body.song);
             break;
           case 'no_match':
-            setPhase({ kind: 'no_match', fallbackAvailable: body.fallbackAvailable, triedFallback: false });
+            setPhase({ kind: 'no_match', reason: body.reason, fallbackAvailable: body.fallbackAvailable, triedFallback: false });
             break;
           case 'rate_limited':
             setPhase({ kind: 'error', message: 'Too many attempts — give it a minute and try again.' });
@@ -124,10 +127,11 @@ export default function IdentifyListener({ onMatched, className }: IdentifyListe
         });
       }
     },
-    [onMatched],
+    [onMatched, onNewAttempt],
   );
 
   const startListening = useCallback(async () => {
+    onNewAttempt?.();
     if (typeof MediaRecorder === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
       setPhase({ kind: 'error', message: 'Microphone capture is not supported here — upload a clip instead.' });
       return;
@@ -178,7 +182,7 @@ export default function IdentifyListener({ onMatched, className }: IdentifyListe
         message: 'Microphone unavailable or permission denied — upload a clip instead.',
       });
     }
-  }, [cleanupCapture, identifyBlob]);
+  }, [cleanupCapture, identifyBlob, onNewAttempt]);
 
   const stopEarly = useCallback(() => {
     const recorder = recorderRef.current;
@@ -222,9 +226,10 @@ export default function IdentifyListener({ onMatched, className }: IdentifyListe
   );
 
   const reset = useCallback(() => {
+    onNewAttempt?.();
     snippetRef.current = null;
     setPhase({ kind: 'idle' });
-  }, []);
+  }, [onNewAttempt]);
 
   const secondsLeft = Math.ceil((RECORD_MS - elapsed) / 1000);
 
@@ -265,8 +270,8 @@ export default function IdentifyListener({ onMatched, className }: IdentifyListe
           <div className="space-y-1.5">
             <p className="font-display text-2xl text-[var(--text-hi)]">Tap to listen</p>
             <p className="mx-auto max-w-sm text-sm text-[var(--text-med)]">
-              Ten seconds of the beat is enough. Works best for songs already analyzed in
-              SongAnalyzer — with a world-catalog fallback when configured.
+              Use a short, clear passage. Catalog matching recognizes indexed recordings
+              when the catalog is available.
             </p>
           </div>
           <button
@@ -310,7 +315,7 @@ export default function IdentifyListener({ onMatched, className }: IdentifyListe
 
       {phase.kind === 'matched' && (
         <div className="space-y-4 py-4">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--text-low)]">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--text-med)]">
             Identified
           </p>
           <div className="flex items-center justify-center gap-4">
@@ -328,40 +333,48 @@ export default function IdentifyListener({ onMatched, className }: IdentifyListe
               </p>
               <p className="text-sm text-[var(--text-med)]">{phase.song.artist}</p>
               {typeof phase.confidence === 'number' && (
-                <p className="mt-1 font-mono text-[11px] text-[var(--text-low)]">
-                  {Math.round(phase.confidence * 100)}% match confidence
+                <p className="mt-1 font-mono text-[11px] text-[var(--text-med)]">
+                  {Math.round(phase.confidence * 100)}% catalog match signal
                 </p>
               )}
             </div>
           </div>
-          <Button variant="ghost" size="sm" onClick={reset}>
+          <Button variant="ghost" size="sm" className="min-h-11" onClick={reset}>
             Identify another
           </Button>
         </div>
       )}
 
       {phase.kind === 'no_match' && (
-        <div className="space-y-4 py-6">
+        <div className="space-y-4 py-6" role="status">
           <p className="font-display text-xl text-[var(--text-hi)]">
-            {phase.triedFallback ? 'Still no match.' : 'Not in the catalog yet.'}
+            {phase.reason === 'store_unavailable' ? 'Recognition catalog unavailable.'
+              : phase.reason === 'store_error' ? 'Catalog lookup didn’t finish.'
+              : phase.reason === 'song_missing' ? 'Track details unavailable.'
+              : phase.triedFallback ? 'Still no match.' : 'No catalog match.'}
           </p>
           <p className="mx-auto max-w-sm text-sm text-[var(--text-med)]">
-            {phase.triedFallback
+            {phase.reason
+              ? 'The catalog could not complete this lookup. This does not tell us whether your track is indexed. You can still analyze a local clip or search by name.'
+              : phase.triedFallback
               ? 'The world catalog couldn’t place it either — try a cleaner snippet or search by name.'
-              : 'Every song analyzed in SongAnalyzer joins the catalog — analyze it once and it becomes identifiable.'}
+              : 'No indexed recording matched this passage. Try a clearer clip or search by name.'}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-2">
             {phase.fallbackAvailable && (
-              <Button variant="primary" size="sm" onClick={tryFallback}>
+              <Button variant="primary" size="sm" className="min-h-11" onClick={tryFallback}>
                 Try world catalog
               </Button>
             )}
-            <Button variant="secondary" size="sm" onClick={startListening}>
+            <Button variant="secondary" size="sm" className="min-h-11" onClick={startListening}>
               Listen again
+            </Button>
+            <Button asChild variant="secondary" className="min-h-11">
+              <Link href="/analyze?mode=audio">Analyze a local clip</Link>
             </Button>
             <Link
               href="/analyze"
-              className="rounded-lg px-3 py-2 text-sm text-[var(--text-med)] transition-colors hover:text-[var(--text-hi)]"
+              className="inline-flex min-h-11 items-center rounded-lg px-3 py-2 text-sm text-[var(--text-med)] transition-colors hover:text-[var(--text-hi)]"
             >
               Search by name →
             </Link>
@@ -374,7 +387,7 @@ export default function IdentifyListener({ onMatched, className }: IdentifyListe
           <p className="font-display text-xl text-[var(--text-hi)]">Hmm, that didn’t work.</p>
           <p className="mx-auto max-w-sm text-sm text-[var(--state-error)]">{phase.message}</p>
           <div className="flex flex-wrap items-center justify-center gap-2">
-            <Button variant="secondary" size="sm" onClick={startListening}>
+            <Button variant="secondary" size="sm" className="min-h-11" onClick={startListening}>
               Try again
             </Button>
             <Button variant="ghost" size="sm" onClick={() => fileInputRef.current?.click()}>

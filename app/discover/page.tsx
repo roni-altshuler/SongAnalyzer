@@ -19,6 +19,7 @@ import AudioAnalysisResultsView from '@/app/components/AudioAnalysisResults';
 import SimilarSongs from '@/app/components/SimilarSongs';
 import SongSearch from '@/app/components/SongSearch';
 import WaveformPlayer from '@/app/components/WaveformPlayer';
+import TrackExploration from '@/app/components/TrackExploration';
 import { Card } from '@/app/components/ui/Card';
 import { Spectrum } from '@/app/components/ui/Spectrum';
 import { toast } from '@/app/components/ui/Toast';
@@ -64,8 +65,8 @@ export default function DiscoverPage() {
             <span className="text-accent-gradient italic">feels the same.</span>
           </h1>
           <p className="mx-auto max-w-xl text-sm text-[var(--text-med)] md:text-base">
-            Start from any song. Its sonic fingerprint — timbre, harmony, tempo, feel — pulls in
-            the closest neighbours from everything the community has analyzed.
+            Choose a track to explore its audio clip. When catalog discovery is available,
+            compare it with recordings that share a similar sound.
           </p>
         </header>
 
@@ -74,26 +75,16 @@ export default function DiscoverPage() {
         </div>
 
         {audio.song && (
-          <div className="mb-6 flex items-center gap-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elev1)] px-4 py-3 ring-inset-soft">
-            {audio.song.coverUrl && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={audio.song.coverUrl}
-                alt=""
-                width={36}
-                height={36}
-                className="h-9 w-9 rounded-md border border-[var(--border-subtle)] object-cover"
-              />
-            )}
-            <div className="min-w-0 flex-1">
-              <p className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-low)]">
-                Exploring from
-              </p>
-              <p className="truncate text-sm text-[var(--text-hi)]">
-                <span className="font-display">{audio.song.title}</span>
-                <span className="text-[var(--text-med)]"> · {audio.song.artist}</span>
-              </p>
-            </div>
+          <div className="mb-6">
+            <TrackExploration
+              song={audio.song} stage={audio.stage} loading={audio.loading}
+              error={audio.error} hasAnalysis={Boolean(audio.analysis)}
+              onRetry={() => { if (audio.song) void audio.analyzeSong(audio.song); }}
+              onClear={() => {
+                audio.reset();
+                document.querySelector<HTMLInputElement>('[role="combobox"]')?.focus();
+              }}
+            />
           </div>
         )}
 
@@ -115,7 +106,7 @@ export default function DiscoverPage() {
               analysisId={audio.analysisId ?? undefined}
             />
           </div>
-        ) : (
+        ) : !audio.song ? (
           <Card variant="elev1" className="py-14 text-center">
             <div className="mx-auto mb-5 h-10 w-40 opacity-60">
               <Spectrum bars={20} className="h-full w-full" />
@@ -124,11 +115,11 @@ export default function DiscoverPage() {
               Every analysis grows the map
             </h3>
             <p className="mx-auto max-w-md text-sm text-[var(--text-med)]">
-              Search for a song above to place it in mood space. Similarity is computed from a
-              48-dimension sonic fingerprint — not genre tags.
+              Choose a track above. Similar tracks appear when audio insights are saved
+              and the catalog contains comparable recordings.
             </p>
           </Card>
-        )}
+        ) : null}
       </div>
     </main>
   );

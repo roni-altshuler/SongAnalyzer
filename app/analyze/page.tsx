@@ -34,6 +34,7 @@ import AudioAnalysisResultsView from '@/app/components/AudioAnalysisResults';
 import CombinedView from '@/app/components/CombinedView';
 import SimilarSongs from '@/app/components/SimilarSongs';
 import WaveformPlayer from '@/app/components/WaveformPlayer';
+import TrackExploration from '@/app/components/TrackExploration';
 import { Card } from '@/app/components/ui/Card';
 import { Button } from '@/app/components/ui/Button';
 import { toast } from '@/app/components/ui/Toast';
@@ -255,33 +256,24 @@ function AnalyzeWorkbench() {
         </div>
 
         {audio.song && (
-          <div className="mb-6 flex items-center gap-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elev1)] px-4 py-3 ring-inset-soft">
-            {audio.song.coverUrl && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={audio.song.coverUrl}
-                alt=""
-                width={36}
-                height={36}
-                className="h-9 w-9 rounded-md border border-[var(--border-subtle)] object-cover"
-              />
-            )}
-            <div className="min-w-0 flex-1">
-              <p className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-low)]">
-                Now analyzing
-              </p>
-              <p className="truncate text-sm text-[var(--text-hi)]">
-                <span className="font-display">{audio.song.title}</span>
-                <span className="text-[var(--text-med)]"> · {audio.song.artist}</span>
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={audio.clearSong}
-              className="text-xs text-[var(--text-low)] transition-colors hover:text-[var(--state-error)]"
-            >
-              Clear
-            </button>
+          <div className="mb-6">
+            <TrackExploration
+              song={audio.song} stage={audio.stage} loading={audio.loading}
+              error={audio.error} hasAnalysis={Boolean(audio.analysis)}
+              onRetry={() => { if (audio.song) void audio.analyzeSong(audio.song); }}
+              onClear={() => {
+                audio.reset();
+                document.querySelector<HTMLInputElement>('[role="combobox"]')?.focus();
+              }}
+              onLyrics={() => {
+                setMode('lyrics');
+                if (mode === 'lyrics') document.getElementById('lyrics')?.focus();
+              }}
+              onUpload={() => {
+                setMode('audio');
+                if (mode === 'audio') document.getElementById('audio-file')?.click();
+              }}
+            />
           </div>
         )}
 
