@@ -9,7 +9,7 @@ import type { Song } from '@/lib/sources/types';
 import type { AudioAnalysisResultV2 } from '@/lib/types';
 
 export type SongMeta = Pick<Song,
-  'title' | 'artist' | 'album' | 'year' | 'coverUrl' | 'previewUrl' | 'metadataSource' | 'spotifyId' | 'geniusId' | 'mbid'
+  'title' | 'artist' | 'artistCredits' | 'album' | 'year' | 'coverUrl' | 'previewUrl' | 'metadataSource' | 'spotifyId' | 'geniusId' | 'mbid'
 >;
 
 export interface UseSongAnalysis {

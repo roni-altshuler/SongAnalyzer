@@ -1,0 +1,484 @@
+{
+  "date": "2026-10-06",
+  "environment": "Saved cloud environment; production next start on localhost:3115; Chromium /usr/bin/chromium",
+  "fixtures": "Controlled original metadata; no live artist lookup, permission assertion, audio recording or measured analysis",
+  "accessibilityScope": "Artist profile and selected-track region only; not a whole-app accessibility certification",
+  "checks": [
+    {
+      "state": "selected",
+      "theme": "light",
+      "width": 390,
+      "documentWidth": 390,
+      "axeScope": ".track-exploration",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": "screenshots/artist-profiles/selected-light-390.png"
+    },
+    {
+      "state": "unknown",
+      "theme": "light",
+      "width": 390,
+      "documentWidth": 390,
+      "axeScope": ".artist-profile",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        },
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": "screenshots/artist-profiles/unknown-light-390.png"
+    },
+    {
+      "state": "selected",
+      "theme": "dark",
+      "width": 390,
+      "documentWidth": 390,
+      "axeScope": ".track-exploration",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": "screenshots/artist-profiles/selected-dark-390.png"
+    },
+    {
+      "state": "unknown",
+      "theme": "dark",
+      "width": 390,
+      "documentWidth": 390,
+      "axeScope": ".artist-profile",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        },
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": "screenshots/artist-profiles/unknown-dark-390.png"
+    },
+    {
+      "state": "selected",
+      "theme": "light",
+      "width": 768,
+      "documentWidth": 768,
+      "axeScope": ".track-exploration",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": null
+    },
+    {
+      "state": "unknown",
+      "theme": "light",
+      "width": 768,
+      "documentWidth": 768,
+      "axeScope": ".artist-profile",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        },
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": "screenshots/artist-profiles/unknown-light-768.png"
+    },
+    {
+      "state": "selected",
+      "theme": "dark",
+      "width": 768,
+      "documentWidth": 768,
+      "axeScope": ".track-exploration",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": null
+    },
+    {
+      "state": "unknown",
+      "theme": "dark",
+      "width": 768,
+      "documentWidth": 768,
+      "axeScope": ".artist-profile",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        },
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": "screenshots/artist-profiles/unknown-dark-768.png"
+    },
+    {
+      "state": "selected",
+      "theme": "light",
+      "width": 1440,
+      "documentWidth": 1440,
+      "axeScope": ".track-exploration",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": null
+    },
+    {
+      "state": "unknown",
+      "theme": "light",
+      "width": 1440,
+      "documentWidth": 1440,
+      "axeScope": ".artist-profile",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        },
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": "screenshots/artist-profiles/unknown-light-1440.png"
+    },
+    {
+      "state": "selected",
+      "theme": "dark",
+      "width": 1440,
+      "documentWidth": 1440,
+      "axeScope": ".track-exploration",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": null
+    },
+    {
+      "state": "unknown",
+      "theme": "dark",
+      "width": 1440,
+      "documentWidth": 1440,
+      "axeScope": ".artist-profile",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        },
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": "screenshots/artist-profiles/unknown-dark-1440.png"
+    },
+    {
+      "state": "empty",
+      "theme": "light",
+      "width": 390,
+      "documentWidth": 390,
+      "axeScope": ".artist-profile",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": "screenshots/artist-profiles/empty-light-390.png"
+    },
+    {
+      "state": "error",
+      "theme": "light",
+      "width": 390,
+      "documentWidth": 390,
+      "axeScope": ".artist-profile",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": "screenshots/artist-profiles/error-light-390.png"
+    },
+    {
+      "state": "loading",
+      "theme": "light",
+      "width": 390,
+      "documentWidth": 390,
+      "axeScope": ".artist-profile",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": "screenshots/artist-profiles/loading-light-390.png"
+    },
+    {
+      "state": "temporary",
+      "theme": "light",
+      "width": 390,
+      "documentWidth": 390,
+      "axeScope": ".artist-profile",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        },
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": "screenshots/artist-profiles/temporary-light-390.png"
+    },
+    {
+      "state": "person",
+      "theme": "light",
+      "width": 390,
+      "documentWidth": 390,
+      "axeScope": ".artist-profile",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": "screenshots/artist-profiles/person-light-390.png"
+    },
+    {
+      "state": "group",
+      "theme": "light",
+      "width": 390,
+      "documentWidth": 390,
+      "axeScope": ".artist-profile",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": "screenshots/artist-profiles/group-light-390.png"
+    },
+    {
+      "state": "long-name",
+      "theme": "light",
+      "width": 390,
+      "documentWidth": 390,
+      "axeScope": ".artist-profile",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": null
+    },
+    {
+      "state": "empty",
+      "theme": "dark",
+      "width": 390,
+      "documentWidth": 390,
+      "axeScope": ".artist-profile",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": "screenshots/artist-profiles/empty-dark-390.png"
+    },
+    {
+      "state": "error",
+      "theme": "dark",
+      "width": 390,
+      "documentWidth": 390,
+      "axeScope": ".artist-profile",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": "screenshots/artist-profiles/error-dark-390.png"
+    },
+    {
+      "state": "loading",
+      "theme": "dark",
+      "width": 390,
+      "documentWidth": 390,
+      "axeScope": ".artist-profile",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": "screenshots/artist-profiles/loading-dark-390.png"
+    },
+    {
+      "state": "temporary",
+      "theme": "dark",
+      "width": 390,
+      "documentWidth": 390,
+      "axeScope": ".artist-profile",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        },
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": "screenshots/artist-profiles/temporary-dark-390.png"
+    },
+    {
+      "state": "person",
+      "theme": "dark",
+      "width": 390,
+      "documentWidth": 390,
+      "axeScope": ".artist-profile",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": "screenshots/artist-profiles/person-dark-390.png"
+    },
+    {
+      "state": "group",
+      "theme": "dark",
+      "width": 390,
+      "documentWidth": 390,
+      "axeScope": ".artist-profile",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": "screenshots/artist-profiles/group-dark-390.png"
+    },
+    {
+      "state": "long-name",
+      "theme": "dark",
+      "width": 390,
+      "documentWidth": 390,
+      "axeScope": ".artist-profile",
+      "axeViolations": 0,
+      "spotifyMarks": [
+        {
+          "width": 90,
+          "loaded": true
+        }
+      ],
+      "pageErrors": [],
+      "prohibitedRequests": [],
+      "screenshot": null
+    }
+  ],
+  "navigation": "Keyboard Enter, heading focus, collaborator navigation, browser Back/Forward/reload at all six responsive/theme combinations; keyboard storage-error retry",
+  "result": "All assertions passed"
+}

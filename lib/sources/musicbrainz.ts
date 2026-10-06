@@ -1,4 +1,5 @@
 import 'server-only';
+import { artistCredit, type ArtistCredit } from '@/lib/artists/identity';
 
 /**
  * MusicBrainz adapter.
@@ -53,7 +54,7 @@ interface MBRecordingSearchResponse {
     id: string;
     score: number;
     title?: string;
-    'artist-credit'?: Array<{ name?: string; artist?: { name?: string } }>;
+    'artist-credit'?: Array<{ name?: string; artist?: { id?: string; name?: string; type?: string } }>;
   }>;
 }
 
@@ -63,6 +64,7 @@ export interface MusicBrainzHit {
   score: number;
   title?: string;
   artist?: string;
+  artistCredits?: ArtistCredit[];
 }
 
 /**
@@ -105,6 +107,11 @@ export async function searchMusicBrainz(query: string): Promise<MusicBrainzHit[]
       score: r.score,
       title: r.title,
       artist,
+      artistCredits: r['artist-credit']?.flatMap((credit) => {
+        const name = credit.artist?.name ?? credit.name;
+        return name ? [artistCredit({ provider: 'musicbrainz', id: credit.artist?.id, name,
+          creditedName: credit.name, entityType: credit.artist?.type, typeEvidence: 'musicbrainz:artist.type' })] : [];
+      }),
     };
   });
 }

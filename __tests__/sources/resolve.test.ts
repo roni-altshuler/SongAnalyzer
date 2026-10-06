@@ -238,5 +238,17 @@ describe('resolveSong', () => {
     expect(findByExternalIds).toHaveBeenCalledWith({ spotifyId: 'sp-bad-guy' });
     expect(upsert).not.toHaveBeenCalled();
     expect(result.id).toBe('db-1');
+    expect(result.artistCredits?.[0]).toMatchObject({ provider: 'spotify', id: 'a1', name: 'Billie Eilish', entityType: 'Unknown' });
+  });
+
+  it('preserves source artist identities when a legacy store projection drops the new field', async () => {
+    installFetchRouter({ spotifyToken: tokenOk, spotifySearch: spotifySearchOk,
+      musicbrainzSearch: () => jsonResponse({ recordings: [] }), geniusSearch: () => jsonResponse({ response: { hits: [] } }) });
+    const result = await resolveSong('bad guy', {
+      findByExternalIds: async () => null,
+      upsert: async (song) => { const { artistCredits: _credits, ...legacy } = song; void _credits; return { ...legacy, id: 'db-legacy' }; },
+    });
+    expect(result.id).toBe('db-legacy');
+    expect(result.artistCredits?.[0]).toMatchObject({ provider: 'spotify', id: 'a1', name: 'Billie Eilish' });
   });
 });

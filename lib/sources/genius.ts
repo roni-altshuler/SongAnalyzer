@@ -1,6 +1,7 @@
 import 'server-only';
 
 import type { SearchHit, Song } from './types';
+import { artistCredit } from '@/lib/artists/identity';
 
 /**
  * Genius API adapter — metadata only.
@@ -62,12 +63,15 @@ async function geniusGet<T>(path: string, params?: Record<string, string>): Prom
   return json.response;
 }
 
+interface GeniusArtist { id?: number; name: string; url?: string }
+
 interface GeniusSearchHit {
   type: string;
   result: {
     id: number;
     title: string;
-    primary_artist: { name: string };
+    primary_artist: GeniusArtist;
+    featured_artists?: GeniusArtist[];
     song_art_image_url?: string;
     song_art_image_thumbnail_url?: string;
     /** Synthesized by Genius across various signals; 0..1ish. */
@@ -79,12 +83,17 @@ interface GeniusSongDetail {
   song: {
     id: number;
     title: string;
-    primary_artist: { name: string };
+    primary_artist: GeniusArtist;
+    featured_artists?: GeniusArtist[];
     album?: { name: string } | null;
     release_date_components?: { year?: number } | null;
     song_art_image_url?: string;
     url: string;
   };
+}
+
+function credits(primary: GeniusArtist, featured: GeniusArtist[] = []) {
+  return [primary, ...featured].map((artist) => artistCredit({ provider: 'genius', id: artist.id, name: artist.name, url: artist.url }));
 }
 
 /** Free-text Genius search. Returns metadata-only hits (no lyrics). */
@@ -103,6 +112,7 @@ export async function searchGenius(query: string): Promise<SearchHit[]> {
       song: {
         title: h.result.title,
         artist: h.result.primary_artist.name,
+        artistCredits: credits(h.result.primary_artist, h.result.featured_artists),
         coverUrl: h.result.song_art_image_url ?? h.result.song_art_image_thumbnail_url,
         geniusId: h.result.id,
         metadataSource: 'genius',
@@ -123,6 +133,7 @@ export async function getGeniusSong(id: number): Promise<Partial<Song>> {
   return {
     title: s.title,
     artist: s.primary_artist.name,
+    artistCredits: credits(s.primary_artist, s.featured_artists),
     album: s.album?.name ?? undefined,
     year: s.release_date_components?.year ?? undefined,
     coverUrl: s.song_art_image_url,
