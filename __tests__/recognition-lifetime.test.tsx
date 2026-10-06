@@ -101,7 +101,8 @@ describe('recognition operation lifetime', () => {
 
 describe('AudD disclosure and consent', () => {
   it('does not upload on a miss or disclosure; only named confirmation sends the clip and consent marker', async () => {
-    const fetcher = vi.fn().mockResolvedValue(noMatch()); vi.stubGlobal('fetch', fetcher);
+    // Each fetch owns a fresh response body, just as it does in the browser.
+    const fetcher = vi.fn().mockImplementation(async () => noMatch()); vi.stubGlobal('fetch', fetcher);
     render(<IdentifyListener onMatched={vi.fn()} />); upload();
     fireEvent.click(await screen.findByRole('button', { name: 'Try AudD recognition' }));
     expect(screen.getByRole('region', { name: 'AudD audio sharing consent' }).textContent).toContain('will leave your device');
@@ -110,6 +111,7 @@ describe('AudD disclosure and consent', () => {
     await waitFor(() => expect(fetcher).toHaveBeenCalledTimes(2));
     const [url, init] = fetcher.mock.calls[1]; expect(url).toBe('/api/identify/fallback');
     expect(init.body.get('consent')).toBe('audd-recognition'); expect(init.body.get('audio')).toBeInstanceOf(Blob);
+    expect(await screen.findByText('Still no match.')).toBeDefined();
   });
 
   it('keeps the clip local when consent is declined', async () => {

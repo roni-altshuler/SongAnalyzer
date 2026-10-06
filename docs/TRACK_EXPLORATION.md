@@ -126,7 +126,9 @@ until its handlers and lifecycle effect are ready. Browser tests use the visible
 file chooser rather than injecting into an unready hidden input. A new regression
 holds the bundles, checks disabled controls, then releases them and verifies one
 real-worker catalog lookup with no AudD upload. Disclosure, decline and explicit
-confirmation assertions remain in place.
+confirmation assertions remain in place. The unit consent fixture now returns a
+fresh response body for each request and asserts that the confirmed fallback
+finishes, avoiding an artificial consumed-body error from reusing one response.
 
 All Playwright retries are now **zero**, including CI; traces are retained on
 failure. On the saved cloud `next dev` server, the readiness, AudD decline and
