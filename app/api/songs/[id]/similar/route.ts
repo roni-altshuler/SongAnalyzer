@@ -23,6 +23,9 @@ export interface SimilarSongHit {
   artist: string;
   coverUrl?: string;
   previewUrl?: string;
+  spotifyId?: string;
+  geniusId?: number;
+  metadataSource: 'catalog';
   /** Cosine distance — lower is more similar. */
   distance: number;
 }
@@ -53,12 +56,23 @@ export async function GET(
     });
     if (error) throw new Error(error.message);
 
+    // The RPC omits provider identity. Read item IDs separately for accurate
+    // listening links; legacy rows still do not establish recording rights.
+    const ids = (data ?? []).map((row) => row.id);
+    const { data: identities, error: identityError } = ids.length
+      ? await supabase.from('songs').select('id, spotify_id, genius_id').in('id', ids)
+      : { data: [], error: null };
+    if (identityError) throw new Error(identityError.message);
+    const byId = new Map((identities ?? []).map((row) => [row.id, row]));
+
     const songs: SimilarSongHit[] = (data ?? []).map((row) => ({
       id: row.id,
       title: row.title,
       artist: row.artist,
       coverUrl: row.cover_url ?? undefined,
-      previewUrl: row.preview_url ?? undefined,
+      metadataSource: 'catalog',
+      spotifyId: byId.get(row.id)?.spotify_id ?? undefined,
+      geniusId: byId.get(row.id)?.genius_id ?? undefined,
       distance: Number(row.distance.toFixed(4)),
     }));
 

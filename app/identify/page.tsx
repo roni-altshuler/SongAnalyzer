@@ -5,8 +5,8 @@
  *
  * The IdentifyListener records ~10s, fingerprints it in a Web Worker, and
  * matches against our constellation catalog (AudD world-catalog fallback
- * when configured). A match hands straight into the shared analysis
- * pipeline, so the identified song's mood tints the page seconds later.
+ * when configured and confirmed). A match retains metadata and listening
+ * links. Remote recordings are never fetched for analysis.
  */
 
 import { useCallback } from 'react';
@@ -77,7 +77,6 @@ export default function IdentifyPage() {
             <TrackExploration
               song={audio.song} stage={audio.stage} loading={audio.loading}
               error={audio.error} hasAnalysis={Boolean(audio.analysis)}
-              onRetry={() => { if (audio.song) void audio.analyzeSong(audio.song); }}
             />
           </div>
         )}

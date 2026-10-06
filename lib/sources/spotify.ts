@@ -6,11 +6,11 @@ import type { SearchHit, Song } from './types';
  * Spotify Web API adapter — **Client Credentials flow only**.
  *
  * We deliberately do NOT use user-OAuth scopes here. Client Credentials gives
- * us metadata, search, album art, and 30-second `preview_url`s — all the
+ * us metadata, search and album art. Remote previews are excluded from the
  * read-only surface we need for the analyser. Per Stream D's brief, we also
  * stay away from the Audio Features endpoint (deprecated for new apps as of
- * Nov 2024); we get audio descriptors from AcousticBrainz or the client-side
- * preview analyser instead.
+ * Nov 2024); separate AcousticBrainz lookups can provide published descriptors. No
+ * descriptors are computed from Spotify recordings.
  *
  * Required env vars:
  *   SPOTIFY_CLIENT_ID
@@ -177,7 +177,7 @@ function toSearchHit(t: SpotifyTrack): SearchHit {
       album: t.album.name,
       year: yearFromReleaseDate(t.album.release_date),
       coverUrl: pickCover(t.album.images),
-      previewUrl: t.preview_url ?? undefined,
+      metadataSource: 'spotify',
       spotifyId: t.id,
     },
   };
@@ -211,7 +211,7 @@ export async function getSpotifyTrack(id: string): Promise<Song> {
     album: t.album.name,
     year: yearFromReleaseDate(t.album.release_date),
     coverUrl: pickCover(t.album.images),
-    previewUrl: t.preview_url ?? undefined,
+    metadataSource: 'spotify',
     spotifyId: t.id,
   };
 }

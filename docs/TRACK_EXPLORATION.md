@@ -1,112 +1,135 @@
-# Track exploration handoff — October 6, 2026
+# Track exploration and recording permission — October 6, 2026
 
-Recognizing or selecting a track should lead to useful exploration even when
-there is no playable clip. Previously, Identify discarded no-preview matches
-from its analysis context, Discover hid download errors, and a late preview
-could attach another track's insights to a newer selection.
+Selecting or recognizing a recording now retains useful track details and
+listening links without automatically downloading provider audio. The shared
+card appears in Identify, Analyze and Discover, explains why audio insights are
+unavailable, and offers a separate local-file or pasted-text reading. Clearing
+returns focus to search; local files clear unrelated track attribution.
 
-The shared pipeline now acquires request identity at selection, before fetch
-and blob conversion. It cancels previous preview downloads and ignores late
-worker/persistence results after a new selection, reset or unmount. An
-unattributed local upload clears unrelated song metadata. Failed analysis
-returns failure and does not emit a success toast.
+Verified Spotify/Genius adapters identify the source of the metadata they
+actually supplied. Spotify content displays the official full mark and a direct
+track link. Legacy database rows lack metadata provenance: they are labelled
+catalog metadata with an unverified original source, while known item IDs can
+still provide listening links. A provider ID never grants analysis permission.
+Search uses a grid popup with separate selection/provider-link cells, keyboard
+selection, adequate contrast, and no redundant query after selecting a result.
 
-The same exploration card appears in Identify, Analyze and Discover. It keeps
-track identity visible, announces download/measurement/readiness, exposes
-failures and retries, and gives missing-preview tracks local-audio/lyrics
-paths. Outbound provider links appear only for IDs already in metadata. These
-are separate lyrics readings and provider pages; the app does not fetch Genius
-lyrics or present artist annotations as its own interpretation. Clearing the
-card returns keyboard focus to search. Starting another identification clears
-the prior audio context.
+## Enforced recording boundary
 
-Catalog unavailability, lookup errors and missing metadata are separate from a
-completed lookup with no matching recording. Catalog match scores are labelled
-as signals, not recognition accuracy. Audio insight copy refers to the measured
-clip, not an entire recording.
+The earlier flow was `analyzeSong` → fetch `previewUrl` → deterministic MIR DSP
+and fingerprint computation → analysis/features/fingerprint writes. That is
+an evidenced audio-analysis path, not evidence that the app sent provider audio
+to an AI model. Spotify's [Developer Policy III.13](https://developer.spotify.com/policy)
+prohibits analysis of Spotify Content. Other providers and arbitrary URLs do
+not become permitted merely because they lack a Spotify ID.
+
+This release therefore fails closed for **all remote recordings**:
+
+- `useSongAnalysis.analyzeSong` selects metadata only, strips preview URLs, and
+  performs no fetch, decode, DSP, fingerprinting, AI call, persistence or success
+  toast. Repeated/direct calls and ID-stripped similar selections remain denied.
+  There is no retry action that can bypass this policy.
+- Spotify adapters, cached song-detail responses, legacy row projections and
+  similar results do not expose preview URLs. The similar endpoint preserves
+  known item IDs for outbound links without inventing source provenance.
+- `/api/analyses` rejects audio/combined results and audio feature payloads
+  relabelled as lyrics before external calls or database access.
+  `/api/fingerprints` and `/api/songs/[id]/features` return HTTP 403
+  `audio_persistence_disabled`. A client's `source: upload` or permission flag
+  cannot authorize them. The server analysis and fingerprint ingestion helpers
+  also reject audio writes on direct invocation.
+- `seed:fingerprints` exits with status 1 before env loading, DB access, audio
+  fetch or decoding. It contains no remaining provider-preview indexer.
+- A user-chosen local File remains usable with the real browser MIR worker and
+  existing DSP fallback. Its audio insights are session-only: no automatic
+  fingerprint computation, catalog ingestion, server save or share ID.
+  The local-file UI asks for audio the user owns or has permission to analyze.
+
+Existing database records, preview fields, vectors and fingerprints are not
+removed or rewritten. No migration, RLS, credentials, access setting or
+production job was changed. Lyrics persistence retains its existing behavior.
+A future audio persistence/indexing path needs reviewed recordings and
+server-verifiable provenance and permission; browser flags are insufficient.
+
+## Recognition lifetime and privacy
+
+Identify acquires a synchronous operation lock before awaiting microphone
+permission. It exposes the requesting state and cancellation. Generation and
+mounted-state checks follow every async boundary, including decoding, worker
+completion, fetch and response parsing. Navigation/cancellation invalidates the
+operation, aborts requests, detaches/stops the recorder, clears its deadline,
+stops media tracks and closes the capture context. Late catalog/AudD matches
+cannot invoke the selected-track callback or announce success. A retained
+analysis-hook callback cannot restart work after unmount.
+
+Catalog unavailability, lookup errors and missing metadata remain distinct from
+a completed no-match. Match scores are catalog signals, not calibrated accuracy.
+Local audio estimates describe the chosen passage, not an entire recording.
+
+AudD is optional and still requires existing configuration/entitlement. A miss
+only offers a disclosure step: it names AudD, says the clip leaves the device,
+explains recognition purpose and links the provider's privacy policy. Only
+“Send clip to AudD” uploads; “Keep audio on device” clears the snippet and returns
+focus to Start. The server requires the `audd-recognition` consent marker and
+propagates cancellation to the existing provider adapter. Fallback metadata
+resolution performs no catalog writes. The footer distinguishes local insights,
+catalog hash queries and explicitly confirmed AudD audio transmission.
 
 ## Verification
 
-- Repository: `roni-altshuler/SongAnalyzer`; base `370f7a9468af36dac86802edb4e12edeab443f8c`.
-  No open PRs existed at inspection. The saved checkout was clean; its existing
-  work and main were preserved. No AGENTS.md or local skills were present;
-  CLAUDE.md and the browser skill guides were inspected.
-- Clean `npm ci` with a writable temporary cache, Next 16.3.6; local Node 24.19.0.
-- Nine new hook regressions cover reversed downloads, reset during blob
-  conversion, missing preview selection, unattributed uploads, late
-  persistence, retry, audio failure, late worker completion and unmount.
-- Full Vitest: 151 passed, 11 existing Supabase-gated tests skipped.
-- Lint: no errors; 12 existing warnings. Changed files: no warnings.
-- TypeScript and default Turbopack production build passed after regenerating
-  stale restored `.next` types.
-- All 17 Playwright tests passed against the fresh production build on port
-  3108: eight existing smoke tests and nine handoff/recovery cases (including
-  three responsive widths). Browser back/forward and the workbench local-file
-  action passed; local uploads did not inherit selected-track metadata.
-- Responsive browser checks at 390, 768 and 1440px: long track names, no
-  horizontal overflow, reduced-motion preference, missing preview next steps.
-  Dark and light themes passed; the new light card uses scoped cream surfaces.
-  All new card actions measured at least 44px high. Keyboard retry and Clear-to-search focus passed. No page runtime errors in
-  the tested flows. New-card axe checks (WCAG 2 A/AA, 2.1 AA, 2.2 AA) found zero
-  violations for loading, no-preview, error and ready states in tested themes; this is a scoped check,
-  not a whole-app accessibility certification.
+Repository `roni-altshuler/SongAnalyzer`, base
+`370f7a9468af36dac86802edb4e12edeab443f8c`, Next 16.3.6. No open PR existed at
+initial inspection; the existing draft PR9 was reused for this revision.
+Main and pre-existing work are preserved. CLAUDE.md, browser skill guides,
+actual flows and existing tests were inspected; no applicable AGENTS.md was
+present. Local commands used Node 24.19.0; CI uses Node 20.19.0.
 
-Screenshots were captured from the final local production build. They use original synthetic audio and explicitly controlled metadata
-responses. Matched-response fixtures verify the UI handoff, not live catalog
-recognition or recognition accuracy. The zero-config catalog-unavailable test
-reaches the real API. No private audio, provider audio, paid inference or
-production jobs were used.
+- Vitest: **176 passed**, **11 existing Supabase-gated tests skipped**. Regression
+  coverage includes direct remote calls, dropped IDs in a real similar-selection
+  component flow, spoofed permission/source flags, server route/helper denials,
+  no legacy preview overwrite, local worker identity/unmount, delayed recognition
+  callbacks, capture cleanup/double start, AudD consent and cancelled relays.
+- Lint, TypeScript and the default Turbopack production build pass. Lint has
+  six pre-existing warnings outside the changed files; changed-file lint is clean.
+- **21 Playwright tests passed** against the final production build and cover the real zero-config API, controlled matched/
+  no-match metadata, prohibited-request absence, real synthetic local audio,
+  provider disclosure/decline/confirmation, navigation during lookup, keyboard
+  grid selection, Clear focus, browser history and direct HTTP denials.
+- Actual cloud Chromium QA checks dark/light themes, 390/768/1440px, long names,
+  reduced motion, responsive geometry and provider-mark loading. Scoped axe
+  checks include the exploration card, search popup, AudD disclosure, microphone
+  request state and local upload loading/error/ready: **21 scoped axe checks,
+  zero violations**, no measured horizontal overflow, all provider marks loaded.
+  New actions are at least 44px high; focus and keyboard flows passed. This is not a whole-app
+  accessibility certification. See the verification report and screenshots below.
+
+All audio fixtures are original four-second synthesized chords/pulses. Controlled
+matched responses exercise presentation and lifecycle, not real recognition
+quality. AudD responses are mocked before any external relay; no provider audio,
+private audio, real microphone recording, paid API request or production job
+was used. The real local audio engine is exercised without fabricated features.
 
 [Mobile dark](screenshots/track-exploration/identify-dark-390.png) ·
-[Mobile cream](screenshots/track-exploration/identify-light-390.png) ·
+[Mobile light](screenshots/track-exploration/identify-light-390.png) ·
 [Tablet](screenshots/track-exploration/identify-dark-768.png) ·
-[Desktop dark](screenshots/track-exploration/identify-dark-1440.png) ·
-[Desktop cream](screenshots/track-exploration/identify-light-1440.png) ·
-[Loading](screenshots/track-exploration/discover-loading-390.png) ·
-[Recovery](screenshots/track-exploration/discover-error-light-390.png) ·
-[Clip insights](screenshots/track-exploration/discover-ready-light-390.png) ·
-[Unavailable catalog](screenshots/track-exploration/catalog-unavailable-390.png)
+[Desktop](screenshots/track-exploration/identify-dark-1440.png) ·
+[AudD disclosure](screenshots/track-exploration/audd-consent-dark-390.png) ·
+[Local insights](screenshots/track-exploration/local-ready-dark-390.png) ·
+[Local error](screenshots/track-exploration/local-error-dark-390.png) ·
+[Local loading](screenshots/track-exploration/local-loading-dark-390.png) ·
+[Verification report](TRACK_EXPLORATION_QA.json)
 
-## What remains required
+## Remaining prerequisites and follow-ups
 
-| Surface | Existing implementation | Prerequisite / limit |
-|---|---|---|
-| Catalog recognition | Browser constellation hashes → `/api/identify` → `match_fingerprints` RPC | Configured Supabase, applied migrations and indexed, appropriately licensed recordings. Live matching and RLS were unavailable for this pass. |
-| World recognition | Optional AudD fallback after explicit consent | Existing token/provider entitlement required. Trial access is not unlimited free production recognition. No token or fallback call was added. |
-| Name search | Spotify client-credentials metadata search | Existing configured credentials/access required. No account or credential setup was performed. |
-| Audio insights | Existing browser v2 MIR engine with v1 fallback | A valid, appropriately licensed clip. Synthetic fixtures do not establish real-world tempo, key or mood accuracy. |
-| Related-track discovery | Existing saved sonic vectors and similarity RPC | Working persistence, feature writes and comparable catalog recordings. The rail can still be empty; no recommendations were fabricated. |
-| Lyrics exploration | User-pasted lyrics, optional translation/emotion model, metadata-only Genius adapter | User-provided text; existing optional inference configuration. No automatic lyrics retrieval, licensed full-lyrics catalog or sourced annotations implementation. |
-| Library | Local lyrics-result history | No personal track favorites, playlists or discovery journal currently exists. |
-| Sharing | Existing public permalink/OG routes | Supabase public-result reads. Missing-config OG/Twitter 500 was reproduced on the production build and remains separate follow-up; this PR does not change access or sharing policy. |
+| Capability | Verified boundary / limitation |
+|---|---|
+| Catalog identification / RLS | Live Supabase was unavailable; 11 gated tests remain skipped. Existing catalog rights/content also need independent review. No access policy was altered. |
+| Remote audio / fresh recommendations | Disabled pending reviewed recordings and enforceable permission. Legacy similarity reads remain intact; no newly measured recommendations are claimed. |
+| AudD recognition | Existing optional integration with explicit consent; [AudD documentation](https://docs.audd.io/) and its pricing describe trial/paid access, not unlimited free production recognition. No credentials or real requests were added. |
+| Lyrics | User-pasted text; optional existing inference configuration. Genius remains metadata only, with no full-lyrics scraping or fabricated artist annotations. |
+| Share previews | The known missing-config OG/Twitter image 500 is outside this bounded change; invalid document slugs return a clean 404. |
+| Measurement quality | Synthetic regression fixtures verify behavior, not real-world tempo/key/mood or recognition accuracy. No unsupported adaptive-model accuracy claim is made. |
 
-## Provider review finding
-
-Spotify's [track reference](https://developer.spotify.com/documentation/web-api/reference/get-track)
-marks `preview_url` nullable/deprecated. Its [Developer Policy](https://developer.spotify.com/policy)
-requires attribution/deep links and restricts preview uses, analysis of Spotify
-Content, AI/ML ingestion and replacement of core Spotify experiences. The
-existing path `handleSongPicked` / `handleSearchPick` →
-`useSongAnalysis.analyzeSong` → fetch `previewUrl` → `runAnalysis` extracts audio
-features and attempts vector/fingerprint persistence; `scripts/index-previews.ts`
-also indexes provider previews. Those existing uses require rights/policy
-review before treating the Spotify integration as a production foundation.
-This pass preserves that pre-existing path and changes its request lifecycle
-and visible states; it does not establish permission, add content sources or analysis methods,
-introduce streaming or test Spotify clips. Prefer optional outbound
-listening links when planning new integration features.
-
-The [Genius API introduction](https://genius.engineering/introducing-the-genius-api/)
-describes metadata and annotation resources; it does not establish a blanket
-full-lyrics reuse license. [AudD documentation](https://docs.audd.io/) describes
-its token-based recognition API. No new provider was enabled.
-
-Explicit same-recording association before combining lyrics and audio remains
-separate follow-up work.
-
-Next useful work: resolve source permissions, validate the configured catalog
-and RLS independently, evaluate the existing audio engine on licensed held-out
-recordings, and show actual similarity reasons/empty states before proposing
-user-controlled discovery or a favorites journal. Sourced facts, artist
-annotations, measured clip features and machine interpretations should remain
-visibly distinguishable.
+Provider display follows Spotify's [design/attribution guidance](https://developer.spotify.com/documentation/design).
+Logo provenance and the pinned download mirror are recorded in
+[public/brands/README.md](../public/brands/README.md).

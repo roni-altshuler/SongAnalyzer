@@ -1,4 +1,5 @@
 import 'server-only';
+import { metadataOnly } from '@/lib/audio/policy';
 
 import { getAcousticBrainzFeatures } from './acousticbrainz';
 import { searchGenius } from './genius';
@@ -12,7 +13,7 @@ import type { Song, SongStore } from './types';
  *
  * Pipeline:
  *   1. Spotify search (primary signal — gives us title/artist/album/cover/
- *      preview, plus a stable `spotifyId`). If Spotify yields nothing we
+ *      plus a stable `spotifyId`). If Spotify yields nothing we
  *      throw — without that primary signal we can't trust the rest.
  *   2. In parallel, with the top Spotify hit's "Title Artist" string:
  *        - MusicBrainz recording search -> AcousticBrainz features
@@ -32,7 +33,7 @@ export async function resolveSong(
   const trimmed = query.trim();
   if (!trimmed) throw new Error('resolveSong: query is empty');
 
-  // 1. Spotify is mandatory — it gives us identity + preview.
+  // 1. Spotify supplies metadata, never audio for analysis.
   const spotifyHits = await searchSpotify(trimmed);
   const top = spotifyHits[0];
   if (!top) throw new Error('resolveSong: no Spotify results');
@@ -43,7 +44,7 @@ export async function resolveSong(
     album: top.song.album,
     year: top.song.year,
     coverUrl: top.song.coverUrl,
-    previewUrl: top.song.previewUrl,
+    metadataSource: top.song.metadataSource,
     spotifyId: top.song.spotifyId ?? top.id,
   };
 
@@ -52,7 +53,7 @@ export async function resolveSong(
   if (store && base.spotifyId) {
     try {
       const cached = await store.findByExternalIds({ spotifyId: base.spotifyId });
-      if (cached) return cached;
+      if (cached) return metadataOnly({ ...cached, ...base });
     } catch (err) {
       console.warn('resolveSong: store.findByExternalIds failed', err);
     }
@@ -103,7 +104,7 @@ export async function resolveSong(
 
   if (store) {
     try {
-      return await store.upsert(merged);
+      return metadataOnly(await store.upsert(merged));
     } catch (err) {
       console.warn('resolveSong: store.upsert failed; returning unpersisted record', err);
     }

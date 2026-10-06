@@ -101,7 +101,7 @@ test.describe('SongAnalyzer v3 smoke', () => {
   test('discover renders its empty state', async ({ page }) => {
     await page.goto('/discover');
     await expect(page.getByRole('heading', { level: 1 })).toContainText('feels the same');
-    await expect(page.getByText(/Every analysis grows the map/i)).toBeVisible();
+    await expect(page.getByText(/Start with a track you love/i)).toBeVisible();
   });
 
   test('design-system showcase renders', async ({ page }) => {

@@ -3,10 +3,9 @@
 /**
  * /discover — sonic similarity exploration.
  *
- * Pick a starting song; it runs through the shared analysis pipeline (which
- * persists its sonic vector), then the "feels like this" rail surfaces
- * nearest neighbours by cosine distance. Clicking a neighbour re-centres the
- * exploration on it — an endless walk through the catalog's mood space.
+ * Track selection retains metadata and item links. Remote analysis and new
+ * vector/index writes are disabled until recording permissions are verified.
+ * Existing catalog records and the similarity read endpoint remain intact.
  */
 
 import { useCallback } from 'react';
@@ -65,8 +64,8 @@ export default function DiscoverPage() {
             <span className="text-accent-gradient italic">feels the same.</span>
           </h1>
           <p className="mx-auto max-w-xl text-sm text-[var(--text-med)] md:text-base">
-            Choose a track to explore its audio clip. When catalog discovery is available,
-            compare it with recordings that share a similar sound.
+            Explore track details and listening links. Remote audio analysis and new
+            catalog indexing are paused while recording permissions are reviewed.
           </p>
         </header>
 
@@ -79,7 +78,6 @@ export default function DiscoverPage() {
             <TrackExploration
               song={audio.song} stage={audio.stage} loading={audio.loading}
               error={audio.error} hasAnalysis={Boolean(audio.analysis)}
-              onRetry={() => { if (audio.song) void audio.analyzeSong(audio.song); }}
               onClear={() => {
                 audio.reset();
                 document.querySelector<HTMLInputElement>('[role="combobox"]')?.focus();
@@ -112,11 +110,11 @@ export default function DiscoverPage() {
               <Spectrum bars={20} className="h-full w-full" />
             </div>
             <h3 className="mb-2 font-display text-xl text-[var(--text-hi)]">
-              Every analysis grows the map
+              Start with a track you love
             </h3>
             <p className="mx-auto max-w-md text-sm text-[var(--text-med)]">
-              Choose a track above. Similar tracks appear when audio insights are saved
-              and the catalog contains comparable recordings.
+              Search above for track details and listening links. You can measure a
+              local recording in Analyze; those insights stay on your device.
             </p>
           </Card>
         ) : null}

@@ -4,8 +4,8 @@ import 'server-only';
  * AudD music recognition adapter — the *fallback* path for `/api/identify`.
  *
  * The primary identification path is our own constellation catalog
- * (lib/fingerprint/*), which is free and covers every song the app has
- * analysed. AudD covers the world catalog for over-the-air snippets we
+ * (lib/fingerprint/*), which queries the existing indexed catalog. New
+ * indexing is disabled pending verified recording permission. AudD covers the world catalog for over-the-air snippets we
  * haven't indexed — at a per-request cost, which is why:
  *   - it is env-gated on `AUDD_API_TOKEN` (skipped cleanly when unset),
  *   - the relay route sits behind the strictest rate-limit bucket, and
@@ -39,7 +39,7 @@ export interface AuddRecognition {
  * Throws `AuddNotConfiguredError` without a token and `Error` on transport
  * or API failures — callers translate those into fail-soft responses.
  */
-export async function recognizeAudd(audio: Blob): Promise<AuddRecognition | null> {
+export async function recognizeAudd(audio: Blob, signal?: AbortSignal): Promise<AuddRecognition | null> {
   const token = process.env.AUDD_API_TOKEN;
   if (!token) throw new AuddNotConfiguredError();
 
@@ -50,7 +50,7 @@ export async function recognizeAudd(audio: Blob): Promise<AuddRecognition | null
   const res = await fetch(AUDD_ENDPOINT, {
     method: 'POST',
     body: form,
-    signal: AbortSignal.timeout(8000),
+    signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(8000)]) : AbortSignal.timeout(8000),
   });
 
   if (!res.ok) {

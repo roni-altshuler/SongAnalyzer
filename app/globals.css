@@ -80,6 +80,11 @@
   --state-error: #9F3030;
 }
 
+.light .audio-upload,
+.light .identify-listener {
+  --state-error: #9F3030;
+}
+
 /* ─────────────────────────────────────────────────────────────
    Tailwind v4 — register tokens with @theme so they become
    utilities (bg-bg-elev1, text-text-hi, border-border-subtle, …)

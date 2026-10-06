@@ -38,8 +38,10 @@ const RECORD_MS = 10_000;
 
 type Phase =
   | { kind: 'idle' }
+  | { kind: 'requesting' }
+  | { kind: 'consent' }
   | { kind: 'listening'; startedAt: number }
-  | { kind: 'matching' }
+  | { kind: 'matching'; provider?: 'audd' }
   | { kind: 'matched'; song: Song; confidence?: number }
   | { kind: 'no_match'; reason?: string; fallbackAvailable: boolean; triedFallback: boolean }
   | { kind: 'error'; message: string };
@@ -61,20 +63,67 @@ export default function IdentifyListener({ onMatched, onNewAttempt, className }:
   const recorderRef = useRef<MediaRecorder | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const snippetRef = useRef<Blob | null>(null);
+  const mountedRef = useRef(true);
+  const operationRef = useRef(0);
+  const busyRef = useRef(false);
+  const abortRef = useRef<AbortController | null>(null);
+  const captureTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const startButtonRef = useRef<HTMLButtonElement | null>(null);
+  const consentHeadingRef = useRef<HTMLHeadingElement | null>(null);
+  const previousPhaseRef = useRef<Phase['kind']>('idle');
+
+  useEffect(() => {
+    if (phase.kind === 'consent') consentHeadingRef.current?.focus();
+    if (phase.kind === 'idle' && previousPhaseRef.current !== 'idle') startButtonRef.current?.focus();
+    previousPhaseRef.current = phase.kind;
+  }, [phase.kind]);
 
   const cleanupCapture = useCallback(() => {
+    if (captureTimerRef.current) clearTimeout(captureTimerRef.current);
+    captureTimerRef.current = null;
+    const recorder = recorderRef.current;
     recorderRef.current = null;
+    if (recorder) {
+      recorder.onstop = null;
+      recorder.ondataavailable = null;
+      if (recorder.state !== 'inactive') recorder.stop();
+    }
     streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
     void audioCtxRef.current?.close().catch(() => undefined);
     audioCtxRef.current = null;
-    setAnalyser(null);
+    if (mountedRef.current) setAnalyser(null);
   }, []);
 
-  useEffect(() => cleanupCapture, [cleanupCapture]);
+  const invalidate = useCallback(() => {
+    operationRef.current++;
+    busyRef.current = false;
+    abortRef.current?.abort();
+    abortRef.current = null;
+    snippetRef.current = null;
+    cleanupCapture();
+  }, [cleanupCapture]);
 
-  // Countdown ticker while listening.
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => { mountedRef.current = false; invalidate(); };
+  }, [invalidate]);
+
+  const current = useCallback((operation: number) =>
+    mountedRef.current && operationRef.current === operation && !abortRef.current?.signal.aborted, []);
+
+  const begin = useCallback(() => {
+    // The synchronous lock covers repeated clicks before React renders the
+    // requesting state, including the browser permission prompt.
+    if (!mountedRef.current || busyRef.current) return null;
+    invalidate();
+    busyRef.current = true;
+    abortRef.current = new AbortController();
+    onNewAttempt?.();
+    return operationRef.current;
+  }, [invalidate, onNewAttempt]);
+
   useEffect(() => {
     if (phase.kind !== 'listening') return;
     const interval = setInterval(() => {
@@ -83,125 +132,135 @@ export default function IdentifyListener({ onMatched, onNewAttempt, className }:
     return () => clearInterval(interval);
   }, [phase]);
 
-  /** Fingerprint a snippet (recorded or uploaded) and query the catalog. */
-  const identifyBlob = useCallback(
-    async (blob: Blob) => {
-      onNewAttempt?.();
-      setPhase({ kind: 'matching' });
-      snippetRef.current = blob;
-
-      try {
-        const { pcm, sampleRate } = await decodeFileToMono(blob);
-        const hashes = await computeFingerprint(pcm, sampleRate, MAX_HASHES_PER_QUERY);
-        if (hashes.length === 0) {
-          setPhase({ kind: 'error', message: 'Could not hear enough — try again closer to the speaker.' });
-          return;
-        }
-
-        const res = await fetch('/api/identify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ hashes }),
-        });
-        const body = (await res.json()) as IdentifyResponseBody;
-
-        switch (body.status) {
-          case 'matched':
-            setPhase({ kind: 'matched', song: body.song, confidence: body.match.confidence });
-            onMatched(body.song);
-            break;
-          case 'no_match':
-            setPhase({ kind: 'no_match', reason: body.reason, fallbackAvailable: body.fallbackAvailable, triedFallback: false });
-            break;
-          case 'rate_limited':
-            setPhase({ kind: 'error', message: 'Too many attempts — give it a minute and try again.' });
-            break;
-          default:
-            setPhase({ kind: 'error', message: 'That snippet could not be processed.' });
-        }
-      } catch (err) {
-        console.warn('identify failed:', err);
-        setPhase({
-          kind: 'error',
-          message: 'Could not decode the recording — try uploading a short clip instead.',
-        });
+  const identifyBlob = useCallback(async (blob: Blob, operation: number) => {
+    if (!current(operation)) return;
+    setPhase({ kind: 'matching' });
+    snippetRef.current = blob;
+    try {
+      const { pcm, sampleRate } = await decodeFileToMono(blob);
+      if (!current(operation)) return;
+      const hashes = await computeFingerprint(pcm, sampleRate, MAX_HASHES_PER_QUERY);
+      if (!current(operation)) return;
+      if (hashes.length === 0) {
+        setPhase({ kind: 'error', message: 'Could not hear enough — try again closer to the speaker.' });
+        return;
       }
-    },
-    [onMatched, onNewAttempt],
-  );
+      const res = await fetch('/api/identify', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hashes }), signal: abortRef.current?.signal,
+      });
+      if (!current(operation)) return;
+      const body = (await res.json()) as IdentifyResponseBody;
+      if (!current(operation)) return;
+      switch (body.status) {
+        case 'matched':
+          snippetRef.current = null;
+          setPhase({ kind: 'matched', song: body.song, confidence: body.match.confidence });
+          onMatched(body.song);
+          break;
+        case 'no_match':
+          setPhase({ kind: 'no_match', reason: body.reason, fallbackAvailable: body.fallbackAvailable, triedFallback: false });
+          break;
+        case 'rate_limited':
+          setPhase({ kind: 'error', message: 'Too many attempts — give it a minute and try again.' });
+          break;
+        default:
+          setPhase({ kind: 'error', message: 'That snippet could not be processed.' });
+      }
+    } catch (err) {
+      if (!current(operation)) return;
+      console.warn('identify failed:', err);
+      setPhase({ kind: 'error', message: 'Could not process the recording — try a short clip instead.' });
+    } finally {
+      if (current(operation)) busyRef.current = false;
+    }
+  }, [current, onMatched]);
 
   const startListening = useCallback(async () => {
-    onNewAttempt?.();
+    const operation = begin();
+    if (operation === null) return;
+    setPhase({ kind: 'requesting' });
     if (typeof MediaRecorder === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
+      busyRef.current = false;
       setPhase({ kind: 'error', message: 'Microphone capture is not supported here — upload a clip instead.' });
       return;
     }
-
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      if (!current(operation)) {
+        stream.getTracks().forEach((track) => track.stop());
+        return;
+      }
       streamRef.current = stream;
-
-      // Live levels for the spectrum.
       const ctx = new AudioContext();
       audioCtxRef.current = ctx;
       await ctx.resume().catch(() => undefined);
+      if (!current(operation)) {
+        stream.getTracks().forEach((track) => track.stop());
+        void ctx.close().catch(() => undefined);
+        return;
+      }
       const source = ctx.createMediaStreamSource(stream);
       const node = ctx.createAnalyser();
       node.fftSize = 256;
       node.smoothingTimeConstant = 0.7;
       source.connect(node);
       setAnalyser(node);
-
       const mimeType = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', ''].find(
         (t) => t === '' || MediaRecorder.isTypeSupported(t),
       );
       const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
       recorderRef.current = recorder;
-
       const chunks: BlobPart[] = [];
       recorder.ondataavailable = (event) => {
-        if (event.data.size > 0) chunks.push(event.data);
+        if (current(operation) && event.data.size > 0) chunks.push(event.data);
       };
       recorder.onstop = () => {
+        if (!current(operation)) return;
         const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
         cleanupCapture();
-        void identifyBlob(blob);
+        void identifyBlob(blob, operation);
       };
-
       recorder.start();
       setElapsed(0);
       setPhase({ kind: 'listening', startedAt: Date.now() });
-      setTimeout(() => {
-        if (recorder.state === 'recording') recorder.stop();
+      captureTimerRef.current = setTimeout(() => {
+        if (current(operation) && recorder.state === 'recording') recorder.stop();
       }, RECORD_MS);
     } catch (err) {
+      if (!current(operation)) return;
       console.warn('mic capture failed:', err);
       cleanupCapture();
-      setPhase({
-        kind: 'error',
-        message: 'Microphone unavailable or permission denied — upload a clip instead.',
-      });
+      busyRef.current = false;
+      setPhase({ kind: 'error', message: 'Microphone unavailable or permission denied — upload a clip instead.' });
     }
-  }, [cleanupCapture, identifyBlob, onNewAttempt]);
+  }, [begin, cleanupCapture, current, identifyBlob]);
 
   const stopEarly = useCallback(() => {
     const recorder = recorderRef.current;
-    if (recorder && recorder.state === 'recording') recorder.stop();
+    if (recorder?.state === 'recording') recorder.stop();
   }, []);
 
-  /** AudD world-catalog fallback — explicit consent, costs a request. */
+  /** Only the named, disclosed confirmation action relays audio to AudD. */
   const tryFallback = useCallback(async () => {
+    if (!mountedRef.current || busyRef.current || phase.kind !== 'consent') return;
     const snippet = snippetRef.current;
     if (!snippet) return;
-    setPhase({ kind: 'matching' });
-
+    const operation = operationRef.current;
+    busyRef.current = true;
+    setPhase({ kind: 'matching', provider: 'audd' });
     try {
       const form = new FormData();
       form.set('audio', snippet, 'snippet');
-      const res = await fetch('/api/identify/fallback', { method: 'POST', body: form });
+      form.set('consent', 'audd-recognition');
+      const res = await fetch('/api/identify/fallback', {
+        method: 'POST', body: form, signal: abortRef.current?.signal,
+      });
+      if (!current(operation)) return;
       const body = (await res.json()) as IdentifyFallbackResponseBody;
-
+      if (!current(operation)) return;
       if (body.status === 'matched') {
+        snippetRef.current = null;
         setPhase({ kind: 'matched', song: body.song });
         onMatched(body.song);
         toast.success(`Matched ${body.song.title}`);
@@ -211,30 +270,33 @@ export default function IdentifyListener({ onMatched, onNewAttempt, className }:
         setPhase({ kind: 'no_match', fallbackAvailable: false, triedFallback: true });
       }
     } catch (err) {
+      if (!current(operation)) return;
       console.warn('fallback failed:', err);
       setPhase({ kind: 'no_match', fallbackAvailable: false, triedFallback: true });
+    } finally {
+      if (current(operation)) busyRef.current = false;
     }
-  }, [onMatched]);
+  }, [current, onMatched, phase.kind]);
 
-  const handleUpload = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      event.target.value = '';
-      if (file) void identifyBlob(file);
-    },
-    [identifyBlob],
-  );
+  const handleUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+    const operation = begin();
+    if (operation !== null) void identifyBlob(file, operation);
+  }, [begin, identifyBlob]);
 
   const reset = useCallback(() => {
+    if (!mountedRef.current) return;
+    invalidate();
     onNewAttempt?.();
-    snippetRef.current = null;
     setPhase({ kind: 'idle' });
-  }, [onNewAttempt]);
+  }, [invalidate, onNewAttempt]);
 
   const secondsLeft = Math.ceil((RECORD_MS - elapsed) / 1000);
 
   return (
-    <Card variant="glow" className={cn('space-y-6 text-center', className)}>
+    <Card variant="glow" role="region" aria-label="Identify recording" className={cn('identify-listener space-y-6 text-center', className)}>
       <input
         ref={fileInputRef}
         type="file"
@@ -247,6 +309,7 @@ export default function IdentifyListener({ onMatched, onNewAttempt, className }:
       {phase.kind === 'idle' && (
         <div className="space-y-5 py-6">
           <button
+            ref={startButtonRef}
             type="button"
             onClick={startListening}
             aria-label="Start listening"
@@ -270,17 +333,25 @@ export default function IdentifyListener({ onMatched, onNewAttempt, className }:
           <div className="space-y-1.5">
             <p className="font-display text-2xl text-[var(--text-hi)]">Tap to listen</p>
             <p className="mx-auto max-w-sm text-sm text-[var(--text-med)]">
-              Use a short, clear passage. Catalog matching recognizes indexed recordings
+              Use audio you have permission to process. Choose a short, clear passage. Catalog matching recognizes indexed recordings
               when the catalog is available.
             </p>
           </div>
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="text-xs text-[var(--text-low)] underline-offset-4 transition-colors hover:text-[var(--text-hi)] hover:underline"
+            className="min-h-11 text-xs text-[var(--text-med)] underline-offset-4 transition-colors hover:text-[var(--text-hi)] hover:underline"
           >
-            …or upload a short clip
+            …or choose a short clip
           </button>
+        </div>
+      )}
+
+      {phase.kind === 'requesting' && (
+        <div className="space-y-4 py-8" role="status">
+          <p className="font-display text-xl text-[var(--text-hi)]">Waiting for microphone permission…</p>
+          <p className="text-sm text-[var(--text-med)]">Recording starts only if you allow microphone access.</p>
+          <Button variant="secondary" className="min-h-11" onClick={reset}>Cancel</Button>
         </div>
       )}
 
@@ -298,6 +369,7 @@ export default function IdentifyListener({ onMatched, onNewAttempt, className }:
           <Button variant="secondary" size="sm" onClick={stopEarly}>
             Match now
           </Button>
+          <Button variant="ghost" className="min-h-11" onClick={reset}>Cancel recording</Button>
         </div>
       )}
 
@@ -306,42 +378,26 @@ export default function IdentifyListener({ onMatched, onNewAttempt, className }:
           <div className="mx-auto h-12 w-40 opacity-70">
             <LiveSpectrum analyser={null} bars={20} className="h-full w-full" />
           </div>
-          <p className="font-display text-xl text-[var(--text-hi)]">Matching the constellation…</p>
+          <p className="font-display text-xl text-[var(--text-hi)]">{phase.provider === 'audd' ? 'Asking AudD to identify the clip…' : 'Matching the constellation…'}</p>
           <p className="text-xs text-[var(--text-low)]">
-            Comparing spectral peaks against the catalog.
+            {phase.provider === 'audd' ? 'Your clip is being sent to AudD for recognition.' : 'Comparing spectral peaks against the catalog.'}
           </p>
+          <Button variant="secondary" className="min-h-11" onClick={reset}>Cancel matching</Button>
         </div>
       )}
 
       {phase.kind === 'matched' && (
-        <div className="space-y-4 py-4">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--text-med)]">
-            Identified
-          </p>
-          <div className="flex items-center justify-center gap-4">
-            {phase.song.coverUrl && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={phase.song.coverUrl}
-                alt=""
-                className="h-20 w-20 rounded-xl border border-[var(--border-subtle)] object-cover"
-              />
-            )}
-            <div className="text-left">
-              <p className="font-display text-2xl leading-tight text-[var(--text-hi)]">
-                {phase.song.title}
+        <div className="space-y-3 py-4">
+          <div role="status" className="space-y-2">
+            <p className="font-display text-xl text-[var(--text-hi)]">Recording identified</p>
+            <p className="text-sm text-[var(--text-med)]">Explore the track details and listening links below.</p>
+            {typeof phase.confidence === 'number' && (
+              <p className="font-mono text-[11px] text-[var(--text-med)]">
+                {Math.round(phase.confidence * 100)}% catalog match signal
               </p>
-              <p className="text-sm text-[var(--text-med)]">{phase.song.artist}</p>
-              {typeof phase.confidence === 'number' && (
-                <p className="mt-1 font-mono text-[11px] text-[var(--text-med)]">
-                  {Math.round(phase.confidence * 100)}% catalog match signal
-                </p>
-              )}
-            </div>
+            )}
           </div>
-          <Button variant="ghost" size="sm" className="min-h-11" onClick={reset}>
-            Identify another
-          </Button>
+          <Button variant="ghost" size="sm" className="min-h-11" onClick={reset}>Identify another</Button>
         </div>
       )}
 
@@ -362,8 +418,8 @@ export default function IdentifyListener({ onMatched, onNewAttempt, className }:
           </p>
           <div className="flex flex-wrap items-center justify-center gap-2">
             {phase.fallbackAvailable && (
-              <Button variant="primary" size="sm" className="min-h-11" onClick={tryFallback}>
-                Try world catalog
+              <Button variant="primary" size="sm" className="min-h-11" onClick={() => setPhase({ kind: 'consent' })}>
+                Try AudD recognition
               </Button>
             )}
             <Button variant="secondary" size="sm" className="min-h-11" onClick={startListening}>
@@ -378,6 +434,24 @@ export default function IdentifyListener({ onMatched, onNewAttempt, className }:
             >
               Search by name →
             </Link>
+          </div>
+        </div>
+      )}
+
+      {phase.kind === 'consent' && (
+        <div className="space-y-4 py-6 text-left" role="region" aria-label="AudD audio sharing consent">
+          <h2 ref={consentHeadingRef} tabIndex={-1} className="font-display text-xl text-[var(--text-hi)]">Send this clip to AudD?</h2>
+          <p className="text-sm leading-relaxed text-[var(--text-med)]">
+            AudD is an external music recognition provider. Your recorded or uploaded clip
+            will leave your device and be sent through SongAnalyzer to AudD to identify the recording.
+            SongAnalyzer does not save the raw audio. AudD processes it under its own privacy policy.
+          </p>
+          <a href="https://audd.io/privacy" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-sm text-[var(--text-hi)] underline underline-offset-4">
+            AudD privacy policy (opens in a new tab)
+          </a>
+          <div className="flex flex-wrap gap-2">
+            <Button variant="primary" className="min-h-11" onClick={tryFallback}>Send clip to AudD</Button>
+            <Button variant="secondary" className="min-h-11" onClick={reset}>Keep audio on device</Button>
           </div>
         </div>
       )}

@@ -6,16 +6,14 @@
  * opus). Only invoked after explicit user consent in the no-match state —
  * every call costs money, hence the strictest rate-limit bucket.
  *
- * On an AudD hit we run the recognized "title artist" through the existing
- * `resolveSong()` + `createSongStore()` pipeline, so the song lands in our
- * DB (and its preview becomes indexable) exactly like a search pick.
+ * On an AudD hit we resolve track metadata without catalog writes. Returned
+ * metadata does not authorize remote audio fetching, analysis or indexing.
  *
  * Always 200 with a `status` discriminator, matching `/api/identify`.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 
-import { createSongStore } from '@/lib/db/song-store-adapter';
 import type { IdentifyFallbackResponseBody } from '@/lib/fingerprint/types';
 import { clientIpFrom, rateLimit } from '@/lib/rate-limit';
 import { isAuddConfigured, recognizeAudd } from '@/lib/sources/audd';
@@ -44,6 +42,9 @@ export async function POST(request: NextRequest) {
   let audio: File;
   try {
     const form = await request.formData();
+    if (form.get('consent') !== 'audd-recognition') {
+      return respond({ status: 'invalid', error: 'audd_consent_required' });
+    }
     const value = form.get('audio');
     if (!(value instanceof File) || value.size === 0) {
       return respond({ status: 'invalid', error: 'missing_audio' });
@@ -57,19 +58,21 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const recognition = await recognizeAudd(audio);
+    if (request.signal.aborted) return respond({ status: 'invalid', error: 'request_cancelled' });
+    const recognition = await recognizeAudd(audio, request.signal);
+    if (request.signal.aborted) return respond({ status: 'invalid', error: 'request_cancelled' });
     if (!recognition) {
       return respond({ status: 'no_match' });
     }
 
-    // Enrich + persist through the standard pipeline when Spotify is up;
+    // Enrich metadata without catalog writes when Spotify is up;
     // otherwise return the bare recognition so the user still gets an answer.
     if (isSpotifyConfigured()) {
       try {
         const song = await resolveSong(
           `${recognition.title} ${recognition.artist}`,
-          createSongStore(),
         );
+        if (request.signal.aborted) return respond({ status: 'invalid', error: 'request_cancelled' });
         return respond({ status: 'matched', song });
       } catch (err) {
         console.warn('identify/fallback: resolveSong failed; returning bare recognition', err);
@@ -82,6 +85,7 @@ export async function POST(request: NextRequest) {
         title: recognition.title,
         artist: recognition.artist,
         album: recognition.album,
+        metadataSource: 'audd',
       },
     });
   } catch (err) {

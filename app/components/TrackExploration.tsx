@@ -6,6 +6,7 @@ import type { SongMeta, UseSongAnalysis } from '@/app/hooks/useSongAnalysis';
 import { Card } from '@/app/components/ui/Card';
 import { Badge } from '@/app/components/ui/Badge';
 import { Button } from '@/app/components/ui/Button';
+import SourceAttribution from '@/app/components/SourceAttribution';
 
 interface TrackExplorationProps {
   song: SongMeta;
@@ -13,7 +14,6 @@ interface TrackExplorationProps {
   loading: boolean;
   error: string;
   hasAnalysis: boolean;
-  onRetry: () => void;
   onClear?: () => void;
   /** Keep the selected track when changing modes inside the workbench. */
   onLyrics?: () => void;
@@ -22,13 +22,13 @@ interface TrackExplorationProps {
 
 /** Selected-track context stays visible even when audio insights cannot run. */
 export default function TrackExploration({
-  song, stage, loading, error, hasAnalysis, onRetry, onClear, onLyrics, onUpload,
+  song, loading, error, hasAnalysis, onClear, onLyrics, onUpload,
 }: TrackExplorationProps) {
   const unavailable = !loading && !hasAnalysis && !error;
   const status = loading
-    ? stage === 'fetching' ? 'Loading audio clip' : 'Reading the audio'
+    ? 'Reading local audio'
     : error ? 'Audio insights unavailable'
-    : hasAnalysis ? 'Clip insights ready' : 'No audio preview available';
+    : hasAnalysis ? 'Local clip insights ready' : 'Audio insights unavailable';
 
   return (
     <Card variant="elev1" className="track-exploration space-y-4" role="region" aria-label="Explore selected track">
@@ -61,7 +61,7 @@ export default function TrackExploration({
         </div>
         {loading ? (
           <p className="text-sm leading-relaxed text-[var(--text-med)]">
-            {stage === 'fetching' ? 'Getting the clip before computing any musical insights.' : 'Measuring the clip in your browser.'}
+            Measuring the local clip in your browser.
           </p>
         ) : error ? (
           <p role="alert" className="break-words text-sm leading-relaxed text-[var(--state-error)]">{error}</p>
@@ -71,15 +71,13 @@ export default function TrackExploration({
           </p>
         ) : (
           <p className="text-sm leading-relaxed text-[var(--text-med)]">
-            The track is selected, but there is no clip to measure. Analyze a local audio file or paste a passage for a separate lyrics reading.
+            Remote previews are not available for analysis here. Open the track to listen,
+            or choose a local file you have permission to analyze for a separate reading.
           </p>
         )}
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        {error && song.previewUrl && (
-          <Button variant="secondary" className="min-h-11" onClick={onRetry}>Retry audio clip</Button>
-        )}
         {(unavailable || error) && (onUpload ? (
           <Button variant="secondary" className="min-h-11" onClick={onUpload}>Analyze a local file</Button>
         ) : (
@@ -90,17 +88,13 @@ export default function TrackExploration({
         ) : (
           <Button asChild variant="ghost" className="min-h-11"><Link href="/analyze?mode=lyrics">Analyze lyrics</Link></Button>
         )}
-        {song.spotifyId && (
-          <Button asChild variant="ghost" className="min-h-11">
-            <a href={`https://open.spotify.com/track/${encodeURIComponent(song.spotifyId)}`} target="_blank" rel="noopener noreferrer" aria-label="Open in Spotify (opens in a new tab)">Open in Spotify <ExternalLink aria-hidden="true" size={14} /></a>
-          </Button>
-        )}
         {song.geniusId && (
           <Button asChild variant="ghost" className="min-h-11">
             <a href={`https://genius.com/songs/${encodeURIComponent(String(song.geniusId))}`} target="_blank" rel="noopener noreferrer" aria-label="View on Genius (opens in a new tab)">View on Genius <ExternalLink aria-hidden="true" size={14} /></a>
           </Button>
         )}
       </div>
+      <SourceAttribution song={song} />
     </Card>
   );
 }

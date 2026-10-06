@@ -1,0 +1,527 @@
+{
+  "date": "2026-10-06",
+  "environment": "saved cloud /workspace/SongAnalyzer; production build; local Node 24.19.0; Chromium",
+  "audioFixture": "original four-second synthesized chords and pulses; real browser MIR/fingerprint workers",
+  "metadataFixtures": "controlled responses; not live recognition accuracy",
+  "audD": "mocked relay only; no external audio upload",
+  "microphone": "pending permission mocked; smoke capture uses fake browser device",
+  "loading": "real local worker response delayed by QA harness only",
+  "scope": "scoped WCAG 2 A/AA, 2.1 AA, 2.2 AA; not whole-app certification",
+  "axeChecks": 21,
+  "violations": 0,
+  "checks": [
+    {
+      "name": "identify",
+      "theme": "dark",
+      "width": 390,
+      "violations": [],
+      "geometry": [
+        {
+          "label": "Analyze a local file",
+          "height": 44,
+          "width": 159.25
+        },
+        {
+          "label": "Analyze lyrics",
+          "height": 44,
+          "width": 127.875
+        },
+        {
+          "label": "Open in Spotify",
+          "height": 56.640625,
+          "width": 255.625
+        }
+      ],
+      "logos": [
+        {
+          "loaded": true,
+          "renderedWidth": 90,
+          "naturalWidth": 3432,
+          "naturalHeight": 940
+        }
+      ],
+      "noOverflow": true
+    },
+    {
+      "name": "identify-runtime",
+      "theme": "dark",
+      "width": 390,
+      "errors": [],
+      "prohibited": []
+    },
+    {
+      "name": "identify",
+      "theme": "dark",
+      "width": 768,
+      "violations": [],
+      "geometry": [
+        {
+          "label": "Analyze a local file",
+          "height": 44,
+          "width": 159.25
+        },
+        {
+          "label": "Analyze lyrics",
+          "height": 44,
+          "width": 127.875
+        },
+        {
+          "label": "Open in Spotify",
+          "height": 56.640625,
+          "width": 255.625
+        }
+      ],
+      "logos": [
+        {
+          "loaded": true,
+          "renderedWidth": 90,
+          "naturalWidth": 3432,
+          "naturalHeight": 940
+        }
+      ],
+      "noOverflow": true
+    },
+    {
+      "name": "identify-runtime",
+      "theme": "dark",
+      "width": 768,
+      "errors": [],
+      "prohibited": []
+    },
+    {
+      "name": "identify",
+      "theme": "dark",
+      "width": 1440,
+      "violations": [],
+      "geometry": [
+        {
+          "label": "Analyze a local file",
+          "height": 44,
+          "width": 159.25
+        },
+        {
+          "label": "Analyze lyrics",
+          "height": 44,
+          "width": 127.875
+        },
+        {
+          "label": "Open in Spotify",
+          "height": 56.640625,
+          "width": 255.625
+        }
+      ],
+      "logos": [
+        {
+          "loaded": true,
+          "renderedWidth": 90,
+          "naturalWidth": 3432,
+          "naturalHeight": 940
+        }
+      ],
+      "noOverflow": true
+    },
+    {
+      "name": "identify-runtime",
+      "theme": "dark",
+      "width": 1440,
+      "errors": [],
+      "prohibited": []
+    },
+    {
+      "name": "search-attribution",
+      "theme": "dark",
+      "width": 390,
+      "violations": [],
+      "geometry": [
+        {
+          "label": "Northern Lights \u2014 the long way home through a midnight cityOriginal synthetic test recording",
+          "height": 52,
+          "width": 356
+        },
+        {
+          "label": "Open in Spotify",
+          "height": 56.640625,
+          "width": 255.625
+        }
+      ],
+      "logos": [
+        {
+          "loaded": true,
+          "renderedWidth": 90,
+          "naturalWidth": 3432,
+          "naturalHeight": 940
+        }
+      ],
+      "noOverflow": true
+    },
+    {
+      "name": "discover",
+      "theme": "dark",
+      "width": 390,
+      "violations": [],
+      "geometry": [
+        {
+          "label": "Clear",
+          "height": 44,
+          "width": 56.453125
+        },
+        {
+          "label": "Analyze a local file",
+          "height": 44,
+          "width": 159.25
+        },
+        {
+          "label": "Analyze lyrics",
+          "height": 44,
+          "width": 127.875
+        },
+        {
+          "label": "Open in Spotify",
+          "height": 56.640625,
+          "width": 255.625
+        }
+      ],
+      "logos": [
+        {
+          "loaded": true,
+          "renderedWidth": 90,
+          "naturalWidth": 3432,
+          "naturalHeight": 940
+        }
+      ],
+      "noOverflow": true
+    },
+    {
+      "name": "audd-consent",
+      "theme": "dark",
+      "width": 390,
+      "violations": [],
+      "geometry": [
+        {
+          "label": "AudD privacy policy (opens in a new tab)",
+          "height": 44,
+          "width": 271.078125
+        },
+        {
+          "label": "Send clip to AudD",
+          "height": 44,
+          "width": 153.53125
+        },
+        {
+          "label": "Keep audio on device",
+          "height": 44,
+          "width": 177.75
+        }
+      ],
+      "logos": [],
+      "noOverflow": true
+    },
+    {
+      "name": "consent-declined",
+      "theme": "dark",
+      "uploads": 0
+    },
+    {
+      "name": "local-error",
+      "theme": "dark",
+      "width": 390,
+      "violations": [],
+      "geometry": [],
+      "logos": [],
+      "noOverflow": true
+    },
+    {
+      "name": "local-ready",
+      "theme": "dark",
+      "width": 390,
+      "violations": [],
+      "geometry": [],
+      "logos": [],
+      "noOverflow": true
+    },
+    {
+      "name": "mic-waiting",
+      "theme": "dark",
+      "width": 390,
+      "violations": [],
+      "geometry": [
+        {
+          "label": "Cancel",
+          "height": 44,
+          "width": 80.484375
+        }
+      ],
+      "logos": [],
+      "noOverflow": true
+    },
+    {
+      "name": "local-loading",
+      "theme": "dark",
+      "width": 390,
+      "violations": [],
+      "geometry": [],
+      "logos": [],
+      "noOverflow": true
+    },
+    {
+      "name": "identify",
+      "theme": "light",
+      "width": 390,
+      "violations": [],
+      "geometry": [
+        {
+          "label": "Analyze a local file",
+          "height": 44,
+          "width": 159.25
+        },
+        {
+          "label": "Analyze lyrics",
+          "height": 44,
+          "width": 127.875
+        },
+        {
+          "label": "Open in Spotify",
+          "height": 56.640625,
+          "width": 255.625
+        }
+      ],
+      "logos": [
+        {
+          "loaded": true,
+          "renderedWidth": 90,
+          "naturalWidth": 3432,
+          "naturalHeight": 940
+        }
+      ],
+      "noOverflow": true
+    },
+    {
+      "name": "identify-runtime",
+      "theme": "light",
+      "width": 390,
+      "errors": [],
+      "prohibited": []
+    },
+    {
+      "name": "identify",
+      "theme": "light",
+      "width": 768,
+      "violations": [],
+      "geometry": [
+        {
+          "label": "Analyze a local file",
+          "height": 44,
+          "width": 159.25
+        },
+        {
+          "label": "Analyze lyrics",
+          "height": 44,
+          "width": 127.875
+        },
+        {
+          "label": "Open in Spotify",
+          "height": 56.640625,
+          "width": 255.625
+        }
+      ],
+      "logos": [
+        {
+          "loaded": true,
+          "renderedWidth": 90,
+          "naturalWidth": 3432,
+          "naturalHeight": 940
+        }
+      ],
+      "noOverflow": true
+    },
+    {
+      "name": "identify-runtime",
+      "theme": "light",
+      "width": 768,
+      "errors": [],
+      "prohibited": []
+    },
+    {
+      "name": "identify",
+      "theme": "light",
+      "width": 1440,
+      "violations": [],
+      "geometry": [
+        {
+          "label": "Analyze a local file",
+          "height": 44,
+          "width": 159.25
+        },
+        {
+          "label": "Analyze lyrics",
+          "height": 44,
+          "width": 127.875
+        },
+        {
+          "label": "Open in Spotify",
+          "height": 56.640625,
+          "width": 255.625
+        }
+      ],
+      "logos": [
+        {
+          "loaded": true,
+          "renderedWidth": 90,
+          "naturalWidth": 3432,
+          "naturalHeight": 940
+        }
+      ],
+      "noOverflow": true
+    },
+    {
+      "name": "identify-runtime",
+      "theme": "light",
+      "width": 1440,
+      "errors": [],
+      "prohibited": []
+    },
+    {
+      "name": "search-attribution",
+      "theme": "light",
+      "width": 390,
+      "violations": [],
+      "geometry": [
+        {
+          "label": "Northern Lights \u2014 the long way home through a midnight cityOriginal synthetic test recording",
+          "height": 52,
+          "width": 356
+        },
+        {
+          "label": "Open in Spotify",
+          "height": 56.640625,
+          "width": 255.625
+        }
+      ],
+      "logos": [
+        {
+          "loaded": true,
+          "renderedWidth": 90,
+          "naturalWidth": 3432,
+          "naturalHeight": 940
+        }
+      ],
+      "noOverflow": true
+    },
+    {
+      "name": "discover",
+      "theme": "light",
+      "width": 390,
+      "violations": [],
+      "geometry": [
+        {
+          "label": "Clear",
+          "height": 44,
+          "width": 56.453125
+        },
+        {
+          "label": "Analyze a local file",
+          "height": 44,
+          "width": 159.25
+        },
+        {
+          "label": "Analyze lyrics",
+          "height": 44,
+          "width": 127.875
+        },
+        {
+          "label": "Open in Spotify",
+          "height": 56.640625,
+          "width": 255.625
+        }
+      ],
+      "logos": [
+        {
+          "loaded": true,
+          "renderedWidth": 90,
+          "naturalWidth": 3432,
+          "naturalHeight": 940
+        }
+      ],
+      "noOverflow": true
+    },
+    {
+      "name": "audd-consent",
+      "theme": "light",
+      "width": 390,
+      "violations": [],
+      "geometry": [
+        {
+          "label": "AudD privacy policy (opens in a new tab)",
+          "height": 44,
+          "width": 271.078125
+        },
+        {
+          "label": "Send clip to AudD",
+          "height": 44,
+          "width": 153.53125
+        },
+        {
+          "label": "Keep audio on device",
+          "height": 44,
+          "width": 177.75
+        }
+      ],
+      "logos": [],
+      "noOverflow": true
+    },
+    {
+      "name": "consent-declined",
+      "theme": "light",
+      "uploads": 0
+    },
+    {
+      "name": "local-error",
+      "theme": "light",
+      "width": 390,
+      "violations": [],
+      "geometry": [],
+      "logos": [],
+      "noOverflow": true
+    },
+    {
+      "name": "local-ready",
+      "theme": "light",
+      "width": 390,
+      "violations": [],
+      "geometry": [],
+      "logos": [],
+      "noOverflow": true
+    },
+    {
+      "name": "mic-waiting",
+      "theme": "light",
+      "width": 390,
+      "violations": [],
+      "geometry": [
+        {
+          "label": "Cancel",
+          "height": 44,
+          "width": 80.484375
+        }
+      ],
+      "logos": [],
+      "noOverflow": true
+    },
+    {
+      "name": "local-loading",
+      "theme": "light",
+      "width": 390,
+      "violations": [],
+      "geometry": [],
+      "logos": [],
+      "noOverflow": true
+    },
+    {
+      "name": "catalog-unavailable-real-api",
+      "theme": "dark",
+      "width": 390,
+      "violations": [],
+      "noOverflow": true
+    }
+  ]
+}

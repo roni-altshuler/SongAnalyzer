@@ -204,18 +204,16 @@ function AnalyzeWorkbench() {
 
   const handleSongPicked = useCallback(
     (hit: SearchHit) => {
-      if (hit.song.previewUrl) setMode('audio');
       void audio.analyzeSong(hit.song);
     },
-    [audio, setMode],
+    [audio],
   );
 
   const handleSimilarPick = useCallback(
     (song: SongMeta) => {
-      setMode('audio');
       void audio.analyzeSong(song);
     },
-    [audio, setMode],
+    [audio],
   );
 
   // Keep the identify handoff working: /analyze?mode=audio renders the audio
@@ -246,8 +244,8 @@ function AnalyzeWorkbench() {
             <span className="text-[var(--text-med)]">a song.</span>
           </h1>
           <p className="mx-auto max-w-xl text-sm text-[var(--text-med)] md:text-base">
-            Search a track, paste lyrics, or drop an audio file — the dual engines read the
-            emotion and tint the page with the song&rsquo;s color.
+            Explore track details, paste lyrics, or choose a local audio file you have
+            permission to analyze. Audio insights describe the passage you choose.
           </p>
         </header>
 
@@ -260,7 +258,6 @@ function AnalyzeWorkbench() {
             <TrackExploration
               song={audio.song} stage={audio.stage} loading={audio.loading}
               error={audio.error} hasAnalysis={Boolean(audio.analysis)}
-              onRetry={() => { if (audio.song) void audio.analyzeSong(audio.song); }}
               onClear={() => {
                 audio.reset();
                 document.querySelector<HTMLInputElement>('[role="combobox"]')?.focus();
