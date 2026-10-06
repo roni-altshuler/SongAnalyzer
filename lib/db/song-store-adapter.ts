@@ -84,7 +84,7 @@ export function createSongStore(): SongStore {
     },
     async upsert(song) {
       const row = await upsertSong(songToInsert(song));
-      return { ...rowToSong(row), metadataSource: song.metadataSource ?? 'catalog' };
+      return { ...rowToSong(row), artistCredits: song.artistCredits, metadataSource: song.metadataSource ?? 'catalog' };
     },
   };
 }

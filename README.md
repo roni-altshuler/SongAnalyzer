@@ -16,6 +16,7 @@ SongAnalyzer is a Next.js music workbench. **Identify** (`/identify`) computes c
 | **Upload audio** | Choose a local file you own or have permission to analyze. The real MIR worker estimates tempo, beat grid, key, timbre and valence/arousal, with the existing DSP fallback. The file and audio insights stay in the current browser session: no fingerprint indexing, server saves or sharing. These estimates are not validated accuracy scores. |
 | **Discover similar songs** | Fresh remote audio analysis and catalog growth are paused. Track selection still provides metadata and listening links. The existing similarity read endpoint and saved vectors are preserved; no new recommendations or features are fabricated. |
 | **Search a song** | Typeahead against Spotify (Client Credentials) returns attributed metadata, cover art and direct item links, without preview URLs. Genius enrichment for IDs and album info only — never lyrics, by ToS. MusicBrainz + AcousticBrainz fill in open audio features when available. |
+| **Follow artist credits** | Selected tracks with source artist IDs link each credited artist to a provider-qualified profile (`/artists/<provider>/<id>`). Profiles retain known track metadata in this tab, show an explicit Person/Group/Unknown type, and use an accessible fallback when permitted official imagery is unavailable. Legacy saved rows cannot yet connect artist identities or related readings. |
 | **Share a result** | Persisted lyrics readings and existing saved records can be shared by permalink (`/share/<slug>`). New audio readings are not persisted. Share images require configured backing services; the known missing-config OG/Twitter 500 remains a follow-up. |
 | **Mood Atlas** | A public dashboard (`/atlas`) aggregating every visible analysis into a global mood distribution, browseable genres, per-artist mood-over-time, and theme clouds. |
 | **Combined view** | When both a pasted-text reading and a local-clip reading exist, the view compares their estimated valence/arousal. The app does not verify that these inputs belong to the same recording; the agreement value is a distance between estimates, not model accuracy. |
@@ -46,6 +47,29 @@ a server consent marker. The footer describes each data path accurately.
 The [track exploration verification](docs/TRACK_EXPLORATION.md) records the
 policy boundary, regression tests, browser checks and remaining live-catalog
 prerequisites.
+
+## Artist identity profiles
+
+Artist credits preserve provider order, IDs, names and available artist-page
+links; comma-joined display names are never split into identities. Spotify and
+Genius credits have an Unknown person/group type. Only an explicit MusicBrainz
+artist type supplies Person or Group; artists from different providers are not
+merged by name. Profiles show tracks explored in this tab, with loading, empty,
+retryable storage-error and temporary-context states. The bounded tab cache
+stores metadata only, without audio, lyrics or analysis results.
+
+No artist/biography/image API request was added. Track album art cannot become
+an artist portrait or band logo. The reviewed visual-asset registry is empty:
+real imagery needs matching artist identity, verified provenance, explicit
+display-permission evidence and attribution. The existing songs schema stores
+only a display artist string, so artist credits are retained in live source and
+resolver responses but are not persisted or used to join saved Atlas readings.
+Direct profile links opened without this tab’s context show that limitation.
+
+The [artist profile verification](docs/ARTIST_PROFILES.md) describes the asset
+contract, browser checks and remaining data prerequisites. Existing Atlas name
+routes and recording/privacy protections remain intact.
+
 ## Architecture in one breath
 
 The [focused workbench interface pass](docs/WORKBENCH_POLISH.md) documents the
@@ -61,6 +85,7 @@ next reliability, music evaluation, discovery and product-interface work.
 │    page.tsx              ── home (lyrics + audio modes)          │
 │    share/[slug]/         ── permalink + edge-rendered OG image   │
 │    atlas/                ── public Mood Atlas dashboard          │
+│    artists/[provider]/[id]/ ── source identity + tab track context│
 │    api/analyze           ── hybrid engine endpoint               │
 │    api/songs/{search,id} ── Spotify/Genius/MB/AB orchestration   │
 │    api/analyses/share    ── mark-public + slug return            │

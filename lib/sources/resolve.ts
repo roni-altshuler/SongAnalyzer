@@ -41,6 +41,7 @@ export async function resolveSong(
   const base: Song = {
     title: top.song.title,
     artist: top.song.artist,
+    artistCredits: top.song.artistCredits,
     album: top.song.album,
     year: top.song.year,
     coverUrl: top.song.coverUrl,
@@ -104,7 +105,9 @@ export async function resolveSong(
 
   if (store) {
     try {
-      return metadataOnly(await store.upsert(merged));
+      // Current storage has no artist-credit column. Keep fresh source IDs
+      // in the returned metadata instead of dropping them on a legacy projection.
+      return metadataOnly({ ...await store.upsert(merged), artistCredits: merged.artistCredits });
     } catch (err) {
       console.warn('resolveSong: store.upsert failed; returning unpersisted record', err);
     }

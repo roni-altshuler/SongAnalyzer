@@ -7,6 +7,7 @@ import { Card } from '@/app/components/ui/Card';
 import { Badge } from '@/app/components/ui/Badge';
 import { Button } from '@/app/components/ui/Button';
 import SourceAttribution from '@/app/components/SourceAttribution';
+import ArtistCredits from '@/app/components/ArtistCredits';
 
 interface TrackExplorationProps {
   song: SongMeta;
@@ -46,7 +47,7 @@ export default function TrackExploration({
             Explore this track
           </p>
           <h2 className="break-words font-display text-2xl leading-tight text-[var(--text-hi)]">{song.title}</h2>
-          <p className="break-words text-sm text-[var(--text-med)]">{song.artist}</p>
+          <ArtistCredits song={song} />
         </div>
         {onClear && (
           <Button variant="ghost" size="sm" className="min-h-11 shrink-0" onClick={onClear} aria-label="Clear selected track">

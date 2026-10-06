@@ -1,3 +1,5 @@
+import type { ArtistCredit } from '@/lib/artists/identity';
+
 /**
  * Shared types for the external-data-sources module.
  *
@@ -40,6 +42,8 @@ export interface Song {
   id?: string;
   title: string;
   artist: string;
+  /** Ordered source credits. `artist` above is a legacy display label only. */
+  artistCredits?: ArtistCredit[];
   album?: string;
   year?: number;
   /** Album-art URL (we prefer the largest Spotify image). */
@@ -64,7 +68,7 @@ export interface SearchHit {
   /** Source-provided relevance score, or a synthesized 0..1 confidence. */
   score: number;
   /** Subset of `Song` fields known at search time. */
-  song: Pick<Song, 'title' | 'artist' | 'album' | 'year' | 'coverUrl' | 'previewUrl' | 'metadataSource' | 'spotifyId' | 'geniusId' | 'mbid'>;
+  song: Pick<Song, 'title' | 'artist' | 'artistCredits' | 'album' | 'year' | 'coverUrl' | 'previewUrl' | 'metadataSource' | 'spotifyId' | 'geniusId' | 'mbid'>;
 }
 
 /**

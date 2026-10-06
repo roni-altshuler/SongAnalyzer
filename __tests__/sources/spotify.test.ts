@@ -26,7 +26,11 @@ const searchBody = () =>
           {
             id: 'sp-1',
             name: 'Song',
-            artists: [{ id: 'a', name: 'Artist' }],
+            artists: [
+              { id: 'a', name: 'Artist, with a comma', external_urls: { spotify: 'https://open.spotify.com/artist/a' } },
+              { id: 'b', name: 'Second Artist' },
+              { id: 'c', name: 'Artist, with a comma' },
+            ],
             album: {
               id: 'al',
               name: 'Album',
@@ -101,7 +105,13 @@ describe('spotify token caching', () => {
       expect(song.previewUrl).toBeUndefined();
       expect(song.metadataSource).toBe('spotify');
       expect(song.spotifyId).toBe('sp-1');
+      expect(song.artistCredits?.map((artist) => [artist.id, artist.name, artist.url, artist.entityType])).toEqual([
+        ['a', 'Artist, with a comma', 'https://open.spotify.com/artist/a', 'Unknown'],
+        ['b', 'Second Artist', 'https://open.spotify.com/artist/b', 'Unknown'],
+        ['c', 'Artist, with a comma', 'https://open.spotify.com/artist/c', 'Unknown'],
+      ]);
     }
+    expect(vi.mocked(fetch).mock.calls.some(([input]) => String(input).includes('/artists/'))).toBe(false);
   });
 
   it('refreshes the token after the TTL has expired', async () => {

@@ -1,6 +1,7 @@
 import 'server-only';
 
 import type { SearchHit, Song } from './types';
+import { artistCredit } from '@/lib/artists/identity';
 
 /**
  * Spotify Web API adapter — **Client Credentials flow only**.
@@ -129,6 +130,7 @@ interface SpotifyImage {
 interface SpotifyArtist {
   id: string;
   name: string;
+  external_urls?: { spotify?: string };
 }
 
 interface SpotifyAlbum {
@@ -174,6 +176,7 @@ function toSearchHit(t: SpotifyTrack): SearchHit {
     song: {
       title: t.name,
       artist: t.artists.map((a) => a.name).join(', '),
+      artistCredits: t.artists.map((a) => artistCredit({ provider: 'spotify', id: a.id, name: a.name, url: a.external_urls?.spotify })),
       album: t.album.name,
       year: yearFromReleaseDate(t.album.release_date),
       coverUrl: pickCover(t.album.images),
@@ -208,6 +211,7 @@ export async function getSpotifyTrack(id: string): Promise<Song> {
   return {
     title: t.name,
     artist: t.artists.map((a) => a.name).join(', '),
+    artistCredits: t.artists.map((a) => artistCredit({ provider: 'spotify', id: a.id, name: a.name, url: a.external_urls?.spotify })),
     album: t.album.name,
     year: yearFromReleaseDate(t.album.release_date),
     coverUrl: pickCover(t.album.images),
