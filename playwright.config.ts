@@ -23,13 +23,15 @@ export default defineConfig({
   timeout: 60_000,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  // Consent and permission checks must pass on their first attempt. A retry
+  // must not turn an intermittent failure in these critical paths green.
+  retries: 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
 
   use: {
     baseURL: `http://localhost:${PORT}`,
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
     // Tests assume the dark brand. The site has a light toggle but the OG
     // identity is dark; locking the colorScheme keeps screenshots stable.
     colorScheme: 'dark',

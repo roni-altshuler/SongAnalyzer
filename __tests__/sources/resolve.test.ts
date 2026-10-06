@@ -159,7 +159,8 @@ describe('resolveSong', () => {
     expect(song.album).toBe('WHEN WE ALL FALL ASLEEP');
     expect(song.year).toBe(2019);
     expect(song.coverUrl).toBe('https://img/cover.jpg');
-    expect(song.previewUrl).toBe('https://p.scdn.co/preview.mp3');
+    expect(song.previewUrl).toBeUndefined();
+    expect(song.metadataSource).toBe('spotify');
     expect(song.spotifyId).toBe('sp-bad-guy');
     expect(song.mbid).toBe('aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee');
     expect(song.geniusId).toBe(4448495);

@@ -1,30 +1,11 @@
 /**
- * POST /api/analyses — persist a client-side analysis (audio / combined /
- * lyrics) so it can be shared, listed, and aggregated into the Atlas.
- *
- * This closes a long-standing gap: `/api/analyses/share` expects an
- * `analysisId`, but nothing created analysis rows for client-side results.
- *
- * Body:
- *   {
- *     mode: 'lyrics' | 'audio' | 'combined',
- *     result: AnalysisResult-shaped object (jsonb, size-capped),
- *     song?: { title, artist, album?, year?, coverUrl?, previewUrl?, spotifyId?, ... },
- *     lyricsExcerpt?: string (≤500 chars, mirrors the DB constraint),
- *     language?: string, translated?: boolean
- *   }
- *
- * When `song` is provided it is upserted server-side (the client never
- * writes to `songs` directly) and the analysis links to it. The response
- * includes the DB `songId`, which the client then uses for fingerprint
- * ingest (`/api/fingerprints`) and sonic-vector persistence
- * (`/api/songs/[id]/features`).
- *
- * Always 200 with a `status` discriminator once past validation; a missing
- * store degrades to `store_unavailable`, never a 5xx.
+ * Persist lyrics readings. Audio/combined results and feature payloads are
+ * refused before any external call: client provenance is not a rights grant.
+ * Existing saved records and their access rules are unchanged.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { AUDIO_PERSISTENCE_DENIAL, isLyricsResult } from '@/lib/audio/policy';
 
 import { createAnalysis } from '@/lib/db/analyses';
 import { upsertSong } from '@/lib/db/songs';
@@ -75,10 +56,6 @@ function parseSong(value: unknown): Song | null {
 }
 
 export async function POST(request: NextRequest) {
-  const limit = await rateLimit('analyze', clientIpFrom(request));
-  if (!limit.success) {
-    return NextResponse.json({ error: 'rate_limited' }, { status: 429 });
-  }
 
   let body: AnalysesRequestBody;
   try {
@@ -91,6 +68,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'invalid_mode' }, { status: 400 });
   }
   const mode = body.mode as AnalysisMode;
+  // Client declarations cannot prove a recording's rights or provenance.
+  // Refuse audio/combined results before any song or analysis write.
+  if (mode !== 'lyrics') {
+    return NextResponse.json(AUDIO_PERSISTENCE_DENIAL, { status: 403 });
+  }
 
   const result = body.result;
   if (!result || typeof result !== 'object' || Array.isArray(result)) {
@@ -99,9 +81,18 @@ export async function POST(request: NextRequest) {
   if (typeof (result as { mood?: unknown }).mood !== 'string') {
     return NextResponse.json({ error: 'result_missing_mood' }, { status: 400 });
   }
+  if (!isLyricsResult(result as Record<string, unknown>)) {
+    return NextResponse.json(AUDIO_PERSISTENCE_DENIAL, { status: 403 });
+  }
   if (JSON.stringify(result).length > MAX_RESULT_BYTES) {
     return NextResponse.json({ error: 'result_too_large' }, { status: 400 });
   }
+
+  const limit = await rateLimit('analyze', clientIpFrom(request));
+  if (!limit.success) {
+    return NextResponse.json({ error: 'rate_limited' }, { status: 429 });
+  }
+
 
   if (!isFingerprintStoreConfigured()) {
     return NextResponse.json({ status: 'store_unavailable' });

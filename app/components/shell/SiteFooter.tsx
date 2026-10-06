@@ -26,12 +26,12 @@ export default function SiteFooter() {
 
         <div className="mt-8 space-y-1.5 border-t border-[var(--border-subtle)] pt-6 text-center text-[11px] leading-relaxed text-[var(--text-low)]">
           <p className="tracking-wide">
-            Analysis runs in your browser — audio never leaves your device; only
-            non-reversible fingerprint hashes and feature vectors are stored.
+            Local audio insights stay on your device. Catalog identification sends fingerprint
+            hashes to SongAnalyzer. Optional AudD recognition sends the clip to AudD only after you confirm.
           </p>
           <p className="tracking-wide opacity-80">
             Song metadata via Spotify, MusicBrainz &amp; Genius (metadata only — never lyrics).
-            More lyrics or longer audio → sharper analysis.
+            Remote previews are not analyzed. Audio insights are estimates of the passage you choose.
           </p>
         </div>
       </div>

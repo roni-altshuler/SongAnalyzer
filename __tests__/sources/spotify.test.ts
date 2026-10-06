@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   __resetSpotifyTokenCache,
   searchSpotify,
+  getSpotifyTrack,
   isSpotifyConfigured,
   SpotifyNotConfiguredError,
 } from '@/lib/sources/spotify';
@@ -32,7 +33,7 @@ const searchBody = () =>
               release_date: '2020-01-01',
               images: [],
             },
-            preview_url: null,
+            preview_url: 'https://p.scdn.co/prohibited.mp3',
             popularity: 60,
           },
         ],
@@ -84,6 +85,23 @@ describe('spotify token caching', () => {
       return u.hostname === 'accounts.spotify.com';
     });
     expect(tokenCalls).toHaveLength(1);
+  });
+
+  it('returns attributed metadata without a preview URL for search and track detail', async () => {
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async (input) => {
+      const url = new URL(String(input));
+      if (url.hostname === 'accounts.spotify.com') return tokenBody('tok');
+      if (url.pathname.endsWith('/search')) return searchBody();
+      const body = await searchBody().json();
+      return new Response(JSON.stringify(body.tracks.items[0]));
+    });
+    const hit = (await searchSpotify('track'))[0].song;
+    const detail = await getSpotifyTrack('sp-1');
+    for (const song of [hit, detail]) {
+      expect(song.previewUrl).toBeUndefined();
+      expect(song.metadataSource).toBe('spotify');
+      expect(song.spotifyId).toBe('sp-1');
+    }
   });
 
   it('refreshes the token after the TTL has expired', async () => {

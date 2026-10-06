@@ -6,13 +6,14 @@
  *
  * Renders nothing until the song has a persisted vector and at least one
  * neighbour exists (the endpoint is always-200 fail-soft). Clicking a card
- * hands the song to the shared analysis pipeline via `onPick`.
+ * selects metadata via `onPick`; it cannot authorize audio analysis.
  */
 
 import { useEffect, useState } from 'react';
 import { Card } from '@/app/components/ui/Card';
 import { cn } from '@/lib/cn';
 import type { SongMeta } from '@/app/hooks/useSongAnalysis';
+import SourceAttribution from '@/app/components/SourceAttribution';
 
 interface SimilarHit {
   id: string;
@@ -20,6 +21,9 @@ interface SimilarHit {
   artist: string;
   coverUrl?: string;
   previewUrl?: string;
+  spotifyId?: string;
+  geniusId?: number;
+  metadataSource?: SongMeta['metadataSource'];
   distance: number;
 }
 
@@ -70,7 +74,9 @@ export default function SimilarSongs({ songId, onPick, className }: SimilarSongs
                     title: hit.title,
                     artist: hit.artist,
                     coverUrl: hit.coverUrl,
-                    previewUrl: hit.previewUrl,
+                    spotifyId: hit.spotifyId,
+                    geniusId: hit.geniusId,
+                    metadataSource: hit.metadataSource,
                   })
                 }
                 className={cn(
@@ -96,6 +102,7 @@ export default function SimilarSongs({ songId, onPick, className }: SimilarSongs
                   {similarity}% similar
                 </p>
               </button>
+              <div className="w-36 px-1 pt-2"><SourceAttribution song={hit} /></div>
             </li>
           );
         })}

@@ -1,0 +1,117 @@
+{
+  "environment": "saved cloud",
+  "server": "Next 16.3.6 dev",
+  "browser": "Chromium",
+  "fixture": "Original synthetic four-second WAV; real decode/fingerprint worker; mocked catalog/AudD routes",
+  "scopedAxeChecks": 12,
+  "results": [
+    {
+      "theme": "dark",
+      "width": 390,
+      "reducedMotion": true,
+      "pending": {
+        "violations": [],
+        "noOverflow": true
+      },
+      "ready": {
+        "violations": [],
+        "noOverflow": true
+      },
+      "lookups": 1,
+      "uploads": 0,
+      "errors": [],
+      "keyboardFileChooser": true,
+      "declineReturnsFocus": true
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "reducedMotion": true,
+      "pending": {
+        "violations": [],
+        "noOverflow": true
+      },
+      "ready": {
+        "violations": [],
+        "noOverflow": true
+      },
+      "lookups": 1,
+      "uploads": 0,
+      "errors": [],
+      "keyboardFileChooser": true,
+      "declineReturnsFocus": true
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "reducedMotion": true,
+      "pending": {
+        "violations": [],
+        "noOverflow": true
+      },
+      "ready": {
+        "violations": [],
+        "noOverflow": true
+      },
+      "lookups": 1,
+      "uploads": 0,
+      "errors": [],
+      "keyboardFileChooser": true,
+      "declineReturnsFocus": true
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "reducedMotion": true,
+      "pending": {
+        "violations": [],
+        "noOverflow": true
+      },
+      "ready": {
+        "violations": [],
+        "noOverflow": true
+      },
+      "lookups": 1,
+      "uploads": 0,
+      "errors": [],
+      "keyboardFileChooser": true,
+      "declineReturnsFocus": true
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "reducedMotion": true,
+      "pending": {
+        "violations": [],
+        "noOverflow": true
+      },
+      "ready": {
+        "violations": [],
+        "noOverflow": true
+      },
+      "lookups": 1,
+      "uploads": 0,
+      "errors": [],
+      "keyboardFileChooser": true,
+      "declineReturnsFocus": true
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "reducedMotion": true,
+      "pending": {
+        "violations": [],
+        "noOverflow": true
+      },
+      "ready": {
+        "violations": [],
+        "noOverflow": true
+      },
+      "lookups": 1,
+      "uploads": 0,
+      "errors": [],
+      "keyboardFileChooser": true,
+      "declineReturnsFocus": true
+    }
+  ]
+}

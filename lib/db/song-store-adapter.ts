@@ -36,7 +36,9 @@ export function rowToSong(row: SongRow): Song {
     album: row.album ?? undefined,
     year: row.release_year ?? undefined,
     coverUrl: row.cover_url ?? undefined,
-    previewUrl: row.preview_url ?? undefined,
+    // Legacy rows do not contain a verified recording grant or metadata
+    // provenance. Retain identifiers for links, without inventing a source.
+    metadataSource: 'catalog',
     spotifyId: row.spotify_id ?? undefined,
     geniusId: row.genius_id ?? undefined,
     mbid: row.musicbrainz_recording_id ?? undefined,
@@ -60,7 +62,6 @@ export function songToInsert(song: Song): SongInsert {
     album: song.album ?? null,
     release_year: song.year ?? null,
     cover_url: song.coverUrl ?? null,
-    preview_url: song.previewUrl ?? null,
     acousticbrainz_features: (song.acousticFeatures ?? null) as Json | null,
   };
 }
@@ -83,7 +84,7 @@ export function createSongStore(): SongStore {
     },
     async upsert(song) {
       const row = await upsertSong(songToInsert(song));
-      return rowToSong(row);
+      return { ...rowToSong(row), metadataSource: song.metadataSource ?? 'catalog' };
     },
   };
 }

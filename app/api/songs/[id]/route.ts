@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { metadataOnly } from '@/lib/audio/policy';
 import { unstable_cache } from 'next/cache';
 
 import { getSpotifyTrack, isSpotifyConfigured } from '@/lib/sources/spotify';
@@ -12,7 +13,7 @@ import type { Song } from '@/lib/sources/types';
  *
  * `id` is a **Spotify track ID** — we treat Spotify as the canonical
  * identity space here because it's the only source guaranteed to give us
- * preview audio + cover art together.
+ * track metadata and cover art together. Remote audio is not exposed for analysis.
  *
  * Required env vars:
  *   SPOTIFY_CLIENT_ID
@@ -103,7 +104,7 @@ export async function GET(
 
   try {
     const song = await getCachedSong(id);
-    return NextResponse.json(song, {
+    return NextResponse.json(metadataOnly(song), {
       headers: {
         'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
       },

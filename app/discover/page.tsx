@@ -3,10 +3,9 @@
 /**
  * /discover — sonic similarity exploration.
  *
- * Pick a starting song; it runs through the shared analysis pipeline (which
- * persists its sonic vector), then the "feels like this" rail surfaces
- * nearest neighbours by cosine distance. Clicking a neighbour re-centres the
- * exploration on it — an endless walk through the catalog's mood space.
+ * Track selection retains metadata and item links. Remote analysis and new
+ * vector/index writes are disabled until recording permissions are verified.
+ * Existing catalog records and the similarity read endpoint remain intact.
  */
 
 import { useCallback } from 'react';
@@ -19,6 +18,7 @@ import AudioAnalysisResultsView from '@/app/components/AudioAnalysisResults';
 import SimilarSongs from '@/app/components/SimilarSongs';
 import SongSearch from '@/app/components/SongSearch';
 import WaveformPlayer from '@/app/components/WaveformPlayer';
+import TrackExploration from '@/app/components/TrackExploration';
 import { Card } from '@/app/components/ui/Card';
 import { Spectrum } from '@/app/components/ui/Spectrum';
 import { toast } from '@/app/components/ui/Toast';
@@ -64,8 +64,8 @@ export default function DiscoverPage() {
             <span className="text-accent-gradient italic">feels the same.</span>
           </h1>
           <p className="mx-auto max-w-xl text-sm text-[var(--text-med)] md:text-base">
-            Start from any song. Its sonic fingerprint — timbre, harmony, tempo, feel — pulls in
-            the closest neighbours from everything the community has analyzed.
+            Explore track details and listening links. Remote audio analysis and new
+            catalog indexing are paused while recording permissions are reviewed.
           </p>
         </header>
 
@@ -74,26 +74,15 @@ export default function DiscoverPage() {
         </div>
 
         {audio.song && (
-          <div className="mb-6 flex items-center gap-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elev1)] px-4 py-3 ring-inset-soft">
-            {audio.song.coverUrl && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={audio.song.coverUrl}
-                alt=""
-                width={36}
-                height={36}
-                className="h-9 w-9 rounded-md border border-[var(--border-subtle)] object-cover"
-              />
-            )}
-            <div className="min-w-0 flex-1">
-              <p className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-low)]">
-                Exploring from
-              </p>
-              <p className="truncate text-sm text-[var(--text-hi)]">
-                <span className="font-display">{audio.song.title}</span>
-                <span className="text-[var(--text-med)]"> · {audio.song.artist}</span>
-              </p>
-            </div>
+          <div className="mb-6">
+            <TrackExploration
+              song={audio.song} stage={audio.stage} loading={audio.loading}
+              error={audio.error} hasAnalysis={Boolean(audio.analysis)}
+              onClear={() => {
+                audio.reset();
+                document.querySelector<HTMLInputElement>('[role="combobox"]')?.focus();
+              }}
+            />
           </div>
         )}
 
@@ -115,20 +104,20 @@ export default function DiscoverPage() {
               analysisId={audio.analysisId ?? undefined}
             />
           </div>
-        ) : (
+        ) : !audio.song ? (
           <Card variant="elev1" className="py-14 text-center">
             <div className="mx-auto mb-5 h-10 w-40 opacity-60">
               <Spectrum bars={20} className="h-full w-full" />
             </div>
             <h3 className="mb-2 font-display text-xl text-[var(--text-hi)]">
-              Every analysis grows the map
+              Start with a track you love
             </h3>
             <p className="mx-auto max-w-md text-sm text-[var(--text-med)]">
-              Search for a song above to place it in mood space. Similarity is computed from a
-              48-dimension sonic fingerprint — not genre tags.
+              Search above for track details and listening links. You can measure a
+              local recording in Analyze; those insights stay on your device.
             </p>
           </Card>
-        )}
+        ) : null}
       </div>
     </main>
   );

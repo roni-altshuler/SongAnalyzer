@@ -1,9 +1,8 @@
 # SongAnalyzer
 
-> Identify a song from ten seconds of its beat. Decode its mood from lyrics and audio. Discover what feels the same — and let the song tint the page.
+> Explore a track, read permitted local audio and lyrics, and follow listening links.
 
-SongAnalyzer is a music-streaming-dark Next.js app built around three surfaces. **Identify** (`/identify`) fingerprints instrumental audio in your browser — a Wang-2003 spectral-peak constellation computed in a Web Worker; only integer hashes reach the server — and matches it against the catalog of everything the app has analyzed, with an optional AudD world-catalog fallback. **Analyze** (`/analyze`) reads songs through two engines: lyrics via a hybrid transformer + keyword pipeline, audio via a real MIR engine (Meyda MFCC/chroma, beat grid, key detection, valence/arousal) with the original DSP engine as a fail-soft fallback. **Discover** (`/discover`) walks a 48-dimension sonic-fingerprint space (pgvector) to find songs that *feel* the same. The dominant emotion drives an accent gradient that cascades through the entire UI in real time.
-
+SongAnalyzer is a Next.js music workbench. **Identify** (`/identify`) computes constellation fingerprints in a browser worker and queries the existing catalog; it requires a configured, appropriately licensed index. Optional AudD recognition sends a clip to the external provider only after a named disclosure and explicit confirmation. **Analyze** (`/analyze`) reads user-pasted lyrics through the existing hybrid keyword/transformer pipeline and measures local audio through the MIR worker with a DSP fallback. **Discover** (`/discover`) currently offers track metadata and listening links. Remote preview analysis and new audio-derived persistence/indexing are disabled until recording permissions can be verified server-side. Existing records and access rules remain intact.
 **Live:** [song-analyzer-roni-altshulers-projects.vercel.app](https://song-analyzer-roni-altshulers-projects.vercel.app)
 
 ---
@@ -12,18 +11,41 @@ SongAnalyzer is a music-streaming-dark Next.js app built around three surfaces. 
 
 | | |
 |---|---|
-| **Identify a song** | Hold your device to the music (or upload a clip). A constellation fingerprint is computed in a Web Worker and matched via a Postgres RPC against every song the app has analyzed — audio never leaves the browser for catalog matches. Env-gated AudD fallback covers the world catalog. |
-| **Paste lyrics** | Hybrid transformer + keyword engine returns mood, vibe, energy, sentiment, themes, and a per-engine provenance trail. Confidence calibrated, dominant emotion mapped, mood color computed server-side. |
-| **Upload audio** | The v2 MIR engine (Web Worker) extracts a beat grid + tempo (octave-corrected autocorrelation), musical key (Krumhansl-Schmuckler over chroma), MFCC timbre stats, spectral flux, and a valence/arousal reading — with the original lightweight DSP engine as an automatic fallback. |
-| **Discover similar songs** | Every analysis persists a 48-dim sonic fingerprint (pgvector, HNSW cosine). The "feels like this" rail walks the catalog by sound, not genre tags. |
-| **Search a song** | Typeahead against Spotify (Client Credentials) returns metadata, cover art, and 30-second previews. Genius enrichment for IDs and album info only — never lyrics, by ToS. MusicBrainz + AcousticBrainz fill in open audio features when available. |
-| **Share a result** | Each analysis can be marked public; you get a permalink (`/share/<slug>`) and a 1200×630 OG image generated at the edge using the song's mood-color palette. |
+| **Identify a song** | Choose a permitted clip or explicitly start the microphone. Browser-computed hashes query the existing catalog; raw audio is not sent for this lookup. Optional, configured AudD fallback names the provider and asks before sending the clip. A catalog outage is distinct from a genuine no-match. |
+| **Paste lyrics** | Hybrid transformer + keyword engine returns mood, vibe, energy, sentiment, themes, and a per-engine provenance trail. Heuristic confidence values, dominant emotion mapped, mood color computed server-side; confidence is not measured accuracy. |
+| **Upload audio** | Choose a local file you own or have permission to analyze. The real MIR worker estimates tempo, beat grid, key, timbre and valence/arousal, with the existing DSP fallback. The file and audio insights stay in the current browser session: no fingerprint indexing, server saves or sharing. These estimates are not validated accuracy scores. |
+| **Discover similar songs** | Fresh remote audio analysis and catalog growth are paused. Track selection still provides metadata and listening links. The existing similarity read endpoint and saved vectors are preserved; no new recommendations or features are fabricated. |
+| **Search a song** | Typeahead against Spotify (Client Credentials) returns attributed metadata, cover art and direct item links, without preview URLs. Genius enrichment for IDs and album info only — never lyrics, by ToS. MusicBrainz + AcousticBrainz fill in open audio features when available. |
+| **Share a result** | Persisted lyrics readings and existing saved records can be shared by permalink (`/share/<slug>`). New audio readings are not persisted. Share images require configured backing services; the known missing-config OG/Twitter 500 remains a follow-up. |
 | **Mood Atlas** | A public dashboard (`/atlas`) aggregating every visible analysis into a global mood distribution, browseable genres, per-artist mood-over-time, and theme clouds. |
-| **Combined view** | When the same song has both a lyrics analysis and an audio analysis, both are projected onto a shared valence/arousal plane — the agreement score is a distance in emotion space, drawn on a live circumplex map, surfacing the classic "happy melody / sad lyrics" tension. |
+| **Combined view** | When both a pasted-text reading and a local-clip reading exist, the view compares their estimated valence/arousal. The app does not verify that these inputs belong to the same recording; the agreement value is a distance between estimates, not model accuracy. |
 | **Mood-color cascade** | When a result lands, `--accent-from / --accent-to / --accent-glow` are written to `<html>` and every primitive (cards, buttons, badges, charts, hero glow) repaints in the song's color. |
 | **Multi-language** | Built-in detection across 11+ languages; auto-translates via Helsinki-NLP through the Hugging Face Inference API when a token is configured. |
 | **History** | Local result previews persist to `localStorage`; restoring one clears the current song/audio context and Share id. Full lyrics and a server analysis id are not retained locally, so a restored result can be copied but must be re-analyzed from its lyrics to enable sharing. |
 
+## Recognition to exploration
+
+A recognized or selected track keeps a visible exploration card across Identify,
+Analyze and Discover. It preserves track details, labels unavailable audio
+insights honestly, and offers a separate local-file reading, pasted lyrics and
+known listening links. Verified adapter source identity accompanies metadata;
+Spotify metadata includes the official full mark and a direct track link.
+Legacy catalog metadata has no verified source label. Clearing returns focus
+to search, and choosing a local file clears unrelated track attribution.
+
+All remote recordings are denied before fetch or DSP, including similar results
+without provider IDs and direct hook calls. Server routes and ingestion helpers
+reject audio-derived writes even if a caller claims `source: upload`; the old
+preview seed command exits before any network/database access. Microphone and
+recognition operations are cancellable, reject double starts, and suppress late
+callbacks after navigation. Recognition controls stay disabled while the page
+prepares its event handlers, so a clip cannot be silently lost before hydration.
+AudD requires a separate disclosure/confirmation and
+a server consent marker. The footer describes each data path accurately.
+
+The [track exploration verification](docs/TRACK_EXPLORATION.md) records the
+policy boundary, regression tests, browser checks and remaining live-catalog
+prerequisites.
 ## Architecture in one breath
 
 The [focused workbench interface pass](docs/WORKBENCH_POLISH.md) documents the
@@ -94,7 +116,7 @@ npm install
 
 ### Environment variables
 
-Everything is optional — the app degrades gracefully when keys are missing:
+Optional integrations can be left unconfigured — lyrics and local audio analysis remain usable:
 
 ```bash
 cp .env.example .env.local
@@ -104,10 +126,10 @@ cp .env.example .env.local
 |---|---|
 | `HUGGINGFACE_API_KEY` | Transformer engine is `skipped`; keyword fallback runs alone. No non-English translation. |
 | `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` | No persistence, no auth, no share URLs (`/share/<bad-slug>` returns a clean 404). Atlas pages show an empty state. |
-| `SUPABASE_SERVICE_ROLE_KEY` | Server-side writes (anonymous analyses, song upserts, fingerprint catalog, atlas refresh) fail. Reads still work. |
+| `SUPABASE_SERVICE_ROLE_KEY` | Lyrics persistence, metadata upserts and Atlas refresh are unavailable. Audio-derived writes are disabled even with this key. |
 | `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` | `/api/songs/search` returns 503 (`spotify_not_configured`); SongSearch shows an inline notice. |
 | `GENIUS_ACCESS_TOKEN` | Genius enrichment skipped in `resolveSong`; everything else still resolves. |
-| `AUDD_API_TOKEN` | Identify's world-catalog fallback is skipped — misses show a clean "not in catalog yet" state. |
+| `AUDD_API_TOKEN` | The external AudD action is absent. Catalog misses and catalog unavailability have distinct states. AudD is a paid/trial provider, not an unlimited free production service; no account or paid usage was added. |
 | `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | Rate limiting falls back to an in-memory per-instance sliding window (fine for dev). |
 | `SUPABASE_LOCAL=1` | Enables the RLS test suite (`__tests__/rls.test.ts`). Requires a running `supabase start`. |
 
@@ -118,7 +140,7 @@ npm run dev      # http://localhost:3000 — boots in ~1.5s
 npm run build    # production build
 npm run start    # serve production build
 npm run lint     # ESLint
-npm test         # Vitest (81 tests, 8 RLS skipped without local Supabase)
+npm test         # Vitest; local Supabase tests are gated on SUPABASE_LOCAL=1
 ```
 
 Visit `/dev/components` for the design-system showcase — every primitive in every variant, with an interactive mood-color picker that repaints the page live.
@@ -152,10 +174,10 @@ Supabase Postgres schema (in `supabase/migrations/0001_init.sql`):
 
 - `profiles` — mirrors `auth.users`
 - `songs` — canonical track records keyed by Spotify / Genius / MusicBrainz IDs
-- `analyses` — every analysis, with `system_seed`, `is_public`, `share_slug`, and the full `result jsonb`
+- `analyses` — saved lyrics readings and existing records, with `system_seed`, `is_public`, `share_slug`, and the full `result jsonb`
 - `shares` — view-count + cached OG image path
 
-RLS is enabled across all tables. Public reads are gated on `is_public OR system_seed`; writes go through the service-role client (`lib/supabase/admin.ts`) so anonymous analyses can be inserted by the API route. The `SongRow` ↔ `Song` adapter (`lib/db/song-store-adapter.ts`) bridges snake_case DB shapes to the camelCase resolver world.
+RLS is enabled across all tables. Public reads are gated on `is_public OR system_seed`; writes go through the service-role client (`lib/supabase/admin.ts`) so permitted lyrics readings can be inserted by the existing API route. Audio/combined writes and fingerprint/feature ingestion now fail closed at the application boundary; no migrations or RLS changes were made. The `SongRow` ↔ `Song` adapter (`lib/db/song-store-adapter.ts`) bridges snake_case DB shapes to the camelCase resolver world.
 
 To run Supabase locally:
 

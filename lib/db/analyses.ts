@@ -7,6 +7,7 @@
  */
 
 import 'server-only';
+import { isLyricsResult } from '@/lib/audio/policy';
 import { nanoid } from 'nanoid';
 import { getAdminSupabase } from '@/lib/supabase/admin';
 import { getServerSupabase } from '@/lib/supabase/server';
@@ -23,6 +24,10 @@ import type {
 export async function createAnalysis(
   input: Omit<AnalysisInsert, 'share_slug'> & { share_slug?: string | null },
 ): Promise<AnalysisRow> {
+  if (input.mode !== 'lyrics' || !input.result || typeof input.result !== 'object' || Array.isArray(input.result)
+      || !isLyricsResult(input.result as Record<string, unknown>)) {
+    throw new Error('audio_persistence_disabled: verified recording permission required');
+  }
   const supabase = getAdminSupabase();
 
   const { data, error } = await supabase

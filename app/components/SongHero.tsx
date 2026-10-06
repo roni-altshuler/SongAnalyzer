@@ -1,9 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { Play, Pause } from 'lucide-react';
+import { useEffect } from 'react';
+import SourceAttribution from '@/app/components/SourceAttribution';
 import { useMoodTheme } from '@/app/providers/mood-theme-provider';
-import { Button } from '@/app/components/ui/Button';
 import { cn } from '@/lib/cn';
 
 export interface SongHeroProps {
@@ -11,7 +10,8 @@ export interface SongHeroProps {
   artist: string;
   album?: string | null;
   coverUrl?: string | null;
-  previewUrl?: string | null;
+  spotifyId?: string | null;
+  geniusId?: number | null;
   className?: string;
 }
 
@@ -21,7 +21,7 @@ export interface SongHeroProps {
  * Layers (z bottom→top):
  *   1. Blurred cover @ 1.4× + 60px blur backdrop
  *   2. Radial gradient mask in --accent-from/to
- *   3. Sharp 240px cover tile + serif title + caps subtitle + play button
+ *   3. Sharp 240px cover tile + serif title + caps subtitle + listening links
  *
  * On mount, samples the cover with node-vibrant and pushes the dominant
  * palette into the mood-theme provider so the whole page picks up the
@@ -33,12 +33,11 @@ export default function SongHero({
   artist,
   album,
   coverUrl,
-  previewUrl,
+  spotifyId,
+  geniusId,
   className,
 }: SongHeroProps) {
   const { setMoodColor } = useMoodTheme();
-  const [playing, setPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Sample the cover for an album-accurate accent palette.
   useEffect(() => {
@@ -66,7 +65,6 @@ export default function SongHero({
       } catch (err) {
         // Silent — the fallback mood color is already applied by AnalysisResults.
         if (process.env.NODE_ENV !== 'production') {
-          // eslint-disable-next-line no-console
           console.debug('[SongHero] vibrant palette failed', err);
         }
       }
@@ -77,37 +75,6 @@ export default function SongHero({
     };
   }, [coverUrl, setMoodColor]);
 
-  // Clean up the audio element when previewUrl changes / unmount.
-  useEffect(() => {
-    return () => {
-      const el = audioRef.current;
-      if (el) {
-        el.pause();
-        el.src = '';
-        audioRef.current = null;
-      }
-    };
-  }, [previewUrl]);
-
-  const togglePreview = () => {
-    if (!previewUrl) return;
-    let el = audioRef.current;
-    if (!el) {
-      el = new Audio(previewUrl);
-      el.preload = 'none';
-      el.addEventListener('ended', () => setPlaying(false));
-      audioRef.current = el;
-    }
-    if (playing) {
-      el.pause();
-      setPlaying(false);
-    } else {
-      el.play().then(
-        () => setPlaying(true),
-        () => setPlaying(false),
-      );
-    }
-  };
 
   return (
     <section
@@ -197,25 +164,7 @@ export default function SongHero({
             )}
           </p>
 
-          {previewUrl && (
-            <div className="pt-2">
-              <Button
-                variant="primary"
-                size="md"
-                onClick={togglePreview}
-                leftIcon={
-                  playing ? (
-                    <Pause size={14} aria-hidden />
-                  ) : (
-                    <Play size={14} aria-hidden />
-                  )
-                }
-                aria-label={playing ? 'Pause preview' : 'Play preview'}
-              >
-                {playing ? 'Pause preview' : 'Play preview'}
-              </Button>
-            </div>
-          )}
+          <SourceAttribution song={{ metadataSource: 'catalog', spotifyId: spotifyId ?? undefined, geniusId: geniusId ?? undefined }} />
         </div>
       </div>
     </section>

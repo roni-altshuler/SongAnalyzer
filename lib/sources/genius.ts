@@ -105,6 +105,7 @@ export async function searchGenius(query: string): Promise<SearchHit[]> {
         artist: h.result.primary_artist.name,
         coverUrl: h.result.song_art_image_url ?? h.result.song_art_image_thumbnail_url,
         geniusId: h.result.id,
+        metadataSource: 'genius',
       },
     }));
 }
@@ -126,5 +127,6 @@ export async function getGeniusSong(id: number): Promise<Partial<Song>> {
     year: s.release_date_components?.year ?? undefined,
     coverUrl: s.song_art_image_url,
     geniusId: s.id,
+    metadataSource: 'genius',
   };
 }

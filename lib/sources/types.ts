@@ -10,8 +10,7 @@
  */
 
 /**
- * Open audio features harvested from AcousticBrainz (or, in the future,
- * computed from the Spotify 30-second preview by the client-side analyser).
+ * Open audio features harvested from AcousticBrainz.
  *
  * Every field is optional because AcousticBrainz returns a sparsely populated
  * document — and post-2022 recordings often have no data at all.
@@ -45,8 +44,10 @@ export interface Song {
   year?: number;
   /** Album-art URL (we prefer the largest Spotify image). */
   coverUrl?: string;
-  /** Spotify's 30-second MP3 preview URL — may be null for some markets. */
+  /** Legacy/untrusted URL. Never grants permission to fetch or analyze audio. */
   previewUrl?: string;
+  /** Set by the adapter that actually supplied the displayed metadata. */
+  metadataSource?: 'spotify' | 'genius' | 'audd' | 'catalog';
   spotifyId?: string;
   geniusId?: number;
   /** MusicBrainz recording ID (UUID). */
@@ -63,7 +64,7 @@ export interface SearchHit {
   /** Source-provided relevance score, or a synthesized 0..1 confidence. */
   score: number;
   /** Subset of `Song` fields known at search time. */
-  song: Pick<Song, 'title' | 'artist' | 'album' | 'year' | 'coverUrl' | 'previewUrl' | 'spotifyId' | 'geniusId' | 'mbid'>;
+  song: Pick<Song, 'title' | 'artist' | 'album' | 'year' | 'coverUrl' | 'previewUrl' | 'metadataSource' | 'spotifyId' | 'geniusId' | 'mbid'>;
 }
 
 /**

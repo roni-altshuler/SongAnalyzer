@@ -58,7 +58,7 @@ export default function AudioUpload({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="audio-upload space-y-4">
       <div
         onDragOver={(e) => {
           e.preventDefault();
@@ -108,7 +108,7 @@ export default function AudioUpload({
             <p className="font-display text-base text-[var(--text-hi)] truncate max-w-xs mx-auto">
               {fileName}
             </p>
-            <p className="text-xs text-[var(--text-low)] mt-1.5 tracking-wide">
+            <p className="text-xs text-[var(--text-med)] mt-1.5 tracking-wide">
               Click or drop to replace
             </p>
           </>
@@ -117,15 +117,20 @@ export default function AudioUpload({
             <p className="font-display text-lg text-[var(--text-hi)]">
               Drop an audio file
             </p>
-            <p className="text-xs text-[var(--text-low)] mt-1.5 tracking-[0.18em] uppercase">
+            <p className="text-xs text-[var(--text-med)] mt-1.5 tracking-[0.18em] uppercase">
               MP3 · MP4 · M4A · AAC · OGG · WAV · WebM
             </p>
           </>
         )}
       </div>
 
+      <p className="text-sm leading-relaxed text-[var(--text-med)]">
+        Choose audio you own or have permission to analyze. The file and its insights
+        stay in this browser session; they are not added to the recognition catalog or saved for sharing.
+      </p>
+
       {loading && (
-        <div className="flex items-center justify-center gap-3 py-2 text-sm text-[var(--text-med)]">
+        <div role="status" className="flex items-center justify-center gap-3 py-2 text-sm text-[var(--text-med)]">
           <svg className="animate-spin h-4 w-4 text-[var(--accent-from)]" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <circle cx="12" cy="12" r="10" stroke="currentColor" strokeOpacity="0.25" strokeWidth="3" />
             <path d="M22 12a10 10 0 0 0-10-10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />

@@ -71,6 +71,20 @@
   --accent-glow: rgba(99, 102, 241, 0.22);
 }
 
+/* Warm, neutral surfaces for the new track portrait in light mode.
+   Scoped tokens preserve the surrounding theme and live mood accents. */
+.light .track-exploration {
+  --bg-elev1: #FAF7F0;
+  --bg-elev2: #F1EDE4;
+  --bg-elev3: #E9E3D7;
+  --state-error: #9F3030;
+}
+
+.light .audio-upload,
+.light .identify-listener {
+  --state-error: #9F3030;
+}
+
 /* ─────────────────────────────────────────────────────────────
    Tailwind v4 — register tokens with @theme so they become
    utilities (bg-bg-elev1, text-text-hi, border-border-subtle, …)

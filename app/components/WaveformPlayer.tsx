@@ -8,8 +8,8 @@ import { Skeleton } from '@/app/components/ui/Skeleton';
 import { cn } from '@/lib/cn';
 
 export interface WaveformPlayerProps {
-  /** Either a remote audio URL (e.g. Spotify previewUrl) or a local File. */
-  src: string | File;
+  /** Only a user-selected local File; remote audio has no analysis grant. */
+  src: File;
   /** Wave height in px. Defaults to 64. */
   height?: number;
   /**
@@ -101,13 +101,10 @@ export default function WaveformPlayer({
         if (src instanceof File) {
           // wavesurfer v7 supports `loadBlob`.
           ws.loadBlob(src);
-        } else {
-          ws.load(src);
         }
       } catch (err) {
         // Surface in dev; never crash the page.
         if (process.env.NODE_ENV !== 'production') {
-          // eslint-disable-next-line no-console
           console.error('[WaveformPlayer] failed to init wavesurfer', err);
         }
       }

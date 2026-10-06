@@ -5,8 +5,8 @@
  *
  * The IdentifyListener records ~10s, fingerprints it in a Web Worker, and
  * matches against our constellation catalog (AudD world-catalog fallback
- * when configured). A match hands straight into the shared analysis
- * pipeline, so the identified song's mood tints the page seconds later.
+ * when configured and confirmed). A match retains metadata and listening
+ * links. Remote recordings are never fetched for analysis.
  */
 
 import { useCallback } from 'react';
@@ -19,6 +19,7 @@ import AnalysisSkeleton from '@/app/components/AnalysisSkeleton';
 import AudioAnalysisResultsView from '@/app/components/AudioAnalysisResults';
 import SimilarSongs from '@/app/components/SimilarSongs';
 import WaveformPlayer from '@/app/components/WaveformPlayer';
+import TrackExploration from '@/app/components/TrackExploration';
 import { toast } from '@/app/components/ui/Toast';
 
 export default function IdentifyPage() {
@@ -26,13 +27,7 @@ export default function IdentifyPage() {
 
   const handleMatched = useCallback(
     (song: Song) => {
-      if (song.previewUrl) {
-        void audio.analyzeSong(song);
-      } else {
-        toast.message(song.title, {
-          description: 'Identified — no preview available for auto-analysis.',
-        });
-      }
+      void audio.analyzeSong(song);
     },
     [audio],
   );
@@ -75,7 +70,16 @@ export default function IdentifyPage() {
           </p>
         </header>
 
-        <IdentifyListener onMatched={handleMatched} />
+        <IdentifyListener onMatched={handleMatched} onNewAttempt={audio.reset} />
+
+        {audio.song && (
+          <div className="mt-6">
+            <TrackExploration
+              song={audio.song} stage={audio.stage} loading={audio.loading}
+              error={audio.error} hasAnalysis={Boolean(audio.analysis)}
+            />
+          </div>
+        )}
 
         {(audio.loading || audio.analysis) && (
           <div className="mt-8 space-y-4">

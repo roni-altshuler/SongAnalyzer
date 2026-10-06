@@ -12,6 +12,7 @@ import {
 import { Search } from 'lucide-react';
 import type { SearchHit } from '@/lib/sources/types';
 import { Card } from '@/app/components/ui/Card';
+import SourceAttribution from '@/app/components/SourceAttribution';
 import { Badge } from '@/app/components/ui/Badge';
 import { cn } from '@/lib/cn';
 
@@ -44,7 +45,7 @@ export default function SongSearch({
   className,
 }: SongSearchProps) {
   const inputId = useId();
-  const listboxId = useId();
+  const popupId = useId();
 
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState<Status>({ kind: 'idle' });
@@ -54,14 +55,16 @@ export default function SongSearch({
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const selectedLabelRef = useRef<string | null>(null);
 
-  const hits = status.kind === 'ok' ? status.hits : [];
+  const hits = useMemo(() => status.kind === 'ok' ? status.hits : [], [status]);
 
   // Debounced fetch.
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
     const trimmed = query.trim();
+    if (trimmed === selectedLabelRef.current) return;
     if (!trimmed) {
       // Cancel any in-flight search and reset.
       abortRef.current?.abort();
@@ -81,6 +84,7 @@ export default function SongSearch({
           { signal: ctrl.signal },
         );
 
+        if (ctrl.signal.aborted) return;
         if (res.status === 503) {
           // Gracefully degrade — Spotify not configured.
           setStatus({ kind: 'not-configured' });
@@ -94,12 +98,13 @@ export default function SongSearch({
         }
 
         const data = (await res.json()) as { hits: SearchHit[] };
+        if (ctrl.signal.aborted) return;
         const next = Array.isArray(data.hits) ? data.hits : [];
         setStatus(next.length === 0 ? { kind: 'empty' } : { kind: 'ok', hits: next });
         setOpen(true);
         setActive(0);
       } catch (err) {
-        if ((err as { name?: string }).name === 'AbortError') return;
+        if (ctrl.signal.aborted || (err as { name?: string }).name === 'AbortError') return;
         setStatus({
           kind: 'error',
           message: err instanceof Error ? err.message : 'Search failed',
@@ -110,6 +115,7 @@ export default function SongSearch({
 
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
+      abortRef.current?.abort();
     };
   }, [query]);
 
@@ -127,9 +133,13 @@ export default function SongSearch({
 
   const handleSelect = useCallback(
     (hit: SearchHit) => {
-      onSelect(hit);
+      abortRef.current?.abort();
+      if (debounceRef.current) clearTimeout(debounceRef.current);
       const label = `${hit.song.title} — ${hit.song.artist}`;
+      selectedLabelRef.current = label;
+      onSelect(hit);
       setQuery(label);
+      setStatus({ kind: 'idle' });
       setOpen(false);
     },
     [onSelect],
@@ -171,8 +181,8 @@ export default function SongSearch({
       status.kind === 'error');
 
   const activeId = useMemo(
-    () => (status.kind === 'ok' && hits[active] ? `${listboxId}-opt-${active}` : undefined),
-    [status, hits, active, listboxId],
+    () => (status.kind === 'ok' && hits[active] ? `${popupId}-opt-${active}` : undefined),
+    [status, hits, active, popupId],
   );
 
   return (
@@ -197,12 +207,14 @@ export default function SongSearch({
           spellCheck={false}
           role="combobox"
           aria-expanded={showDropdown}
-          aria-controls={listboxId}
+          aria-controls={popupId}
           aria-autocomplete="list"
+          aria-haspopup="grid"
           aria-activedescendant={activeId}
           placeholder={placeholder}
           value={query}
           onChange={(e) => {
+            selectedLabelRef.current = null;
             setQuery(e.target.value);
             if (!open) setOpen(true);
           }}
@@ -260,8 +272,9 @@ export default function SongSearch({
 
           {status.kind === 'ok' && (
             <ul
-              id={listboxId}
-              role="listbox"
+              id={popupId}
+              role="grid"
+              aria-colcount={2}
               aria-label="Song results"
               className="max-h-80 overflow-y-auto py-1"
             >
@@ -269,11 +282,11 @@ export default function SongSearch({
                 const isActive = i === active;
                 return (
                   <li
-                    id={`${listboxId}-opt-${i}`}
                     key={hit.id}
-                    role="option"
+                    role="row"
                     aria-selected={isActive}
                   >
+                    <div role="gridcell" id={`${popupId}-opt-${i}`}>
                     <button
                       type="button"
                       onMouseEnter={() => setActive(i)}
@@ -288,8 +301,8 @@ export default function SongSearch({
                         'focus-visible:outline-2 focus-visible:outline-[var(--accent-from)] focus-visible:outline-offset-[-2px]',
                       )}
                     >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       {hit.song.coverUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={hit.song.coverUrl}
                           alt=""
@@ -307,17 +320,14 @@ export default function SongSearch({
                         <span className="block truncate text-sm text-[var(--text-hi)]">
                           {hit.song.title}
                         </span>
-                        <span className="block truncate text-xs text-[var(--text-low)]">
+                        <span className="block truncate text-xs text-[var(--text-med)]">
                           {hit.song.artist}
                           {hit.song.year ? ` · ${hit.song.year}` : ''}
                         </span>
                       </span>
-                      {hit.song.previewUrl && (
-                        <Badge variant="mood" className="flex-shrink-0">
-                          preview
-                        </Badge>
-                      )}
                     </button>
+                    </div>
+                    <div role="gridcell" className="px-3 pb-2"><SourceAttribution song={hit.song} /></div>
                   </li>
                 );
               })}

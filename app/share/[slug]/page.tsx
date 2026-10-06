@@ -161,7 +161,8 @@ export default async function SharePage({ params }: PageProps) {
             artist={song.artist}
             album={song.album}
             coverUrl={song.cover_url}
-            previewUrl={song.preview_url}
+            spotifyId={song.spotify_id}
+            geniusId={song.genius_id}
           />
         ) : (
           <header className="space-y-2 text-center">
