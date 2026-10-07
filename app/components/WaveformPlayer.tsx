@@ -1,184 +1,240 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { Play, Pause } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Play, Pause, RotateCcw, Headphones } from 'lucide-react';
 import type WaveSurferType from 'wavesurfer.js';
+import type RegionsType from 'wavesurfer.js/dist/plugins/regions.js';
 import { Button } from '@/app/components/ui/Button';
+import { Card } from '@/app/components/ui/Card';
 import { Skeleton } from '@/app/components/ui/Skeleton';
 import { cn } from '@/lib/cn';
+import { formatAudioTime, listeningWindows, windowAt, windowGridTicks, windowLevel, WAVEFORM_SAMPLE_RATE } from '@/lib/audio/listening-windows';
 
 export interface WaveformPlayerProps {
   /** Only a user-selected local File; remote audio has no analysis grant. */
   src: File;
-  /** Wave height in px. Defaults to 64. */
   height?: number;
-  /**
-   * Beat instants in seconds (from the v2 audio engine's beat grid).
-   * Rendered as faint tick marks over the waveform. Requires `duration`.
-   */
+  /** Existing worker estimates, never computed by WaveSurfer. */
   beatGrid?: number[];
-  /** Clip duration in seconds — needed to place beat ticks. */
+  /** Legacy analysis duration; playback timing uses the decoded File instead. */
   duration?: number;
   className?: string;
 }
 
-/** Read a CSS custom property from the document root, with a fallback. */
-function readCssVar(name: string, fallback: string): string {
-  if (typeof document === 'undefined') return fallback;
-  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-  return v || fallback;
+interface PlayerState {
+  src: File;
+  status: 'loading' | 'ready' | 'error';
+  playing: boolean;
+  pending: boolean;
+  time: number;
+  duration: number;
+  decoded: AudioBuffer | null;
+  selected: number;
+  playbackError: boolean;
 }
+const initial = (src: File): PlayerState => ({ src, status: 'loading', playing: false, pending: false,
+  time: 0, duration: 0, decoded: null, selected: 0, playbackError: false });
+const levelText = (value: number | null) => value === null ? 'Silent (−∞)' : `${value.toFixed(1)} dBFS`;
 
-/**
- * Wavesurfer-backed audio player with gradient bar styling.
- *
- * - Dynamically imports `wavesurfer.js` so the bundle stays small for callers
- *   that never enter audio mode.
- * - Reads `--accent-from`/`--accent-to` at init time and uses them as the
- *   waveform progress/wave gradients.
- * - Renders a skeleton until wavesurfer reports `ready`.
- */
-export default function WaveformPlayer({
-  src,
-  height = 64,
-  beatGrid,
-  duration,
-  className,
-}: WaveformPlayerProps) {
+/** WaveSurfer supplies visualization/playback. Signal measurements use local PCM. */
+export default function WaveformPlayer({ src, height = 80, beatGrid, className }: WaveformPlayerProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const wsRef = useRef<WaveSurferType | null>(null);
-  const [ready, setReady] = useState(false);
-  const [playing, setPlaying] = useState(false);
+  const regionsRef = useRef<RegionsType | null>(null);
+  const pendingRef = useRef(false);
+  const playbackEndRef = useRef<number | null>(null);
+  const pauseVersionRef = useRef(0);
+  const [session, setSession] = useState(() => initial(src));
+  const [retry, setRetry] = useState(0);
+  // A replacement file can never render the previous file's controls/details.
+  const player = session.src === src ? session : initial(src);
+  const windows = useMemo(() => listeningWindows(player.duration), [player.duration]);
+  const selected = windows[player.selected];
+  const level = useMemo(() => selected ? windowLevel(player.decoded, selected) : null, [player.decoded, selected]);
+  const gridTicks = useMemo(() => selected ? windowGridTicks(beatGrid, selected, player.duration) : null, [beatGrid, selected, player.duration]);
 
   useEffect(() => {
     let disposed = false;
-    setReady(false);
-    setPlaying(false);
-
-    const container = containerRef.current;
-    if (!container) return;
-
-    (async () => {
+    let owned: WaveSurferType | null = null;
+    let colorsObserver: MutationObserver | null = null;
+    let removeVisibilityGuards: (() => void) | null = null;
+    pendingRef.current = false;
+    playbackEndRef.current = null;
+    const update = (change: Partial<PlayerState>) => {
+      if (!disposed) setSession(previous => previous.src === src ? { ...previous, ...change } : previous);
+    };
+    void (async () => {
+      await Promise.resolve();
+      if (disposed) return;
+      setSession(initial(src));
       try {
-        const mod = await import('wavesurfer.js');
+        const [wave, regionsModule, timelineModule] = await Promise.all([
+          import('wavesurfer.js'), import('wavesurfer.js/dist/plugins/regions.js'), import('wavesurfer.js/dist/plugins/timeline.js'),
+        ]);
         if (disposed || !containerRef.current) return;
-
-        const WaveSurfer = mod.default;
-
-        const accentFrom = readCssVar('--accent-from', '#3B82F6');
-        const accentTo = readCssVar('--accent-to', '#8B5CF6');
-
-        // wavesurfer accepts CanvasGradient via a callback in v7 for waveColor.
-        // We approximate the gradient via two horizontal stops and let the bar
-        // rendering interpolate, which is consistent with the design system.
-        const ws = WaveSurfer.create({
-          container: containerRef.current,
-          height,
-          waveColor: accentFrom,
-          progressColor: accentTo,
-          cursorColor: 'rgba(255,255,255,0.6)',
-          barWidth: 2,
-          barGap: 1,
-          barRadius: 2,
-          normalize: true,
-          backend: 'WebAudio',
+        const styles = getComputedStyle(containerRef.current);
+        const color = (token: string) => styles.getPropertyValue(token).trim() || 'currentColor';
+        const regions = regionsModule.default.create();
+        const ws = wave.default.create({
+          container: containerRef.current, height, waveColor: color('--text-med'), progressColor: color('--accent-from'),
+          cursorColor: color('--text-hi'), barWidth: 2, barGap: 1, barRadius: 2, normalize: true,
+          backend: 'MediaElement', sampleRate: WAVEFORM_SAMPLE_RATE,
+          plugins: [regions, timelineModule.default.create({ height: 22, secondaryLabelOpacity: 1, style: { color: 'var(--text-med)', fontSize: '11px', fontFamily: 'var(--font-mono)' } })],
         });
-        wsRef.current = ws;
-
-        ws.on('ready', () => {
-          if (!disposed) setReady(true);
+        owned = ws; wsRef.current = ws; regionsRef.current = regions;
+        const pauseForVisibility = () => {
+          pauseVersionRef.current++;
+          playbackEndRef.current = null;
+          ws.pause();
+          update({ playing: false, time: ws.getCurrentTime() });
+        };
+        const onVisibilityChange = () => { if (document.hidden) pauseForVisibility(); };
+        document.addEventListener('visibilitychange', onVisibilityChange);
+        window.addEventListener('pagehide', pauseForVisibility);
+        removeVisibilityGuards = () => {
+          document.removeEventListener('visibilitychange', onVisibilityChange);
+          window.removeEventListener('pagehide', pauseForVisibility);
+        };
+        // Canvas colors need a redraw when theme or the clip-wide mood changes.
+        colorsObserver = new MutationObserver(() => {
+          if (!disposed) ws.setOptions({ waveColor: color('--text-med'), progressColor: color('--accent-from'), cursorColor: color('--text-hi') });
+        });
+        colorsObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'style'] });
+        ws.on('ready', actualDuration => {
+          if (!Number.isFinite(actualDuration) || actualDuration <= 0) { update({ status: 'error' }); return; }
+          update({ status: 'ready', duration: actualDuration, decoded: ws.getDecodedData() });
         });
         ws.on('play', () => {
-          if (!disposed) setPlaying(true);
+          if (document.hidden) pauseForVisibility();
+          else update({ playing: true });
         });
-        ws.on('pause', () => {
-          if (!disposed) setPlaying(false);
+        ws.on('pause', () => { playbackEndRef.current = null; update({ playing: false }); });
+        ws.on('finish', () => { playbackEndRef.current = null; update({ playing: false }); });
+        ws.on('timeupdate', time => {
+          // WaveSurfer's MediaElement end timer uses rAF. Native timeupdate
+          // also reaches this event, so the boundary survives suspended frames.
+          const end = playbackEndRef.current;
+          if (end !== null && time >= end && ws.isPlaying()) {
+            playbackEndRef.current = null;
+            ws.pause(); ws.setTime(end);
+            return;
+          }
+          update({ time });
         });
-        ws.on('finish', () => {
-          if (!disposed) setPlaying(false);
+        ws.on('interaction', time => {
+          ws.pause();
+          update({ selected: windowAt(listeningWindows(ws.getDuration()), time), playbackError: false });
         });
-
-        if (src instanceof File) {
-          // wavesurfer v7 supports `loadBlob`.
-          ws.loadBlob(src);
-        }
-      } catch (err) {
-        // Surface in dev; never crash the page.
-        if (process.env.NODE_ENV !== 'production') {
-          console.error('[WaveformPlayer] failed to init wavesurfer', err);
-        }
+        ws.on('error', () => update({ status: 'error', playing: false, pending: false }));
+        await ws.loadBlob(src);
+      } catch {
+        // A destroyed loading player aborts its decode; no late navigation error.
+        if (!disposed) update({ status: 'error', playing: false, pending: false });
       }
     })();
-
     return () => {
       disposed = true;
-      const ws = wsRef.current;
-      if (ws) {
-        try {
-          ws.destroy();
-        } catch {
-          // Ignore — destroy can throw if the audio context already closed.
-        }
-        wsRef.current = null;
-      }
+      playbackEndRef.current = null;
+      removeVisibilityGuards?.();
+      colorsObserver?.disconnect();
+      if (owned) { owned.pause(); owned.destroy(); }
+      if (wsRef.current === owned) { wsRef.current = null; regionsRef.current = null; }
     };
-  }, [src, height]);
+  }, [src, height, retry]);
 
-  const toggle = () => {
+  useEffect(() => {
+    const regions = regionsRef.current;
+    if (!regions || !selected || player.status !== 'ready') return;
+    regions.clearRegions();
+    regions.addRegion({ id: 'listening-window', ...selected, drag: false, resize: false,
+      color: 'color-mix(in srgb, var(--accent-from) 12%, transparent)' });
+  }, [selected, player.status]);
+
+  const update = (change: Partial<PlayerState>) => setSession(previous => previous.src === src ? { ...previous, ...change } : previous);
+  const choose = (index: number) => {
     const ws = wsRef.current;
-    if (!ws) return;
-    if (playing) ws.pause();
-    else ws.play();
+    if (!ws || pendingRef.current || !windows[index]) return;
+    ws.pause(); ws.setTime(windows[index].start);
+    update({ selected: index, playbackError: false });
   };
-
+  const seek = (time: number) => {
+    const ws = wsRef.current;
+    if (!ws || pendingRef.current) return;
+    ws.pause(); ws.setTime(time);
+    update({ selected: windowAt(windows, time), playbackError: false });
+  };
+  const toggle = async () => {
+    const ws = wsRef.current;
+    if (!ws || !selected || pendingRef.current || document.hidden) return;
+    if (ws.isPlaying()) { ws.pause(); return; }
+    pendingRef.current = true;
+    const pauseVersion = pauseVersionRef.current;
+    update({ pending: true, playbackError: false });
+    try {
+      const time = ws.getCurrentTime();
+      playbackEndRef.current = selected.end;
+      await ws.play(time >= selected.start && time < selected.end ? time : selected.start, selected.end);
+      // A start promise settling after a hide/return must never restart audio.
+      if (wsRef.current === ws) {
+        if (document.hidden || pauseVersionRef.current !== pauseVersion) ws.pause();
+        else if (ws.isPlaying()) playbackEndRef.current = selected.end;
+      }
+    } catch {
+      if (wsRef.current === ws) {
+        playbackEndRef.current = null;
+        if (pauseVersionRef.current === pauseVersion) update({ playbackError: true, playing: false });
+      }
+    } finally {
+      if (wsRef.current === ws) { pendingRef.current = false; update({ pending: false }); }
+    }
+  };
+  const ready = player.status === 'ready';
   return (
-    <div
-      className={cn(
-        'flex items-center gap-3 rounded-xl p-3',
-        'bg-[var(--bg-elev2)] border border-[var(--border-subtle)] ring-inset-soft',
-        className,
-      )}
-    >
-      <Button
-        variant="icon"
-        size="md"
-        onClick={toggle}
-        disabled={!ready}
-        aria-label={playing ? 'Pause' : 'Play'}
-      >
-        {playing ? <Pause size={16} aria-hidden /> : <Play size={16} aria-hidden />}
-      </Button>
-
-      <div className="relative flex-1 min-w-0" style={{ height }}>
-        {!ready && (
-          <div className="absolute inset-0 flex items-center">
-            <Skeleton className="w-full h-2 rounded-full" />
-          </div>
-        )}
-        <div
-          ref={containerRef}
-          className={cn(
-            'h-full w-full transition-opacity duration-300',
-            ready ? 'opacity-100' : 'opacity-0',
-          )}
-        />
-        {/* Beat-grid ticks from the v2 engine. Capped so a long upload's
-            grid doesn't turn into a solid wall of lines. */}
-        {ready && beatGrid && beatGrid.length > 0 && duration && duration > 0 && (
-          <div aria-hidden className="pointer-events-none absolute inset-0">
-            {beatGrid.slice(0, 120).map((t) => (
-              <span
-                key={t}
-                className="absolute top-0 h-full w-px opacity-25"
-                style={{
-                  left: `${Math.min(100, (t / duration) * 100)}%`,
-                  background: 'var(--accent-glow)',
-                }}
-              />
-            ))}
-          </div>
-        )}
+    <Card role="region" aria-label="Local listening timeline" aria-busy={player.status === 'loading'} className={cn('local-timeline min-w-0 space-y-5', className)}>
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0"><p className="mb-1 text-xs uppercase tracking-widest text-[var(--text-med)]">Listen more closely</p><h2 className="font-display text-3xl">Listening windows</h2><p className="mt-2 break-words text-xs text-[var(--text-med)]">{src.name} · local file · this session</p></div>
+        <Headphones size={22} aria-hidden="true" className="shrink-0 text-[var(--text-med)]" />
       </div>
-    </div>
+      <p className="text-sm leading-relaxed text-[var(--text-med)]">Select a window to inspect its signal and listen to that passage. These timed windows do not identify musical sections.</p>
+      <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elev2)] p-3">
+        {player.status === 'loading' && <div role="status" className="space-y-3"><p className="text-sm text-[var(--text-med)]">Preparing local waveform…</p><Skeleton className="h-12 w-full" /></div>}
+        {/* The pointer waveform has native keyboard range/button equivalents below. */}
+        <div ref={containerRef} aria-hidden="true" className={cn('min-w-0', !ready && 'hidden', player.pending && 'pointer-events-none')} />
+        {player.status === 'error' && <div role="alert" className="space-y-3"><p className="text-sm text-[var(--text-med)]">The local waveform could not load. Your analysis is still available below.</p><Button variant="secondary" className="min-h-11" onClick={() => setRetry(value => value + 1)}>Retry waveform</Button></div>}
+      </div>
+      {ready && selected && <>
+        <div className="flex flex-wrap items-center gap-3">
+          <Button variant="secondary" className="min-h-11" onClick={() => void toggle()} disabled={player.pending} aria-label={player.playing ? 'Pause' : 'Play'} leftIcon={player.playing ? <Pause size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}>{player.playing ? 'Pause' : 'Play'}</Button>
+          <Button variant="ghost" className="min-h-11" onClick={() => choose(player.selected)} disabled={player.pending} leftIcon={<RotateCcw size={15} aria-hidden="true" />}>Restart window</Button>
+          <p className="ml-auto font-mono text-xs tabular-nums text-[var(--text-med)]"><span data-testid="playback-time">{formatAudioTime(player.time)}</span> / {formatAudioTime(player.duration)}</p>
+        </div>
+        <label className="block space-y-2 text-xs text-[var(--text-med)]">Playback position
+          <input type="range" min={0} max={player.duration} step={0.05} value={Math.min(player.time, player.duration)} disabled={player.pending}
+            aria-valuetext={formatAudioTime(player.time)} onChange={event => seek(Number(event.target.value))}
+            className="block h-11 w-full cursor-pointer accent-[var(--accent-from)] focus-visible:outline-2 focus-visible:outline-[var(--accent-from)] focus-visible:outline-offset-2" />
+        </label>
+        <div role="group" aria-label="Listening windows" className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {windows.map((window, index) => <Button key={index} variant={index === player.selected ? 'secondary' : 'ghost'} disabled={player.pending}
+            aria-pressed={index === player.selected} aria-label={`Select window ${index + 1}, ${formatAudioTime(window.start)}–${formatAudioTime(window.end)}`}
+            onClick={() => choose(index)} className={cn('h-auto min-h-14 flex-col items-start gap-1 px-3 py-2 text-left', index === player.selected && 'border-[var(--accent-from)]')}>
+            <span className="text-xs">Window {index + 1}</span><span className="font-mono text-[11px] text-[var(--text-med)]">{formatAudioTime(window.start)}–{formatAudioTime(window.end)}</span>
+          </Button>)}
+        </div>
+        <section aria-label="Selected window detail" className="space-y-4 rounded-xl border border-[var(--border-strong)] bg-[var(--bg-elev2)] p-4">
+          <div><p role="status" className="mb-1 text-xs text-[var(--text-med)]">Selected window {player.selected + 1} · {formatAudioTime(selected.start)}–{formatAudioTime(selected.end)}</p><h3 className="font-display text-2xl">The signal in this passage</h3></div>
+          <dl className="grid grid-cols-2 gap-4 text-sm">
+            <div><dt className="text-xs text-[var(--text-med)]">RMS signal level</dt><dd className="mt-1 font-mono">{level?.status === 'ready' ? levelText(level.rmsDb) : 'Unavailable'}</dd></div>
+            <div><dt className="text-xs text-[var(--text-med)]">Peak signal level</dt><dd className="mt-1 font-mono">{level?.status === 'ready' ? levelText(level.peakDb) : 'Unavailable'}</dd></div>
+            <div><dt className="text-xs text-[var(--text-med)]">Estimated grid ticks</dt><dd className="mt-1 font-mono">{gridTicks ?? 'Unavailable'}</dd></div>
+            <div><dt className="text-xs text-[var(--text-med)]">Window length</dt><dd className="mt-1 font-mono">{(selected.end - selected.start).toFixed(1)} s</dd></div>
+          </dl>
+          <p className="text-xs leading-relaxed text-[var(--text-med)]">Signal levels come from local waveform PCM at 22.05 kHz; they are not perceived loudness. Grid ticks come from the clip-wide worker estimate, not detected drum hits. Mood, key and tempo below describe the whole clip.</p>
+          {level?.status === 'too-long' && <p className="text-xs text-[var(--text-med)]">Signal measurements are unavailable for this long window. A shorter clip gives a more detailed view.</p>}
+          {gridTicks === null && <p className="text-xs text-[var(--text-med)]">This reading has no timed beat grid. Window playback and signal measurements remain available.</p>}
+        </section>
+        {player.playbackError && <p role="alert" className="text-sm text-[var(--state-error)]">Playback could not start. Try Play again, or choose another file.</p>}
+        <p className="text-xs text-[var(--text-med)]">Play stops at the window’s end. Choosing another window or hiding this page pauses playback. Return here and press Play to continue. Nothing is uploaded, indexed or saved.</p>
+      </>}
+    </Card>
   );
 }

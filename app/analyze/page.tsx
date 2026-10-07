@@ -3,12 +3,10 @@
 /**
  * /analyze — the analysis workbench (the old single-page app, restructured).
  *
- * - Search-first: picking a Spotify hit auto-analyzes its 30s preview via
- *   the shared `useSongAnalysis` pipeline (v2 engine + fingerprint ingest +
- *   persistence).
+ * - Track search keeps attributed metadata; remote audio analysis is disabled.
  * - `?mode=lyrics|audio` URL state so modes are linkable and survive reload.
- * - Audio results keep a persistent WaveformPlayer (with the v2 beat grid)
- *   and a "feels like this" similarity rail.
+ * - A permitted local File opens the shared worker and local listening windows.
+ *   No audio-derived persistence or fingerprint ingestion occurs.
  * - When both a lyrics and an audio analysis exist, the CombinedView renders
  *   the real valence/arousal agreement below the grid.
  */
@@ -336,7 +334,6 @@ function AnalyzeWorkbench() {
                     <WaveformPlayer
                       src={audio.audioSrc}
                       beatGrid={audio.analysis.v2?.beatGrid}
-                      duration={audio.analysis.duration}
                     />
                   )}
                   <AudioAnalysisResultsView

@@ -96,6 +96,15 @@
   --state-error: #9F3030;
 }
 
+.light .local-timeline {
+  --bg-elev1: #FFFCF5;
+  --bg-elev2: #F1EDE4;
+  --bg-elev3: #E9E3D7;
+  --border-subtle: #DDD6C9;
+  --border-strong: #CCC2B1;
+  --state-error: #9F3030;
+}
+
 /* ─────────────────────────────────────────────────────────────
    Tailwind v4 — register tokens with @theme so they become
    utilities (bg-bg-elev1, text-text-hi, border-border-subtle, …)

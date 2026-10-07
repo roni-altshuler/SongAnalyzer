@@ -1,0 +1,207 @@
+{
+  "date": "2026-10-07",
+  "browser": "151.0.7922.173",
+  "environment": "Saved cloud environment, local Next 16.3.6 production build; original generated local WAV",
+  "limitations": "Headless tab switching kept document.visibilityState visible. rAF suspension and visibility/pagehide transitions are controlled browser API simulations; actual native audio playback/timeupdate is used. No minimized OS-window claim.",
+  "before": {
+    "testedHead": "d86a518996f38b4b269aeb3a04f87d25d40df9cc",
+    "browser": "151.0.7922.173",
+    "observations": [
+      {
+        "mode": "real-tab-switch",
+        "before": {
+          "visibility": "visible",
+          "time": 0,
+          "paused": false
+        },
+        "after": {
+          "visibility": "visible",
+          "time": 3.322748,
+          "paused": true,
+          "droppedFrames": 0
+        },
+        "selectedWindowEnd": 3,
+        "pageErrors": [],
+        "postRequests": [],
+        "stillPlayingPastBoundary": false
+      },
+      {
+        "mode": "controlled-raf-suspension",
+        "before": {
+          "visibility": "visible",
+          "time": 0,
+          "paused": false
+        },
+        "after": {
+          "visibility": "visible",
+          "time": 4.138356,
+          "paused": false,
+          "droppedFrames": 2
+        },
+        "selectedWindowEnd": 3,
+        "pageErrors": [],
+        "postRequests": [],
+        "stillPlayingPastBoundary": true
+      }
+    ],
+    "themeToggle": {
+      "before": {
+        "timeline": "rgb(74, 74, 85)",
+        "expected": "rgb(74, 74, 85)"
+      },
+      "after": {
+        "timeline": "rgb(74, 74, 85)",
+        "expected": "rgb(180, 180, 189)"
+      },
+      "staleColor": true
+    }
+  },
+  "after": [
+    {
+      "width": 390,
+      "rafResult": {
+        "time": 3,
+        "paused": true,
+        "droppedFrames": 2
+      },
+      "visibilityCycles": [
+        {
+          "index": 2,
+          "hidden": {
+            "time": 3.182459,
+            "paused": true
+          },
+          "returned": {
+            "time": 3.182459,
+            "paused": true
+          }
+        },
+        {
+          "index": 1,
+          "hidden": {
+            "time": 0.193644,
+            "paused": true
+          },
+          "returned": {
+            "time": 0.193644,
+            "paused": true
+          }
+        },
+        {
+          "index": 2,
+          "hidden": {
+            "time": 3.205182,
+            "paused": true
+          },
+          "returned": {
+            "time": 3.205182,
+            "paused": true
+          }
+        }
+      ],
+      "labelColors": [
+        {
+          "theme": "dark",
+          "color": "rgb(180, 180, 189)",
+          "expected": "rgb(180, 180, 189)",
+          "opacity": "1"
+        },
+        {
+          "theme": "light",
+          "color": "rgb(74, 74, 85)",
+          "expected": "rgb(74, 74, 85)",
+          "opacity": "1"
+        }
+      ],
+      "axeViolations": 0,
+      "pageErrors": [],
+      "postRequests": [],
+      "documentWidth": 390,
+      "screenshots": [
+        "screenshots/listening-windows/boundary-return-dark-390.png",
+        "screenshots/listening-windows/boundary-return-light-390.png"
+      ]
+    },
+    {
+      "width": 1440,
+      "rafResult": {
+        "time": 3,
+        "paused": true,
+        "droppedFrames": 2
+      },
+      "visibilityCycles": [
+        {
+          "index": 2,
+          "hidden": {
+            "time": 3.192408,
+            "paused": true
+          },
+          "returned": {
+            "time": 3.192408,
+            "paused": true
+          }
+        },
+        {
+          "index": 1,
+          "hidden": {
+            "time": 0.199302,
+            "paused": true
+          },
+          "returned": {
+            "time": 0.199302,
+            "paused": true
+          }
+        },
+        {
+          "index": 2,
+          "hidden": {
+            "time": 3.189346,
+            "paused": true
+          },
+          "returned": {
+            "time": 3.189346,
+            "paused": true
+          }
+        }
+      ],
+      "labelColors": [
+        {
+          "theme": "dark",
+          "color": "rgb(180, 180, 189)",
+          "expected": "rgb(180, 180, 189)",
+          "opacity": "1"
+        },
+        {
+          "theme": "light",
+          "color": "rgb(74, 74, 85)",
+          "expected": "rgb(74, 74, 85)",
+          "opacity": "1"
+        }
+      ],
+      "axeViolations": 0,
+      "pageErrors": [],
+      "postRequests": [],
+      "documentWidth": 1440,
+      "screenshots": [
+        "screenshots/listening-windows/boundary-return-dark-1440.png",
+        "screenshots/listening-windows/boundary-return-light-1440.png"
+      ]
+    }
+  ],
+  "visualReview": {
+    "inspectedScreenshots": [
+      "screenshots/listening-windows/boundary-return-dark-390.png",
+      "screenshots/listening-windows/boundary-return-light-390.png",
+      "screenshots/listening-windows/boundary-return-dark-1440.png",
+      "screenshots/listening-windows/boundary-return-light-1440.png"
+    ],
+    "observations": "Both live theme changes show readable ruler labels at full opacity. Desktop/phone controls retain the selected passage and paused Play state. The hide/return instruction wraps within the card."
+  },
+  "ciInputFollowup": {
+    "head": "9635bf6000cf14e27eb0e2e7139ccec7c4158002",
+    "job": "https://github.com/roni-altshuler/SongAnalyzer/actions/runs/37621729178/job/112793939894",
+    "result": "42 passed, one waveform-decode-state test failed; all four added playback/theme regressions passed",
+    "traceObservation": "File accepted and Analyzing audio remained visible, with no worker/waveform start. Three local cold-server attempts of the original test passed; no deterministic root-cause claim is made.",
+    "testChange": "Use the actual visible upload control and native file chooser, matching existing recognition tests, instead of hidden-input injection that bypasses the mounted chooser handler. Assertions/timeouts retained; retries remain zero."
+  }
+}

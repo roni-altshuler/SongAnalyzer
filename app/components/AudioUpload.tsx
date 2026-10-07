@@ -47,6 +47,8 @@ export default function AudioUpload({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    // Selecting the same local file again must still start a fresh reading.
+    e.target.value = '';
     if (file) handleFile(file);
   };
 
