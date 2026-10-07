@@ -68,12 +68,12 @@
       "screenshot": null,
       "resources": {
         "created": [
-          "blob:http://localhost:3127/9ef04929-5ec5-4d73-b923-9f6ac00cddcc",
-          "blob:http://localhost:3127/ef99b09c-fbac-49e4-974c-c04847d17481"
+          "blob:http://localhost:3127/b62fce1a-c072-4d8f-8c83-bff0044382bc",
+          "blob:http://localhost:3127/11950e74-c9d2-4fbe-8951-bd940ed4b835"
         ],
         "revoked": [
-          "blob:http://localhost:3127/9ef04929-5ec5-4d73-b923-9f6ac00cddcc",
-          "blob:http://localhost:3127/ef99b09c-fbac-49e4-974c-c04847d17481"
+          "blob:http://localhost:3127/b62fce1a-c072-4d8f-8c83-bff0044382bc",
+          "blob:http://localhost:3127/11950e74-c9d2-4fbe-8951-bd940ed4b835"
         ],
         "contextStates": [
           "closed",
@@ -387,21 +387,8 @@
     }
   ],
   "visualReview": {
-    "inspectedScreenshots": [
-      "screenshots/listening-windows/empty-light-390.png",
-      "screenshots/listening-windows/ready-light-390.png",
-      "screenshots/listening-windows/ready-dark-390.png",
-      "screenshots/listening-windows/ready-light-768.png",
-      "screenshots/listening-windows/ready-dark-768.png",
-      "screenshots/listening-windows/ready-light-1440.png",
-      "screenshots/listening-windows/ready-dark-1440.png",
-      "screenshots/listening-windows/loading-light-390.png",
-      "screenshots/listening-windows/waveform-error-light-390.png",
-      "screenshots/listening-windows/playback-error-light-390.png",
-      "screenshots/listening-windows/fallback-light-390.png",
-      "screenshots/listening-windows/silence-light-390.png",
-      "screenshots/listening-windows/invalid-file-light-390.png"
-    ],
-    "observations": "Cream light surfaces and neutral dark surfaces; visible selected range and keyboard focus; controls and detail wrap at 390px; no sticky-header overlap in full-page captures; loading and recovery states retain the existing whole-clip reading."
+    "initialReviewHead": "d86a518996f38b4b269aeb3a04f87d25d40df9cc",
+    "initialInspectedScreenshots": 13,
+    "currentReview": "All 23 cases were rerun and their 13 captures refreshed after the review fix. Current changed ruler and pause instruction were visually inspected in the four phone/desktop, light/dark captures named in LISTENING_WINDOWS_BOUNDARY_QA.json."
   }
 }

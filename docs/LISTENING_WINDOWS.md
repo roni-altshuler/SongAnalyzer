@@ -21,7 +21,8 @@ update detail. Play resumes inside that range or restarts at its start, stopping
 at its end. The native range slider offers keyboard seeking; pointer waveform
 seeking chooses the corresponding window. Restart, repeated selection, theme
 changes and file replacement keep playback/detail synchronized. Theme and
-clip-wide mood changes redraw canvas colors. Window buttons retain keyboard
+clip-wide mood changes redraw canvas colors; timeline labels use inherited
+theme variables and full opacity. Window buttons retain keyboard
 focus and announce selection, without making the pointer canvas a keyboard
 trap. Light mode uses the existing cream music-workbench surfaces.
 
@@ -49,6 +50,13 @@ inputs reset after capture so selecting the same file starts a fresh reading.
 Unmount/replacement pauses and destroys the owned player; late async loads or
 play promises cannot update another file's controls.
 
+Hiding the page or receiving `pagehide` pauses the owned player. Returning
+never resumes it automatically; a Play promise settling after hide/return is
+also paused. These listeners are removed on replacement/unmount. Native
+media `timeupdate` enforces and clamps the selected end even when the
+WaveSurfer animation-frame timer is suspended. The fallback has browser
+event latency and is a listening aid, not a sample-accurate audio edit.
+
 ## Validation
 
 The original generated six-second chord/pulse WAV has a second-half gain of
@@ -60,11 +68,14 @@ Another original WAV contains exact zero PCM to verify silence.
 - `npm test`: 199 passed, 11 existing gated tests skipped.
 - `npm run lint`: success, zero errors and six existing warnings; changed code
   is warning-free. `npm run typecheck` and Next 16.3.6 production build pass.
-- All 39 Playwright regressions pass against that production build with zero
-  retries. Seven new browser tests cover real worker/PCM detail, an internal
+- All 43 Playwright regressions pass against that production build with zero
+  retries. Eleven new browser tests cover real worker/PCM detail, an internal
   playback boundary before file end, keyboard seeking, repeated/same-file
   replacement, navigation, silence, decode retry/cancellation, the actual DSP
   fallback and rejected native playback recovery.
+  The review regressions additionally exercise suspended animation frames,
+  repeated visibility/pagehide pauses, no restart on return, listener cleanup,
+  a late Play promise and live timeline-label theme colors.
 - The five helper tests cover multi-channel RMS/peak arithmetic, continuous
   window coverage, time boundaries/formatting, invalid/silent/over-budget data
   and beat-grid availability/boundary counts.
@@ -92,6 +103,29 @@ both themes, normal/reduced motion, focus outlines, pointer/keyboard seeking,
 repeated selections, theme toggling, session discard and controlled negative
 states. Screenshots are visually inspected; automated accessibility checks
 cover the changed player/upload regions, not a whole-app WCAG certification.
+
+## Playback review reproduction and fix
+
+At initial head `d86a518996f38b4b269aeb3a04f87d25d40df9cc`, controlled
+animation-frame suspension after Play left native audio still playing at
+4.138356 seconds beyond the first window's three-second end. The initial
+timeline color also stayed RGB(74,74,85) after a light-to-dark toggle, where
+the expected theme color was RGB(180,180,189).
+
+The [before/after browser evidence](LISTENING_WINDOWS_BOUNDARY_QA.json) records
+the same suspension after the fix: native media is paused at exactly three
+seconds at both 390px and 1440px. Three repeated hide/return cycles per width
+retain paused time and selection. Both live theme changes resolve the expected
+label colors with opacity one; inspected [phone](screenshots/listening-windows/boundary-return-dark-390.png)
+and [desktop](screenshots/listening-windows/boundary-return-light-1440.png)
+captures show the readable ruler and return-to-Play instruction. Scoped axe,
+overflow, page-error and POST checks pass for both cases.
+
+Headless Chromium tab switching kept `document.visibilityState` visible, so
+that attempt is not represented as a real hidden/minimized-window test.
+Frame suspension and visibility/pagehide transitions are controlled browser
+API simulations; playback and native media time updates are real. No OS
+minimized-window verification or sample-accurate playback guarantee is claimed.
 
 ## Boundaries and remaining prerequisites
 

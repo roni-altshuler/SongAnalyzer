@@ -42,6 +42,8 @@ export default function WaveformPlayer({ src, height = 80, beatGrid, className }
   const wsRef = useRef<WaveSurferType | null>(null);
   const regionsRef = useRef<RegionsType | null>(null);
   const pendingRef = useRef(false);
+  const playbackEndRef = useRef<number | null>(null);
+  const pauseVersionRef = useRef(0);
   const [session, setSession] = useState(() => initial(src));
   const [retry, setRetry] = useState(0);
   // A replacement file can never render the previous file's controls/details.
@@ -55,7 +57,9 @@ export default function WaveformPlayer({ src, height = 80, beatGrid, className }
     let disposed = false;
     let owned: WaveSurferType | null = null;
     let colorsObserver: MutationObserver | null = null;
+    let removeVisibilityGuards: (() => void) | null = null;
     pendingRef.current = false;
+    playbackEndRef.current = null;
     const update = (change: Partial<PlayerState>) => {
       if (!disposed) setSession(previous => previous.src === src ? { ...previous, ...change } : previous);
     };
@@ -75,9 +79,22 @@ export default function WaveformPlayer({ src, height = 80, beatGrid, className }
           container: containerRef.current, height, waveColor: color('--text-med'), progressColor: color('--accent-from'),
           cursorColor: color('--text-hi'), barWidth: 2, barGap: 1, barRadius: 2, normalize: true,
           backend: 'MediaElement', sampleRate: WAVEFORM_SAMPLE_RATE,
-          plugins: [regions, timelineModule.default.create({ height: 22, style: { color: color('--text-med'), fontSize: '11px', fontFamily: 'var(--font-mono)' } })],
+          plugins: [regions, timelineModule.default.create({ height: 22, secondaryLabelOpacity: 1, style: { color: 'var(--text-med)', fontSize: '11px', fontFamily: 'var(--font-mono)' } })],
         });
         owned = ws; wsRef.current = ws; regionsRef.current = regions;
+        const pauseForVisibility = () => {
+          pauseVersionRef.current++;
+          playbackEndRef.current = null;
+          ws.pause();
+          update({ playing: false, time: ws.getCurrentTime() });
+        };
+        const onVisibilityChange = () => { if (document.hidden) pauseForVisibility(); };
+        document.addEventListener('visibilitychange', onVisibilityChange);
+        window.addEventListener('pagehide', pauseForVisibility);
+        removeVisibilityGuards = () => {
+          document.removeEventListener('visibilitychange', onVisibilityChange);
+          window.removeEventListener('pagehide', pauseForVisibility);
+        };
         // Canvas colors need a redraw when theme or the clip-wide mood changes.
         colorsObserver = new MutationObserver(() => {
           if (!disposed) ws.setOptions({ waveColor: color('--text-med'), progressColor: color('--accent-from'), cursorColor: color('--text-hi') });
@@ -87,10 +104,23 @@ export default function WaveformPlayer({ src, height = 80, beatGrid, className }
           if (!Number.isFinite(actualDuration) || actualDuration <= 0) { update({ status: 'error' }); return; }
           update({ status: 'ready', duration: actualDuration, decoded: ws.getDecodedData() });
         });
-        ws.on('play', () => update({ playing: true }));
-        ws.on('pause', () => update({ playing: false }));
-        ws.on('finish', () => update({ playing: false }));
-        ws.on('timeupdate', time => update({ time }));
+        ws.on('play', () => {
+          if (document.hidden) pauseForVisibility();
+          else update({ playing: true });
+        });
+        ws.on('pause', () => { playbackEndRef.current = null; update({ playing: false }); });
+        ws.on('finish', () => { playbackEndRef.current = null; update({ playing: false }); });
+        ws.on('timeupdate', time => {
+          // WaveSurfer's MediaElement end timer uses rAF. Native timeupdate
+          // also reaches this event, so the boundary survives suspended frames.
+          const end = playbackEndRef.current;
+          if (end !== null && time >= end && ws.isPlaying()) {
+            playbackEndRef.current = null;
+            ws.pause(); ws.setTime(end);
+            return;
+          }
+          update({ time });
+        });
         ws.on('interaction', time => {
           ws.pause();
           update({ selected: windowAt(listeningWindows(ws.getDuration()), time), playbackError: false });
@@ -104,6 +134,8 @@ export default function WaveformPlayer({ src, height = 80, beatGrid, className }
     })();
     return () => {
       disposed = true;
+      playbackEndRef.current = null;
+      removeVisibilityGuards?.();
       colorsObserver?.disconnect();
       if (owned) { owned.pause(); owned.destroy(); }
       if (wsRef.current === owned) { wsRef.current = null; regionsRef.current = null; }
@@ -133,15 +165,25 @@ export default function WaveformPlayer({ src, height = 80, beatGrid, className }
   };
   const toggle = async () => {
     const ws = wsRef.current;
-    if (!ws || !selected || pendingRef.current) return;
+    if (!ws || !selected || pendingRef.current || document.hidden) return;
     if (ws.isPlaying()) { ws.pause(); return; }
     pendingRef.current = true;
+    const pauseVersion = pauseVersionRef.current;
     update({ pending: true, playbackError: false });
     try {
       const time = ws.getCurrentTime();
+      playbackEndRef.current = selected.end;
       await ws.play(time >= selected.start && time < selected.end ? time : selected.start, selected.end);
+      // A start promise settling after a hide/return must never restart audio.
+      if (wsRef.current === ws) {
+        if (document.hidden || pauseVersionRef.current !== pauseVersion) ws.pause();
+        else if (ws.isPlaying()) playbackEndRef.current = selected.end;
+      }
     } catch {
-      if (wsRef.current === ws) update({ playbackError: true, playing: false });
+      if (wsRef.current === ws) {
+        playbackEndRef.current = null;
+        if (pauseVersionRef.current === pauseVersion) update({ playbackError: true, playing: false });
+      }
     } finally {
       if (wsRef.current === ws) { pendingRef.current = false; update({ pending: false }); }
     }
@@ -191,7 +233,7 @@ export default function WaveformPlayer({ src, height = 80, beatGrid, className }
           {gridTicks === null && <p className="text-xs text-[var(--text-med)]">This reading has no timed beat grid. Window playback and signal measurements remain available.</p>}
         </section>
         {player.playbackError && <p role="alert" className="text-sm text-[var(--state-error)]">Playback could not start. Try Play again, or choose another file.</p>}
-        <p className="text-xs text-[var(--text-med)]">Play stops at the window’s end. Choosing another window pauses playback. Nothing is uploaded, indexed or saved.</p>
+        <p className="text-xs text-[var(--text-med)]">Play stops at the window’s end. Choosing another window or hiding this page pauses playback. Return here and press Play to continue. Nothing is uploaded, indexed or saved.</p>
       </>}
     </Card>
   );

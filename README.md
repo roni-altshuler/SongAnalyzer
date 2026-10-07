@@ -85,6 +85,9 @@ Silent PCM is distinguished from unavailable measurements. The DSP fallback
 has no timed beat grid, so that count is unavailable rather than invented.
 Loading, waveform retry and playback-start recovery are explicit. Choosing a
 new file clears the previous player; leaving the page discards the session.
+Hiding the page pauses playback, and returning requires pressing Play again.
+Native media time updates also enforce the window boundary if animation
+frames are suspended. Timeline labels follow live light/dark theme changes.
 
 The [listening-window verification](docs/LISTENING_WINDOWS.md) records limits,
 real browser interactions, screenshots and test results. The paired

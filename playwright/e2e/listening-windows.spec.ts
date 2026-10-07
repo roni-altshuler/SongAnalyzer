@@ -126,3 +126,120 @@ test('a blocked playback start has a recoverable error and releases the Play con
   await expect(timeline(page).getByRole('button', { name: 'Pause', exact: true })).toBeVisible();
   await expect(timeline(page).getByRole('alert')).toHaveCount(0);
 });
+
+test('native media enforces an internal window boundary with animation frames suspended', async ({ page }) => {
+  const errors: string[] = [], writes: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('request', request => { if (request.method() === 'POST') writes.push(request.url()); });
+  await page.addInitScript(`const play = HTMLMediaElement.prototype.play;
+    HTMLMediaElement.prototype.play = function() { window.playbackMedia = this; return play.call(this); };
+    const raf = requestAnimationFrame; window.suspendPlaybackFrames = false; window.droppedFrames = 0;
+    window.requestAnimationFrame = callback => raf(time => { if (window.suspendPlaybackFrames) window.droppedFrames++; else callback(time); });`);
+  await load(page);
+  await timeline(page).getByRole('button', { name: 'Play', exact: true }).click();
+  await expect(timeline(page).getByRole('button', { name: 'Pause', exact: true })).toBeVisible();
+  await page.evaluate(() => { (window as unknown as { suspendPlaybackFrames: boolean }).suspendPlaybackFrames = true; });
+  await expect(timeline(page).getByRole('button', { name: 'Play', exact: true })).toBeVisible({ timeout: 6000 });
+  const media = await page.evaluate(() => {
+    const state = window as unknown as { playbackMedia: HTMLMediaElement; droppedFrames: number };
+    return { time: state.playbackMedia.currentTime, paused: state.playbackMedia.paused, droppedFrames: state.droppedFrames };
+  });
+  expect(media.droppedFrames).toBeGreaterThan(0); expect(media.paused).toBe(true); expect(media.time).toBeCloseTo(3, 2);
+  await expect(timeline(page).getByRole('button', { name: /^Select window 1,/ })).toHaveAttribute('aria-pressed', 'true');
+  expect(errors).toEqual([]); expect(writes).toEqual([]);
+});
+
+test('visibility and pagehide pause without restart, repeat safely and remove owned guards', async ({ page }) => {
+  await page.addInitScript(`window.forcedVisibility = 'visible';
+    Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => window.forcedVisibility });
+    Object.defineProperty(document, 'hidden', { configurable: true, get: () => window.forcedVisibility !== 'visible' });
+    const play = HTMLMediaElement.prototype.play; let denied = false;
+    HTMLMediaElement.prototype.play = function() { window.playbackMedia = this; if (!denied) { denied = true; return Promise.reject(new DOMException('Controlled denial', 'NotAllowedError')); } return play.call(this); };
+    const visibility = new Set(), hides = new Set();
+    const addDocument = document.addEventListener.bind(document), removeDocument = document.removeEventListener.bind(document);
+    document.addEventListener = (type, listener, options) => { if (type === 'visibilitychange') visibility.add(listener); return addDocument(type, listener, options); };
+    document.removeEventListener = (type, listener, options) => { if (type === 'visibilitychange') visibility.delete(listener); return removeDocument(type, listener, options); };
+    const addWindow = window.addEventListener.bind(window), removeWindow = window.removeEventListener.bind(window);
+    window.addEventListener = (type, listener, options) => { if (type === 'pagehide') hides.add(listener); return addWindow(type, listener, options); };
+    window.removeEventListener = (type, listener, options) => { if (type === 'pagehide') hides.delete(listener); return removeWindow(type, listener, options); };
+    window.visibilityGuardCounts = () => ({ visibility: visibility.size, pagehide: hides.size });`);
+  await page.goto('/analyze?mode=audio');
+  const counts = () => page.evaluate(() => (window as unknown as { visibilityGuardCounts: () => { visibility: number; pagehide: number } }).visibilityGuardCounts());
+  const baseline = await counts();
+  await page.locator('#audio-file').setInputFiles(recording);
+  const view = timeline(page);
+  await expect(view.getByRole('button', { name: 'Play', exact: true })).toBeEnabled({ timeout: 35000 });
+  expect(await counts()).toEqual({ visibility: baseline.visibility + 1, pagehide: baseline.pagehide + 1 });
+  await view.getByRole('button', { name: 'Play', exact: true }).click();
+  await expect(view.getByRole('alert')).toContainText('Playback could not start');
+  await view.getByRole('button', { name: 'Play', exact: true }).click();
+  await expect(view.getByRole('button', { name: 'Pause', exact: true })).toBeVisible();
+  for (const index of [1, 2, 1]) {
+    await page.evaluate(() => { (window as unknown as { forcedVisibility: string }).forcedVisibility = 'hidden'; document.dispatchEvent(new Event('visibilitychange')); });
+    await expect(view.getByRole('button', { name: 'Play', exact: true })).toBeEnabled();
+    const pausedAt = await view.getByRole('slider', { name: 'Playback position' }).inputValue();
+    await page.evaluate(() => { (window as unknown as { forcedVisibility: string }).forcedVisibility = 'visible'; document.dispatchEvent(new Event('visibilitychange')); });
+    await page.waitForTimeout(350);
+    await expect(view.getByRole('slider', { name: 'Playback position' })).toHaveValue(pausedAt);
+    await expect(view.getByRole('button', { name: 'Play', exact: true })).toBeEnabled();
+    await view.getByRole('button', { name: new RegExp(`^Select window ${index},`) }).click();
+    await view.getByRole('button', { name: 'Play', exact: true }).click();
+    await expect(view.getByRole('button', { name: 'Pause', exact: true })).toBeVisible();
+  }
+  await page.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pagehide')));
+  await expect(view.getByRole('button', { name: 'Play', exact: true })).toBeEnabled();
+  await page.locator('#audio-file').setInputFiles(recording);
+  await expect(view.getByRole('button', { name: 'Play', exact: true })).toBeEnabled({ timeout: 35000 });
+  expect(await counts()).toEqual({ visibility: baseline.visibility + 1, pagehide: baseline.pagehide + 1 });
+  await page.getByRole('tab', { name: /Lyrics/ }).click(); await expect(view).toHaveCount(0);
+  expect(await counts()).toEqual(baseline);
+});
+
+test('a playback promise settling after hide and return cannot restart audio', async ({ page }) => {
+  await page.addInitScript(`window.forcedVisibility = 'visible';
+    Object.defineProperty(document, 'hidden', { configurable: true, get: () => window.forcedVisibility !== 'visible' });
+    const play = HTMLMediaElement.prototype.play; let held = false;
+    HTMLMediaElement.prototype.play = function() { window.playbackMedia = this;
+      if (!held) { held = true; return new Promise(resolve => { window.releasePlaybackStart = () => resolve(play.call(this)); }); }
+      return play.call(this);
+    };`);
+  await load(page);
+  const view = timeline(page);
+  await view.getByRole('button', { name: 'Play', exact: true }).click();
+  await expect(view.getByRole('button', { name: 'Play', exact: true })).toBeDisabled();
+  await page.evaluate(() => {
+    const state = window as unknown as { forcedVisibility: string; releasePlaybackStart: () => void };
+    state.forcedVisibility = 'hidden'; document.dispatchEvent(new Event('visibilitychange'));
+    state.forcedVisibility = 'visible'; document.dispatchEvent(new Event('visibilitychange'));
+    state.releasePlaybackStart();
+  });
+  await expect(view.getByRole('button', { name: 'Play', exact: true })).toBeEnabled();
+  await page.waitForTimeout(350);
+  expect(await page.evaluate(() => (window as unknown as { playbackMedia: HTMLMediaElement }).playbackMedia.paused)).toBe(true);
+  await expect(view.getByRole('alert')).toHaveCount(0);
+  await view.getByRole('button', { name: 'Play', exact: true }).click();
+  await expect(view.getByRole('button', { name: 'Pause', exact: true })).toBeVisible();
+});
+
+test('timeline labels follow both live theme changes without resetting the selected passage', async ({ page }) => {
+  await load(page);
+  const view = timeline(page), second = view.getByRole('button', { name: /^Select window 2,/ });
+  await second.click();
+  const timelineColor = () => view.locator('[part="timeline"]').evaluate(element => getComputedStyle(element).color);
+  const textColor = () => view.evaluate(element => {
+    const probe = document.createElement('span'); probe.style.color = 'var(--text-med)'; element.appendChild(probe);
+    const color = getComputedStyle(probe).color; probe.remove(); return color;
+  });
+  const initialColor = await timelineColor();
+  const initiallyDark = await page.locator('html').evaluate(element => element.classList.contains('dark'));
+  await expect(view.locator('[part~="timeline-notch-secondary"]').first()).toHaveCSS('opacity', '1');
+  for (let index = 0; index < 2; index++) {
+    await page.getByRole('button', { name: 'Toggle color theme' }).click();
+    await expect(page.locator('html')).toHaveClass(new RegExp(index === 0 ? initiallyDark ? 'light' : 'dark' : initiallyDark ? 'dark' : 'light'));
+    await expect.poll(timelineColor).toBe(await textColor());
+    await expect(second).toHaveAttribute('aria-pressed', 'true');
+    await expect(view.getByTestId('playback-time')).toHaveText('0:03.0');
+    if (index === 0) expect(await timelineColor()).not.toBe(initialColor);
+  }
+  expect(await timelineColor()).toBe(initialColor);
+});
