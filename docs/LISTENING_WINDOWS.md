@@ -76,6 +76,10 @@ Another original WAV contains exact zero PCM to verify silence.
   The review regressions additionally exercise suspended animation frames,
   repeated visibility/pagehide pauses, no restart on return, listener cleanup,
   a late Play promise and live timeline-label theme colors.
+  Local fixtures use the visible upload control and native file chooser, so
+  the test starts through the mounted handler rather than injecting a hidden
+  input before hydration/mount effects settle. Error/retry assertions, timeouts
+  and the zero-retry policy remain unchanged.
 - The five helper tests cover multi-channel RMS/peak arithmetic, continuous
   window coverage, time boundaries/formatting, invalid/silent/over-budget data
   and beat-grid availability/boundary counts.

@@ -3,9 +3,16 @@ import { syntheticClip } from '../fixtures/synthetic-audio';
 
 const recording = { name: 'original-passage.wav', mimeType: 'audio/wav', buffer: syntheticClip({ duration: 6, secondHalfGain: 0.2 }) };
 const timeline = (page: Page) => page.getByRole('region', { name: 'Local listening timeline' });
+async function chooseLocalFile(page: Page, file = recording) {
+  // The native chooser requires the visible upload handler to be mounted.
+  // Hidden-input injection can race hydration and the hook's mount effects.
+  const chooser = page.waitForEvent('filechooser');
+  await page.getByRole('button', { name: 'Upload audio file', exact: true }).click();
+  await (await chooser).setFiles(file);
+}
 async function load(page: Page) {
   await page.goto('/analyze?mode=audio');
-  await page.locator('#audio-file').setInputFiles(recording);
+  await chooseLocalFile(page);
   await expect(timeline(page).getByRole('button', { name: 'Play', exact: true })).toBeEnabled({ timeout: 35000 });
 }
 
@@ -51,7 +58,7 @@ test('repeated selection, same-file replacement and mode/navigation discard stal
   await timeline(page).getByRole('button', { name: 'Play', exact: true }).click();
   await expect(timeline(page).getByRole('button', { name: 'Pause', exact: true })).toBeVisible();
   const count = workers.length;
-  await page.locator('#audio-file').setInputFiles(recording);
+  await chooseLocalFile(page);
   await expect.poll(() => workers.length).toBeGreaterThan(count);
   await expect(timeline(page).getByRole('button', { name: 'Play', exact: true })).toBeEnabled({ timeout: 35000 });
   await expect(timeline(page).getByRole('button', { name: /^Select window 1,/ })).toHaveAttribute('aria-pressed', 'true');
@@ -67,7 +74,7 @@ test('repeated selection, same-file replacement and mode/navigation discard stal
 
 test('real silent PCM is distinguished from unavailable beat data', async ({ page }) => {
   await page.goto('/analyze?mode=audio');
-  await page.locator('#audio-file').setInputFiles({ name: 'original-silence.wav', mimeType: 'audio/wav', buffer: syntheticClip({ silent: true }) });
+  await chooseLocalFile(page, { name: 'original-silence.wav', mimeType: 'audio/wav', buffer: syntheticClip({ silent: true }) });
   await expect(timeline(page).getByRole('button', { name: 'Play', exact: true })).toBeEnabled({ timeout: 35000 });
   const detail = timeline(page).getByRole('region', { name: 'Selected window detail' });
   await expect(detail.getByText('Silent (−∞)', { exact: true })).toHaveCount(2);
@@ -80,7 +87,7 @@ test('a waveform decode failure remains retryable without losing the real worker
       if (this.sampleRate === 22050 && !failed) { failed = true; return Promise.reject(new DOMException('Controlled waveform decode failure', 'EncodingError')); }
       return original.apply(this, args);
     };`);
-  await page.goto('/analyze?mode=audio'); await page.locator('#audio-file').setInputFiles(recording);
+  await page.goto('/analyze?mode=audio'); await chooseLocalFile(page);
   await expect(timeline(page).getByRole('alert')).toContainText('waveform could not load', { timeout: 35000 });
   await expect(page.getByRole('heading', { name: 'Audio analysis', exact: true })).toBeVisible();
   await timeline(page).getByRole('button', { name: 'Retry waveform' }).click();
@@ -94,7 +101,7 @@ test('a held real waveform decode shows loading and cancels cleanly on navigatio
       if (this.sampleRate === 22050) return new Promise(resolve => { window.releaseWaveformDecode = () => resolve(original.apply(this, args)); });
       return original.apply(this, args);
     };`);
-  await page.goto('/analyze?mode=audio'); await page.locator('#audio-file').setInputFiles(recording);
+  await page.goto('/analyze?mode=audio'); await chooseLocalFile(page);
   await expect(timeline(page).getByRole('status')).toContainText('Preparing local waveform', { timeout: 35000 });
   await expect(timeline(page)).toHaveAttribute('aria-busy', 'true');
   await expect(timeline(page).getByRole('button', { name: 'Play', exact: true })).toHaveCount(0);
@@ -166,7 +173,7 @@ test('visibility and pagehide pause without restart, repeat safely and remove ow
   await page.goto('/analyze?mode=audio');
   const counts = () => page.evaluate(() => (window as unknown as { visibilityGuardCounts: () => { visibility: number; pagehide: number } }).visibilityGuardCounts());
   const baseline = await counts();
-  await page.locator('#audio-file').setInputFiles(recording);
+  await chooseLocalFile(page);
   const view = timeline(page);
   await expect(view.getByRole('button', { name: 'Play', exact: true })).toBeEnabled({ timeout: 35000 });
   expect(await counts()).toEqual({ visibility: baseline.visibility + 1, pagehide: baseline.pagehide + 1 });
@@ -188,7 +195,7 @@ test('visibility and pagehide pause without restart, repeat safely and remove ow
   }
   await page.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pagehide')));
   await expect(view.getByRole('button', { name: 'Play', exact: true })).toBeEnabled();
-  await page.locator('#audio-file').setInputFiles(recording);
+  await chooseLocalFile(page);
   await expect(view.getByRole('button', { name: 'Play', exact: true })).toBeEnabled({ timeout: 35000 });
   expect(await counts()).toEqual({ visibility: baseline.visibility + 1, pagehide: baseline.pagehide + 1 });
   await page.getByRole('tab', { name: /Lyrics/ }).click(); await expect(view).toHaveCount(0);

@@ -196,5 +196,12 @@
       "screenshots/listening-windows/boundary-return-light-1440.png"
     ],
     "observations": "Both live theme changes show readable ruler labels at full opacity. Desktop/phone controls retain the selected passage and paused Play state. The hide/return instruction wraps within the card."
+  },
+  "ciInputFollowup": {
+    "head": "9635bf6000cf14e27eb0e2e7139ccec7c4158002",
+    "job": "https://github.com/roni-altshuler/SongAnalyzer/actions/runs/37621729178/job/112793939894",
+    "result": "42 passed, one waveform-decode-state test failed; all four added playback/theme regressions passed",
+    "traceObservation": "File accepted and Analyzing audio remained visible, with no worker/waveform start. Three local cold-server attempts of the original test passed; no deterministic root-cause claim is made.",
+    "testChange": "Use the actual visible upload control and native file chooser, matching existing recognition tests, instead of hidden-input injection that bypasses the mounted chooser handler. Assertions/timeouts retained; retries remain zero."
   }
 }
