@@ -12,8 +12,8 @@ interface EmptyStateProps {
 export default function EmptyState({ mode = 'lyrics', onStart, onSwitchMode }: EmptyStateProps) {
   const audio = mode === 'audio';
   const details = audio
-    ? [['Rhythm & tone', 'Explore tempo, key and the energy of your recording.'],
-      ['An emotional reading', 'See how the sound maps to mood and feeling.']]
+    ? [['Rhythm & tone', 'Read clip-wide tempo, key and energy estimates.'],
+      ['A closer listen', 'Select passages, compare signal levels and play one window.']]
     : [['Mood & meaning', 'Explore the emotions and themes in the words.'],
       ['A second perspective', 'Add audio to compare the words with the sound.']];
 
@@ -43,7 +43,7 @@ export default function EmptyState({ mode = 'lyrics', onStart, onSwitchMode }: E
       </h2>
       <p className="mt-3 max-w-md text-sm leading-6 text-[var(--text-med)]">
         {audio
-          ? 'Choose a recording or a track preview. Your audio analysis will appear here.'
+          ? 'Choose a local recording you own or have permission to analyze. Listening windows and a clip-wide reading will appear here.'
           : 'Bring a verse, a chorus, or a whole song. Your lyrics analysis will appear here.'}
       </p>
 

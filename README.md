@@ -14,6 +14,7 @@ SongAnalyzer is a Next.js music workbench. **Identify** (`/identify`) computes c
 | **Identify a song** | Choose a permitted clip or explicitly start the microphone. Browser-computed hashes query the existing catalog; raw audio is not sent for this lookup. Optional, configured AudD fallback names the provider and asks before sending the clip. A catalog outage is distinct from a genuine no-match. |
 | **Paste lyrics** | Hybrid transformer + keyword engine returns mood, vibe, energy, sentiment, themes, and a per-engine provenance trail. Heuristic confidence values, dominant emotion mapped, mood color computed server-side; confidence is not measured accuracy. |
 | **Upload audio** | Choose a local file you own or have permission to analyze. The real MIR worker estimates tempo, beat grid, key, timbre and valence/arousal, with the existing DSP fallback. The file and audio insights stay in the current browser session: no fingerprint indexing, server saves or sharing. These estimates are not validated accuracy scores. |
+| **Listen to a passage** | A local recording opens selectable timed windows, keyboard/pointer seeking and playback that stops at the selected window’s end. Passage detail measures RMS/peak from locally decoded waveform PCM and counts only the existing estimated beat-grid ticks. Windows are listening aids, not inferred verses or choruses. |
 | **Discover similar songs** | Fresh remote audio analysis and catalog growth are paused. Track selection still provides metadata and listening links. The existing similarity read endpoint and saved vectors are preserved; no new recommendations or features are fabricated. |
 | **Search a song** | Typeahead against Spotify (Client Credentials) returns attributed metadata, cover art and direct item links, without preview URLs. Genius enrichment for IDs and album info only — never lyrics, by ToS. MusicBrainz + AcousticBrainz fill in open audio features when available. |
 | **Follow artist credits** | Selected tracks with source artist IDs link each credited artist to a provider-qualified profile (`/artists/<provider>/<id>`). Profiles retain known track metadata in this tab, show an explicit Person/Group/Unknown type, and use an accessible fallback when permitted official imagery is unavailable. Legacy saved rows cannot yet connect artist identities or related readings. |
@@ -69,6 +70,26 @@ Direct profile links opened without this tab’s context show that limitation.
 The [artist profile verification](docs/ARTIST_PROFILES.md) describes the asset
 contract, browser checks and remaining data prerequisites. Existing Atlas name
 routes and recording/privacy protections remain intact.
+
+## Local listening windows
+
+The existing WaveSurfer player now synchronizes a selected passage with its
+waveform highlight, playback position and signal detail. It uses the installed
+WaveSurfer Regions/Timeline plugins and native media playback; no new runtime
+library or music service is required. Signal levels use unnormalized local PCM
+at 22.05 kHz across all channels. They describe digital amplitude, not perceived
+loudness. Clip-wide mood, key and tempo estimates remain below the player;
+no per-window musical model or accuracy claim is added.
+
+Silent PCM is distinguished from unavailable measurements. The DSP fallback
+has no timed beat grid, so that count is unavailable rather than invented.
+Loading, waveform retry and playback-start recovery are explicit. Choosing a
+new file clears the previous player; leaving the page discards the session.
+
+The [listening-window verification](docs/LISTENING_WINDOWS.md) records limits,
+real browser interactions, screenshots and test results. The paired
+[source-map-js patch evidence](docs/SOURCE_MAP_PATCH_2026-10-07.md) records the
+narrow lockfile repair for GHSA-68fv-2mgg-jv7q and remaining audit findings.
 
 ## Architecture in one breath
 

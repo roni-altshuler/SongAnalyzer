@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-07",
+  "scope": "source-map-js only; package.json unchanged; one lockfile node updated",
+  "registry": "https://registry.npmjs.org",
+  "advisory": "https://github.com/advisories/GHSA-68fv-2mgg-jv7q",
+  "affectedRange": ">=1.0.0 <1.2.2",
+  "patchedVersion": "1.2.2",
+  "before": {
+    "metadata": {
+      "info": 0,
+      "low": 5,
+      "moderate": 24,
+      "high": 35,
+      "critical": 0,
+      "total": 64
+    },
+    "sourceMapJs": {
+      "name": "source-map-js",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1241209,
+          "name": "source-map-js",
+          "dependency": "source-map-js",
+          "title": "source-map-js allows event-loop denial of service through indexed source-map section offsets",
+          "url": "https://github.com/advisories/GHSA-68fv-2mgg-jv7q",
+          "severity": "high",
+          "cwe": [
+            "CWE-1284"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=1.0.0 <1.2.2"
+        }
+      ],
+      "effects": [
+        "@tailwindcss/node",
+        "postcss"
+      ],
+      "range": "",
+      "nodes": [
+        "node_modules/source-map-js"
+      ],
+      "fixAvailable": false
+    }
+  },
+  "after": {
+    "metadata": {
+      "info": 0,
+      "low": 2,
+      "moderate": 7,
+      "high": 18,
+      "critical": 0,
+      "total": 27
+    },
+    "sourceMapJs": null
+  },
+  "limitations": "Other advisories remain. This is a registry snapshot, not a runtime reachability or model accuracy assessment."
+}
