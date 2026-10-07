@@ -232,21 +232,36 @@ test('timeline labels follow both live theme changes without resetting the selec
   await load(page);
   const view = timeline(page), second = view.getByRole('button', { name: /^Select window 2,/ });
   await second.click();
-  const timelineColor = () => view.locator('[part="timeline"]').evaluate(element => getComputedStyle(element).color);
+  // WaveSurfer replaces this node on redraw, including the first visible
+  // render. Resolve and read together so a detached handle cannot yield ''.
+  const timelineColor = () => view.locator('[part="timeline"]').evaluateAll(elements => {
+    const element = elements[0];
+    if (!element?.isConnected || element.getBoundingClientRect().width <= 0
+      || !element.querySelector('[part~="timeline-notch-secondary"]')) return null;
+    return getComputedStyle(element).color || null;
+  });
   const textColor = () => view.evaluate(element => {
     const probe = document.createElement('span'); probe.style.color = 'var(--text-med)'; element.appendChild(probe);
     const color = getComputedStyle(probe).color; probe.remove(); return color;
   });
-  const initialColor = await timelineColor();
+  const expectedInitialColor = await textColor();
+  expect(expectedInitialColor).toMatch(/^rgb\(/);
+  let initialColor: string | null = null;
+  // Capture the same initialized reading that passes the assertion. A second
+  // immediate read could otherwise land during another redraw.
+  await expect.poll(async () => (initialColor = await timelineColor())).toBe(expectedInitialColor);
+  expect(initialColor).toMatch(/^rgb\(/);
   const initiallyDark = await page.locator('html').evaluate(element => element.classList.contains('dark'));
   await expect(view.locator('[part~="timeline-notch-secondary"]').first()).toHaveCSS('opacity', '1');
   for (let index = 0; index < 2; index++) {
     await page.getByRole('button', { name: 'Toggle color theme' }).click();
     await expect(page.locator('html')).toHaveClass(new RegExp(index === 0 ? initiallyDark ? 'light' : 'dark' : initiallyDark ? 'dark' : 'light'));
-    await expect.poll(timelineColor).toBe(await textColor());
+    let currentColor: string | null = null;
+    await expect.poll(async () => (currentColor = await timelineColor())).toBe(await textColor());
+    await expect(view.locator('[part~="timeline-notch-secondary"]').first()).toHaveCSS('opacity', '1');
     await expect(second).toHaveAttribute('aria-pressed', 'true');
     await expect(view.getByTestId('playback-time')).toHaveText('0:03.0');
-    if (index === 0) expect(await timelineColor()).not.toBe(initialColor);
+    if (index === 0) expect(currentColor).not.toBe(initialColor);
   }
-  expect(await timelineColor()).toBe(initialColor);
+  await expect.poll(timelineColor).toBe(initialColor);
 });

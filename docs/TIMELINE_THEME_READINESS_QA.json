@@ -1,0 +1,454 @@
+{
+  "date": "2026-10-07",
+  "base": "d114e106d2508a87d912fdb6b0be6a729fa24b35",
+  "browser": "151.0.7922.173",
+  "environment": "Saved cloud environment; Next 16.3.6 local production server; actual Chromium; original generated local WAV; native file chooser",
+  "scope": "8 fresh browser contexts, 390/1440px, both initial themes, normal/reduced motion; actual theme buttons, keyboard selection/seek, real native playback, scoped axe and overflow checks",
+  "limitations": "Local production browser, not hosted Vercel UI. Animation-frame suspension is a controlled API simulation; native audio/timeupdate remains real. No OS minimization or live Supabase/RLS claim.",
+  "mainCiFailure": {
+    "run": 37624785309,
+    "job": 112804599821,
+    "artifact": 11484026499,
+    "artifactSha256": "3b0fdf866cc6951b567d3c1f32b404251d21dce10b57758be25d95aac3bf0ae0",
+    "expected": "",
+    "received": "rgb(180, 180, 189)",
+    "traceSnapshots": {
+      "initial": "after@call@945: timeline has no notch children",
+      "next": "before@call@949: replacement timeline has six notches"
+    },
+    "connectivity": "CI trace does not record the evaluated handle connectivity. Actual redraw reproduces detached handle -> empty color, while connected replacement is correct."
+  },
+  "mainReproduction": {
+    "base": "d114e106d2508a87d912fdb6b0be6a729fa24b35",
+    "before": {
+      "connected": true,
+      "color": "rgb(180, 180, 189)"
+    },
+    "stale": {
+      "connected": false,
+      "color": ""
+    },
+    "current": {
+      "connected": true,
+      "color": "rgb(180, 180, 189)",
+      "width": 472
+    },
+    "selection": 2,
+    "time": "0:03.0",
+    "controlled": "Real existing mood-token redraw; stale handle retained across it; no DOM or computed-color stub"
+  },
+  "results": [
+    {
+      "width": 390,
+      "initialTheme": "light",
+      "motion": "no-preference",
+      "colors": [
+        {
+          "step": 0,
+          "theme": "light",
+          "color": "rgb(74, 74, 85)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        },
+        {
+          "step": 1,
+          "theme": "dark",
+          "color": "rgb(180, 180, 189)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        },
+        {
+          "step": 2,
+          "theme": "light",
+          "color": "rgb(74, 74, 85)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        }
+      ],
+      "redrawStaleReading": {
+        "connected": false,
+        "color": ""
+      },
+      "media": {
+        "paused": true,
+        "time": 3,
+        "droppedFrames": 2
+      },
+      "axeViolations": 0,
+      "documentWidth": 390,
+      "pageErrors": [],
+      "postRequests": [],
+      "externalRequests": [],
+      "screenshots": []
+    },
+    {
+      "width": 390,
+      "initialTheme": "light",
+      "motion": "reduce",
+      "colors": [
+        {
+          "step": 0,
+          "theme": "light",
+          "color": "rgb(74, 74, 85)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        },
+        {
+          "step": 1,
+          "theme": "dark",
+          "color": "rgb(180, 180, 189)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        },
+        {
+          "step": 2,
+          "theme": "light",
+          "color": "rgb(74, 74, 85)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        }
+      ],
+      "redrawStaleReading": {
+        "connected": false,
+        "color": ""
+      },
+      "media": {
+        "paused": true,
+        "time": 3,
+        "droppedFrames": 2
+      },
+      "axeViolations": 0,
+      "documentWidth": 390,
+      "pageErrors": [],
+      "postRequests": [],
+      "externalRequests": [],
+      "screenshots": [
+        "screenshots/timeline-theme-readiness/dark-390.png",
+        "screenshots/timeline-theme-readiness/light-390.png"
+      ]
+    },
+    {
+      "width": 390,
+      "initialTheme": "dark",
+      "motion": "no-preference",
+      "colors": [
+        {
+          "step": 0,
+          "theme": "dark",
+          "color": "rgb(180, 180, 189)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        },
+        {
+          "step": 1,
+          "theme": "light",
+          "color": "rgb(74, 74, 85)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        },
+        {
+          "step": 2,
+          "theme": "dark",
+          "color": "rgb(180, 180, 189)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        }
+      ],
+      "redrawStaleReading": {
+        "connected": false,
+        "color": ""
+      },
+      "media": {
+        "paused": true,
+        "time": 3,
+        "droppedFrames": 2
+      },
+      "axeViolations": 0,
+      "documentWidth": 390,
+      "pageErrors": [],
+      "postRequests": [],
+      "externalRequests": [],
+      "screenshots": []
+    },
+    {
+      "width": 390,
+      "initialTheme": "dark",
+      "motion": "reduce",
+      "colors": [
+        {
+          "step": 0,
+          "theme": "dark",
+          "color": "rgb(180, 180, 189)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        },
+        {
+          "step": 1,
+          "theme": "light",
+          "color": "rgb(74, 74, 85)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        },
+        {
+          "step": 2,
+          "theme": "dark",
+          "color": "rgb(180, 180, 189)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        }
+      ],
+      "redrawStaleReading": {
+        "connected": false,
+        "color": ""
+      },
+      "media": {
+        "paused": true,
+        "time": 3,
+        "droppedFrames": 2
+      },
+      "axeViolations": 0,
+      "documentWidth": 390,
+      "pageErrors": [],
+      "postRequests": [],
+      "externalRequests": [],
+      "screenshots": []
+    },
+    {
+      "width": 1440,
+      "initialTheme": "light",
+      "motion": "no-preference",
+      "colors": [
+        {
+          "step": 0,
+          "theme": "light",
+          "color": "rgb(74, 74, 85)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        },
+        {
+          "step": 1,
+          "theme": "dark",
+          "color": "rgb(180, 180, 189)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        },
+        {
+          "step": 2,
+          "theme": "light",
+          "color": "rgb(74, 74, 85)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        }
+      ],
+      "redrawStaleReading": {
+        "connected": false,
+        "color": ""
+      },
+      "media": {
+        "paused": true,
+        "time": 3,
+        "droppedFrames": 2
+      },
+      "axeViolations": 0,
+      "documentWidth": 1440,
+      "pageErrors": [],
+      "postRequests": [],
+      "externalRequests": [],
+      "screenshots": []
+    },
+    {
+      "width": 1440,
+      "initialTheme": "light",
+      "motion": "reduce",
+      "colors": [
+        {
+          "step": 0,
+          "theme": "light",
+          "color": "rgb(74, 74, 85)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        },
+        {
+          "step": 1,
+          "theme": "dark",
+          "color": "rgb(180, 180, 189)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        },
+        {
+          "step": 2,
+          "theme": "light",
+          "color": "rgb(74, 74, 85)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        }
+      ],
+      "redrawStaleReading": {
+        "connected": false,
+        "color": ""
+      },
+      "media": {
+        "paused": true,
+        "time": 3,
+        "droppedFrames": 2
+      },
+      "axeViolations": 0,
+      "documentWidth": 1440,
+      "pageErrors": [],
+      "postRequests": [],
+      "externalRequests": [],
+      "screenshots": [
+        "screenshots/timeline-theme-readiness/dark-1440.png",
+        "screenshots/timeline-theme-readiness/light-1440.png"
+      ]
+    },
+    {
+      "width": 1440,
+      "initialTheme": "dark",
+      "motion": "no-preference",
+      "colors": [
+        {
+          "step": 0,
+          "theme": "dark",
+          "color": "rgb(180, 180, 189)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        },
+        {
+          "step": 1,
+          "theme": "light",
+          "color": "rgb(74, 74, 85)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        },
+        {
+          "step": 2,
+          "theme": "dark",
+          "color": "rgb(180, 180, 189)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        }
+      ],
+      "redrawStaleReading": {
+        "connected": false,
+        "color": ""
+      },
+      "media": {
+        "paused": true,
+        "time": 3,
+        "droppedFrames": 2
+      },
+      "axeViolations": 0,
+      "documentWidth": 1440,
+      "pageErrors": [],
+      "postRequests": [],
+      "externalRequests": [],
+      "screenshots": []
+    },
+    {
+      "width": 1440,
+      "initialTheme": "dark",
+      "motion": "reduce",
+      "colors": [
+        {
+          "step": 0,
+          "theme": "dark",
+          "color": "rgb(180, 180, 189)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        },
+        {
+          "step": 1,
+          "theme": "light",
+          "color": "rgb(74, 74, 85)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        },
+        {
+          "step": 2,
+          "theme": "dark",
+          "color": "rgb(180, 180, 189)",
+          "opacity": "1",
+          "selection": 2,
+          "time": "0:03.0"
+        }
+      ],
+      "redrawStaleReading": {
+        "connected": false,
+        "color": ""
+      },
+      "media": {
+        "paused": true,
+        "time": 3,
+        "droppedFrames": 2
+      },
+      "axeViolations": 0,
+      "documentWidth": 1440,
+      "pageErrors": [],
+      "postRequests": [],
+      "externalRequests": [],
+      "screenshots": []
+    }
+  ],
+  "visualInspection": {
+    "captures": 4,
+    "inspected": true,
+    "observations": "Light/dark ruler labels, selected second passage at 0:03.0, measured detail and phone/desktop layouts visible; no clipping observed."
+  },
+  "localVerification": {
+    "originalColdThemeRuns": {
+      "passed": 4,
+      "failed": 0,
+      "retries": 0
+    },
+    "fixedColdThemeRuns": {
+      "passed": 5,
+      "failed": 0,
+      "retries": 0,
+      "freshServerPerRun": true
+    },
+    "coldBrowserSuite": {
+      "passed": 43,
+      "failed": 0,
+      "retries": 0
+    },
+    "productionBrowserSuite": {
+      "passed": 43,
+      "failed": 0,
+      "retries": 0
+    },
+    "unit": {
+      "passed": 199,
+      "skipped": 11
+    },
+    "lint": {
+      "errors": 0,
+      "existingWarnings": 6
+    },
+    "typecheck": "passed",
+    "productionBuild": "passed"
+  }
+}

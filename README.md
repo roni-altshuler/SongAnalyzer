@@ -93,6 +93,9 @@ The [listening-window verification](docs/LISTENING_WINDOWS.md) records limits,
 real browser interactions, screenshots and test results. The paired
 [source-map-js patch evidence](docs/SOURCE_MAP_PATCH_2026-10-07.md) records the
 narrow lockfile repair for GHSA-68fv-2mgg-jv7q and remaining audit findings.
+The [timeline theme readiness follow-up](docs/TIMELINE_THEME_READINESS.md)
+records the post-merge CI race, initialized-color test fix and fresh production
+browser checks. Runtime playback and analysis behavior are unchanged.
 
 ## Architecture in one breath
 
