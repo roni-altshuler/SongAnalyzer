@@ -90,11 +90,11 @@ export default function MoodRadar({ energy, sentiment, mood, vibe, themes }: Moo
   const rings = [0.25, 0.5, 0.75, 1];
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 border border-gray-200 dark:border-slate-700">
-      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">
+    <div className="space-y-4">
+      <h3 className="font-display text-xl text-[var(--text-hi)]">
         Mood Dimensions
       </h3>
-      <svg viewBox="0 0 200 200" className="w-full max-w-[260px] mx-auto">
+      <svg viewBox="0 0 200 200" className="w-full max-w-[260px] mx-auto" role="img" aria-label={`Mood dimensions: ${energy} energy, ${sentiment} sentiment, ${mood} mood, ${vibe} vibe; ${themes.length} themes`}>
         {/* Grid rings */}
         {rings.map((r) => (
           <polygon
@@ -107,7 +107,7 @@ export default function MoodRadar({ energy, sentiment, mood, vibe, themes }: Moo
               .join(' ')}
             fill="none"
             stroke="currentColor"
-            className="text-gray-200 dark:text-slate-700"
+            className="text-[var(--border-strong)]"
             strokeWidth="0.5"
           />
         ))}
@@ -123,7 +123,7 @@ export default function MoodRadar({ energy, sentiment, mood, vibe, themes }: Moo
               x2={x}
               y2={y}
               stroke="currentColor"
-              className="text-gray-200 dark:text-slate-700"
+              className="text-[var(--border-strong)]"
               strokeWidth="0.5"
             />
           );
@@ -132,7 +132,8 @@ export default function MoodRadar({ energy, sentiment, mood, vibe, themes }: Moo
         {/* Data polygon */}
         <polygon
           points={points}
-          className="fill-blue-500/20 stroke-blue-500 dark:fill-blue-400/20 dark:stroke-blue-400"
+          fill="color-mix(in srgb, var(--accent-from) 16%, transparent)"
+          stroke="color-mix(in srgb, var(--accent-from) 45%, var(--text-hi))"
           strokeWidth="1.5"
           strokeLinejoin="round"
         />
@@ -146,7 +147,7 @@ export default function MoodRadar({ energy, sentiment, mood, vibe, themes }: Moo
               cx={x}
               cy={y}
               r="3"
-              className="fill-blue-600 dark:fill-blue-400"
+              fill="color-mix(in srgb, var(--accent-from) 45%, var(--text-hi))"
             />
           );
         })}
@@ -161,7 +162,7 @@ export default function MoodRadar({ energy, sentiment, mood, vibe, themes }: Moo
               y={y}
               textAnchor="middle"
               dominantBaseline="middle"
-              className="fill-gray-500 dark:fill-gray-400 text-[7px] font-medium"
+              className="fill-[var(--text-med)] text-[7px] font-medium"
             >
               {label}
             </text>

@@ -225,6 +225,18 @@ describe('getAtlasOverview', () => {
     expect(overview.totalAnalyses).toBe(0);
     expect(overview.moodDistribution).toEqual([]);
   });
+
+  it('reports a missing view when a page needs to distinguish unavailable from empty', async () => {
+    setMockError('relation "public.analyses_with_song" does not exist');
+    await expect(getAtlasOverview({ requireAvailable: true })).rejects.toThrow('Public catalog read failed');
+  });
+
+  it('keeps a successful empty read distinct from a service error in reporting mode', async () => {
+    setMockRows([]);
+    expect((await getAtlasOverview({ requireAvailable: true })).totalAnalyses).toBe(0);
+    setMockError('permission denied');
+    await expect(getAtlasOverview({ requireAvailable: true })).rejects.toThrow('Public catalog read failed');
+  });
 });
 
 describe('getArtistAtlas', () => {
@@ -266,6 +278,13 @@ describe('getGenreAtlas', () => {
   it('returns null when no analyses match the genre', async () => {
     const atlas = await getGenreAtlas('Jazz');
     expect(atlas).toBeNull();
+  });
+
+  it('reports a failed genre read without treating it as a genuine empty genre', async () => {
+    setMockRows([]);
+    expect(await getGenreAtlas('Jazz', { requireAvailable: true })).toBeNull();
+    setMockError('service unavailable');
+    await expect(getGenreAtlas('Jazz', { requireAvailable: true })).rejects.toThrow('Public catalog read failed');
   });
 
   it('lists artists, moods, and theme frequencies for a populated genre', async () => {

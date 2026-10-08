@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 
 type Theme = 'light' | 'dark';
 
@@ -10,6 +10,19 @@ interface ThemeContextType {
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+
+function savedTheme(): Theme | null {
+  try {
+    const saved = window.localStorage.getItem('theme');
+    return saved === 'light' || saved === 'dark' ? saved : null;
+  } catch {
+    return null;
+  }
+}
+
+function systemTheme(): Theme {
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
 
 function applyThemeClass(theme: Theme) {
   if (typeof document === 'undefined') return;
@@ -25,30 +38,48 @@ function applyThemeClass(theme: Theme) {
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
-    // Initialize from script that ran in head
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('theme') as Theme | null;
-      if (saved) return saved;
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
+    if (typeof window !== 'undefined') return savedTheme() ?? systemTheme();
     return 'dark';
   });
+  const choice = useRef<Theme | null>(null);
 
   useEffect(() => {
-    // Keep <html> class in sync with state. Both classes are toggled in
-    // lockstep — globals.css (v2) applies dark tokens at :root and light
-    // tokens via `.light`, so removing `dark` alone is not enough; we
-    // also need `.light` for light mode to take effect.
-    applyThemeClass(theme);
-  }, [theme]);
+    choice.current = savedTheme();
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const onSystemChange = () => {
+      if (choice.current !== null) return;
+      const next = media.matches ? 'dark' : 'light';
+      applyThemeClass(next);
+      setTheme(next);
+    };
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== null && event.key !== 'theme') return;
+      try { if (event.storageArea !== window.localStorage) return; } catch { return; }
+      choice.current = event.newValue === 'dark' || event.newValue === 'light' ? event.newValue : null;
+      const next = choice.current ?? systemTheme();
+      applyThemeClass(next);
+      setTheme(next);
+    };
+    media.addEventListener('change', onSystemChange);
+    window.addEventListener('storage', onStorage);
+    // Reconcile both saved and system preferences after hydration/recovery.
+    // The OS may change between the head script and listener registration.
+    const current = choice.current ?? (media.matches ? 'dark' : 'light');
+    applyThemeClass(current);
+    onSystemChange();
+    return () => {
+      media.removeEventListener('change', onSystemChange);
+      window.removeEventListener('storage', onStorage);
+    };
+  }, []);
 
   const toggleTheme = () => {
-    setTheme((prevTheme) => {
-      const newTheme = prevTheme === 'light' ? 'dark' : 'light';
-      localStorage.setItem('theme', newTheme);
-      applyThemeClass(newTheme);
-      return newTheme;
-    });
+    const next = theme === 'light' ? 'dark' : 'light';
+    choice.current = next;
+    // A blocked store keeps the choice usable for this visit.
+    try { window.localStorage.setItem('theme', next); } catch {}
+    applyThemeClass(next);
+    setTheme(next);
   };
 
   // Always provide the context, but handle SSR gracefully

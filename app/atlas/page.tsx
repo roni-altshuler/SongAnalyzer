@@ -27,37 +27,32 @@ export const metadata: Metadata = {
 
 /**
  * Fail-soft (CLAUDE.md contract): a broken/misconfigured Supabase connection
- * renders the empty-state Atlas, never a 500.
+ * renders an unavailable-state Atlas, never a 500 or fabricated zero totals.
  */
 async function tryGetOverview() {
   try {
-    return await getAtlasOverview();
+    return await getAtlasOverview({ requireAvailable: true });
   } catch (err) {
     console.error('[atlas] getAtlasOverview failed:', err);
-    return {
-      totalAnalyses: 0,
-      totalArtists: 0,
-      moodDistribution: [],
-      genreDistribution: [],
-      topArtists: [],
-    };
+    return null;
   }
 }
 
 export default async function AtlasPage() {
   const overview = await tryGetOverview();
 
-  const empty = overview.totalAnalyses === 0;
-
   return (
     <main className="mx-auto max-w-6xl px-4 pb-16 pt-8 sm:px-6 sm:pt-12">
       <AtlasHero
-        totalAnalyses={overview.totalAnalyses}
-        totalArtists={overview.totalArtists}
-        totalMoods={overview.moodDistribution.length}
+        totalAnalyses={overview?.totalAnalyses ?? 0}
+        totalArtists={overview?.totalArtists ?? 0}
+        totalMoods={overview?.moodDistribution.length ?? 0}
+        statsAvailable={overview !== null}
       />
 
-      {empty ? (
+      {!overview ? (
+        <EmptyAtlas unavailable />
+      ) : overview.totalAnalyses === 0 ? (
         <EmptyAtlas />
       ) : (
         <div className="mt-10 space-y-10">
@@ -160,32 +155,26 @@ export default async function AtlasPage() {
   );
 }
 
-function EmptyAtlas() {
+function EmptyAtlas({ unavailable = false }: { unavailable?: boolean }) {
   return (
     <Card variant="elev1" className="mt-10">
       <CardHeader>
         <div>
           <p className="text-xs uppercase tracking-widest text-[var(--text-low)]">
-            Cold start
+            Public readings
           </p>
-          <CardTitle>No analyses yet</CardTitle>
+          <CardTitle>{unavailable ? 'Public readings unavailable' : 'No public readings yet'}</CardTitle>
         </div>
       </CardHeader>
       <CardContent>
         <p className="text-[var(--text-med)] leading-relaxed">
-          The Mood Atlas is empty. If you&rsquo;re running locally,
-          regenerate and apply the seed:
+          {unavailable
+            ? 'The catalog could not be loaded right now. Try again later, or explore lyrics and a permitted local recording in the workbench.'
+            : 'There are no public readings to explore yet. You can still read lyrics and a permitted local recording in the workbench.'}
         </p>
-        <pre className="mt-4 overflow-x-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-base)] p-4 text-xs leading-relaxed text-[var(--text-med)]">
-{`npx tsx lib/seeds/build-seed-sql.ts > supabase/seed.sql
-npx supabase db reset
-# then, in the SQL editor:
-select public.refresh_atlas_aggregates();`}
-        </pre>
-        <p className="mt-4 text-sm text-[var(--text-low)]">
-          Once analyses are public, this dashboard rolls them up by mood,
-          genre, artist, and year.
-        </p>
+        <Link href="/analyze" className="mt-4 inline-flex rounded-lg border border-[var(--border-strong)] bg-[var(--bg-elev2)] px-4 py-2 text-sm text-[var(--text-hi)] focus-visible:outline-2 focus-visible:outline-offset-2">
+          Open the workbench
+        </Link>
       </CardContent>
     </Card>
   );

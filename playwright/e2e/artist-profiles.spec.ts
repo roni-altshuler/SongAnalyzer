@@ -57,7 +57,7 @@ test('direct profile references are honest about missing tab data and add no pro
 
 test('invalid artist namespaces cannot masquerade as artist profiles', async ({ page }) => {
   const response = await page.goto('/artists/album/not-an-artist'); expect(response?.status()).toBe(404);
-  await expect(page.getByRole('heading', { name: '404' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'That page isn’t available.' })).toBeVisible();
 });
 
 test('legacy comma-joined credits remain unlinked instead of being split into identities', async ({ page }) => {

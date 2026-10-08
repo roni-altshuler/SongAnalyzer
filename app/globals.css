@@ -20,7 +20,7 @@
   /* Text */
   --text-hi: #F5F5F7;
   --text-med: #B4B4BD;
-  --text-low: #6E6E78;
+  --text-low: #9A9AA6;
 
   /* Borders */
   --border-subtle: #22222B;
@@ -54,55 +54,30 @@
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-/* Light theme — secondary fallback, applied via `.light` class on <html> */
+/* One warm music-workbench palette across the shell and every light page. */
 .light {
-  --bg-base: #F7F7F8;
-  --bg-elev1: #FFFFFF;
-  --bg-elev2: #F2F2F4;
-  --bg-elev3: #E8E8EC;
-
-  --text-hi: #0A0A0F;
-  --text-med: #4A4A55;
-  --text-low: #8A8A95;
-
-  --border-subtle: #E4E4EA;
-  --border-strong: #D0D0D8;
-
-  --accent-glow: rgba(99, 102, 241, 0.22);
-}
-
-/* Warm, neutral surfaces for the new track portrait in light mode.
-   Scoped tokens preserve the surrounding theme and live mood accents. */
-.light .track-exploration {
-  --bg-elev1: #FAF7F0;
-  --bg-elev2: #F1EDE4;
-  --bg-elev3: #E9E3D7;
-  --state-error: #9F3030;
-}
-
-/* Artist profiles share the warm music-workbench surface, scoped to this page. */
-.light .artist-profile {
   --bg-base: #FAF7F0;
   --bg-elev1: #FFFCF5;
   --bg-elev2: #F1EDE4;
   --bg-elev3: #E9E3D7;
+
+  --text-hi: #0A0A0F;
+  --text-med: #4A4A55;
+  --text-low: #625B64;
+
   --border-subtle: #DDD6C9;
   --border-strong: #CCC2B1;
+
+  --state-success: #216747;
+  --state-warn: #7B4E12;
   --state-error: #9F3030;
+
+  --accent-glow: rgba(99, 102, 241, 0.22);
 }
 
-.light .audio-upload,
-.light .identify-listener {
-  --state-error: #9F3030;
-}
-
-.light .local-timeline {
-  --bg-elev1: #FFFCF5;
-  --bg-elev2: #F1EDE4;
-  --bg-elev3: #E9E3D7;
-  --border-subtle: #DDD6C9;
-  --border-strong: #CCC2B1;
-  --state-error: #9F3030;
+/* The track portrait stays subtly inset within the shared warm palette. */
+.light .track-exploration {
+  --bg-elev1: #FAF7F0;
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -193,6 +168,9 @@
   /* Focus rings — universal, accent-from coloured */
   :focus-visible {
     outline: 2px solid var(--accent-from);
+    /* Override primitive accent-only rings: luminous moods need a readable
+       edge on cream, and dark moods need one on dark surfaces. */
+    outline-color: color-mix(in srgb, var(--accent-from) 45%, var(--text-hi)) !important;
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -284,7 +262,9 @@
 
   /* Gradient text using mood accent */
   .text-accent-gradient {
-    background: linear-gradient(90deg, var(--accent-from), var(--accent-to));
+    background: linear-gradient(90deg,
+      color-mix(in srgb, var(--accent-from) 45%, var(--text-hi)),
+      color-mix(in srgb, var(--accent-to) 45%, var(--text-hi)));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;

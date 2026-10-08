@@ -229,6 +229,7 @@ export default function SongSearch({
         />
         {status.kind === 'loading' && (
           <div
+            role="status"
             className="h-3.5 w-3.5 rounded-full border-2 border-[var(--border-strong)] border-t-[var(--accent-from)] animate-spin motion-reduce:animate-none"
             aria-label="Searching"
           />
@@ -246,26 +247,25 @@ export default function SongSearch({
           )}
         >
           {status.kind === 'not-configured' && (
-            <div className="px-4 py-3 text-xs text-[var(--text-med)]">
+            <div role="status" className="px-4 py-3 text-xs text-[var(--text-med)]">
               <Badge variant="warn" className="mr-2 align-middle">
-                Configure Spotify
+                Search unavailable
               </Badge>
               <span>
-                Set <code className="font-mono">SPOTIFY_CLIENT_ID</code> and{' '}
-                <code className="font-mono">SPOTIFY_CLIENT_SECRET</code> to enable
-                song lookup.
+                Song search is unavailable right now. You can still paste lyrics
+                or analyze a local recording in the workbench.
               </span>
             </div>
           )}
 
           {status.kind === 'empty' && (
-            <div className="px-4 py-3 text-xs text-[var(--text-med)]">
+            <div role="status" className="px-4 py-3 text-xs text-[var(--text-med)]">
               No matches for &ldquo;{query}&rdquo;.
             </div>
           )}
 
           {status.kind === 'error' && (
-            <div className="px-4 py-3 text-xs text-[var(--state-error)]">
+            <div role="alert" className="px-4 py-3 text-xs text-[var(--state-error)]">
               {status.message}
             </div>
           )}

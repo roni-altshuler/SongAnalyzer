@@ -38,15 +38,18 @@ export default async function GenreAtlasPage({ params }: PageParams) {
   const canonicalGenre = deslugifyGenre(name);
   if (!canonicalGenre) notFound();
 
-  // Fail-soft: a broken Supabase connection renders the empty state, not a 500.
-  const atlas = await getGenreAtlas(canonicalGenre).catch((err) => {
-    console.error('[atlas/genre] getGenreAtlas failed:', err);
-    return null;
-  });
+  // Keep failed reads distinct from a canonical genre with no public rows.
+  const { atlas, unavailable } = await getGenreAtlas(canonicalGenre, { requireAvailable: true }).then(
+    atlas => ({ atlas, unavailable: false }),
+    err => {
+      console.error('[atlas/genre] getGenreAtlas failed:', err);
+      return { atlas: null, unavailable: true };
+    },
+  );
 
   // Genre may resolve canonically but still have zero rows in this DB.
   // Render an empty-state Card rather than a 404 so the page is still
-  // helpful (canonical genre + setup hint).
+  // helpful while preserving the canonical genre.
   const empty = !atlas || atlas.analyses.length === 0;
 
   return (
@@ -65,6 +68,7 @@ export default async function GenreAtlasPage({ params }: PageParams) {
         totalAnalyses={atlas?.analyses.length ?? 0}
         totalArtists={atlas?.topArtists.length ?? 0}
         totalMoods={atlas?.moodDistribution.length ?? 0}
+        statsAvailable={!unavailable}
         subtitle={`Mood breakdown, top artists, and recurring themes across the ${canonicalGenre} genre.`}
       />
 
@@ -73,17 +77,22 @@ export default async function GenreAtlasPage({ params }: PageParams) {
           <CardHeader>
             <div>
               <p className="text-xs uppercase tracking-widest text-[var(--text-low)]">
-                Empty genre
+                Public readings
               </p>
-              <CardTitle>No {canonicalGenre} analyses yet</CardTitle>
+              <CardTitle>{unavailable ? 'Genre readings unavailable' : `No ${canonicalGenre} analyses yet`}</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
             <p className="text-[var(--text-med)]">
-              When public analyses tagged{' '}
-              <Badge variant="mood">{canonicalGenre}</Badge> land, the
-              breakdown will populate automatically.
+              {unavailable ? 'The catalog could not be loaded right now. Try again later, or open the workbench for lyrics and a permitted local recording.' : <>
+                When public analyses tagged{' '}
+                <Badge variant="mood">{canonicalGenre}</Badge> land, the
+                breakdown will populate automatically.
+              </>}
             </p>
+            <Link href="/analyze" className="mt-4 inline-flex rounded-lg border border-[var(--border-strong)] bg-[var(--bg-elev2)] px-4 py-2 text-sm text-[var(--text-hi)] focus-visible:outline-2 focus-visible:outline-offset-2">
+              Open the workbench
+            </Link>
           </CardContent>
         </Card>
       ) : (

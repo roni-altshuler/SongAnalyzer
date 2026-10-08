@@ -48,14 +48,10 @@ const BASE =
 
 const VARIANTS: Record<ButtonVariant, string> = {
   primary: [
-    'text-white border border-transparent',
-    'bg-[linear-gradient(135deg,var(--accent-from)_0%,var(--accent-to)_100%)]',
+    'text-white border border-[color-mix(in_srgb,var(--accent-from)_45%,var(--text-hi))]',
+    'bg-[linear-gradient(135deg,color-mix(in_srgb,var(--accent-from)_40%,#161321),color-mix(in_srgb,var(--accent-to)_40%,#161321))]',
     'shadow-[0_8px_24px_-8px_var(--accent-glow)]',
     'hover:shadow-[0_12px_32px_-8px_var(--accent-glow)]',
-    // Subtle shine sweep on hover via ::after
-    'after:absolute after:inset-0 after:rounded-[inherit] after:bg-[linear-gradient(120deg,transparent_30%,rgba(255,255,255,0.18)_50%,transparent_70%)]',
-    'after:opacity-0 after:transition-opacity after:duration-300 hover:after:opacity-100',
-    'after:pointer-events-none',
   ].join(' '),
   secondary: [
     'text-[var(--text-hi)] border border-[var(--border-strong)]',

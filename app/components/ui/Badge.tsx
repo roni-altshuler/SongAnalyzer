@@ -12,7 +12,7 @@ const VARIANTS: Record<BadgeVariant, string> = {
   // Mood: tinted with the current accent gradient
   mood:
     'border ' +
-    'text-[var(--accent-from)] ' +
+    'text-[color-mix(in_srgb,var(--accent-from)_45%,var(--text-hi))] ' +
     'bg-[color-mix(in_oklab,var(--accent-from)_12%,transparent)] ' +
     'border-[color-mix(in_oklab,var(--accent-from)_30%,transparent)]',
   outline: 'bg-transparent text-[var(--text-med)] border border-[var(--border-strong)]',

@@ -40,6 +40,8 @@ export const Meter = forwardRef<HTMLDivElement, MeterProps>(function Meter(
     valueLabel,
     size = 'md',
     ariaLabel,
+    'aria-label': nativeLabel,
+    'aria-labelledby': labelledBy,
     tone = 'accent',
     className,
     ...rest
@@ -70,7 +72,8 @@ export const Meter = forwardRef<HTMLDivElement, MeterProps>(function Meter(
         aria-valuenow={pct}
         aria-valuemin={0}
         aria-valuemax={100}
-        aria-label={ariaLabel ?? label}
+        aria-label={ariaLabel ?? nativeLabel ?? label}
+        aria-labelledby={labelledBy}
         className={cn(
           'relative w-full overflow-hidden rounded-full',
           'bg-[var(--bg-elev2)]',

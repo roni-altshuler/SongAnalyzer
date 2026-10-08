@@ -75,7 +75,7 @@ export default function HistoryPanel({ onRestore, refreshKey }: HistoryPanelProp
                 <p className="text-xs text-[var(--text-low)] truncate mt-0.5">
                   {entry.lyricsPreview}
                 </p>
-                <p className="text-[10px] font-mono text-[var(--text-low)] opacity-70 mt-1">
+                <p className="text-[10px] font-mono text-[var(--text-low)] mt-1">
                   {new Date(entry.timestamp).toLocaleString()}
                 </p>
               </button>
