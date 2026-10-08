@@ -46,23 +46,23 @@ export default function EngineProvenance({ engines, className }: EngineProvenanc
       >
         {t.status === 'ok' ? (
           <Badge variant="mood" title={t.model ?? 'transformer'}>
-            <span className="opacity-80">transformer</span>
+            <span>transformer</span>
             {t.scores?.[0] && (
-              <span className="ml-1.5 font-mono opacity-95">
+              <span className="ml-1.5 font-mono">
                 {t.scores[0].label} · {t.scores[0].score.toFixed(2)}
               </span>
             )}
           </Badge>
         ) : (
           <Badge variant="outline" title={t.reason ?? t.status}>
-            <span className="opacity-70">transformer · {t.status}</span>
+            <span>transformer · {t.status}</span>
           </Badge>
         )}
         <Badge variant="outline">
-          <span className="opacity-80">
+          <span>
             keyword
             {k.scores && (
-              <span className="ml-1.5 font-mono opacity-80">
+              <span className="ml-1.5 font-mono">
                 +{k.scores.positive} / −{k.scores.negative}
               </span>
             )}

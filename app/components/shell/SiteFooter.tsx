@@ -29,7 +29,7 @@ export default function SiteFooter() {
             Local audio insights stay on your device. Catalog identification sends fingerprint
             hashes to SongAnalyzer. Optional AudD recognition sends the clip to AudD only after you confirm.
           </p>
-          <p className="tracking-wide opacity-80">
+          <p className="tracking-wide">
             Song metadata via Spotify, MusicBrainz &amp; Genius (metadata only — never lyrics).
             Remote previews are not analyzed. Audio insights are estimates of the passage you choose.
           </p>

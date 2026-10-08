@@ -10,6 +10,8 @@ export interface AtlasHeroProps {
   totalAnalyses: number;
   totalArtists: number;
   totalMoods: number;
+  /** Hide totals when the overview could not be read; unavailable is not zero. */
+  statsAvailable?: boolean;
   /** Optional subtitle override; default reads as the canonical description. */
   subtitle?: string;
   /** Optional eyebrow text shown above the headline. */
@@ -20,6 +22,7 @@ export function AtlasHero({
   totalAnalyses,
   totalArtists,
   totalMoods,
+  statsAvailable = true,
   subtitle,
   eyebrow,
 }: AtlasHeroProps) {
@@ -50,7 +53,7 @@ export function AtlasHero({
           {formattedSubtitle}
         </p>
 
-        <dl className="mt-10 flex flex-wrap gap-x-10 gap-y-4 text-sm text-[var(--text-med)]">
+        {statsAvailable && <dl className="mt-10 flex flex-wrap gap-x-10 gap-y-4 text-sm text-[var(--text-med)]">
           <div>
             <dt className="text-xs uppercase tracking-widest text-[var(--text-low)]">
               Analyses
@@ -75,7 +78,7 @@ export function AtlasHero({
               {totalMoods.toLocaleString()}
             </dd>
           </div>
-        </dl>
+        </dl>}
       </div>
     </header>
   );

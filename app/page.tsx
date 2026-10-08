@@ -43,7 +43,7 @@ const PANELS = [
     mood: 'Euphoric',
     eyebrow: 'Identify',
     title: 'Name that beat.',
-    body: 'Hold your device to the music. A spectral-peak constellation — the same math behind the classic recognizers — is fingerprinted in your browser and matched in milliseconds. No audio ever leaves your device.',
+    body: 'Choose a permitted clip or start the microphone to query the available recording catalog. The clip stays on your device for this lookup; optional AudD sharing requires your confirmation.',
     href: '/identify',
     cta: 'Start listening',
   },
@@ -59,7 +59,7 @@ const PANELS = [
     mood: 'Peaceful',
     eyebrow: 'Discover',
     title: 'Follow the feeling.',
-    body: 'Every analysis becomes a 48-dimension sonic fingerprint in a shared mood space. Start anywhere and walk to what feels the same — by sound, not genre tags — then zoom out on the public Mood Atlas.',
+    body: 'Explore track details, artist credits and listening links, then browse public readings in the Mood Atlas. For audio insights, choose a local recording in Analyze; local files are not added to the catalog.',
     href: '/discover',
     cta: 'Explore the space',
   },
@@ -103,9 +103,8 @@ export default async function LandingPage() {
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-[var(--text-med)] md:text-lg">
-          Identify a track from ten seconds of its beat. Decode its mood from lyrics and audio
-          with dual engines. Discover what feels the same — while the song&rsquo;s color washes
-          over the page.
+          Explore a track, read its lyrics, or listen more closely to a local recording.
+          Compare words and sound in a workbench colored by the reading&rsquo;s mood.
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -168,7 +167,7 @@ export default async function LandingPage() {
               {
                 step: '01',
                 title: 'Listen',
-                body: 'Ten seconds of audio, captured locally. The signal is reduced to its loudest spectral peaks — a constellation unique to the recording, robust to noise.',
+                body: 'A short, permitted passage captured locally. Its spectral peaks provide the signal for a recording-catalog lookup.',
               },
               {
                 step: '02',
@@ -178,7 +177,7 @@ export default async function LandingPage() {
               {
                 step: '03',
                 title: 'Align',
-                body: 'Thousands of catalog hashes vote on time alignment. A true match is a sharp spike; everything else is noise. Then the mood engines take over.',
+                body: 'Catalog hashes vote on time alignment. A match requires an indexed recording; a catalog outage is shown separately from no match. Local audio analysis remains a separate choice.',
               },
             ].map((item) => (
               <div key={item.step} className="space-y-3">

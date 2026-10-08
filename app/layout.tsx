@@ -7,6 +7,7 @@ import { MoodThemeProvider } from './providers/mood-theme-provider';
 import { Toaster } from './components/ui/Toast';
 import NavBar from './components/shell/NavBar';
 import SiteFooter from './components/shell/SiteFooter';
+import ThemeScript from './components/ThemeScript';
 
 // Display serif for hero/editorial headings (Apple-Music-style)
 const instrumentSerif = Instrument_Serif({
@@ -33,7 +34,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: 'SongAnalyzer — Identify Songs & Decode Their Mood',
   description:
-    'Identify songs from their instrumental beats, decode mood from lyrics and audio, and discover music that feels the same — all analyzed in your browser.',
+    'Explore tracks and artist credits, read lyrics, and measure permitted local audio. Compare estimated mood insights and listen to selected passages.',
   // Favicon: Next.js auto-detects app/icon.svg, no explicit `icons` field
   // needed. The previous inline 🎵 emoji icon felt cartoony; the SVG at
   // app/icon.svg is the spectrum-bars mark from the design system.
@@ -47,35 +48,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
       className={`${instrumentSerif.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <head>
-        {/* Set dark/light class BEFORE first paint to avoid FOUC.
-            Dark is the brand default; `.light` is only applied if the user opted in. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var saved = localStorage.getItem('theme');
-                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  // Dark is the brand. Respect saved preference; otherwise honor
-                  // the system pref (kept in sync with the existing ThemeProvider).
-                  var useDark = saved ? saved === 'dark' : prefersDark;
-                  var root = document.documentElement;
-                  if (useDark) {
-                    root.classList.add('dark');
-                    root.classList.remove('light');
-                  } else {
-                    root.classList.add('light');
-                    root.classList.remove('dark');
-                  }
-                } catch (e) {}
-              })();
-            `,
-          }}
-        />
+        {/* Apply a valid saved choice or system preference before first paint.
+            A blocked store must not prevent theme initialization. */}
+        <ThemeScript />
       </head>
       <body className="antialiased" suppressHydrationWarning>
         {/* MoodThemeProvider exposes setMoodColor() and writes --accent-* vars

@@ -205,7 +205,7 @@ function slugifyArtist(artist: string): string {
 async function fetchVisibleRows(filter?: {
   artist?: string;
   genre?: string;
-}): Promise<{ rows: AnalysisWithSongRow[]; viewMissing: boolean }> {
+}, requireAvailable = false): Promise<{ rows: AnalysisWithSongRow[]; viewMissing: boolean }> {
   // `getAdminSupabase()` throws when env vars are missing — fail soft so
   // `/atlas` renders the empty-state Card on a fresh local checkout
   // without a configured Supabase instance.
@@ -213,9 +213,13 @@ async function fetchVisibleRows(filter?: {
   try {
     supabase = getAdminSupabase();
   } catch {
+    if (requireAvailable) throw new Error('Public catalog unavailable');
     return { rows: [], viewMissing: true };
   }
-  if (!supabase) return { rows: [], viewMissing: true };
+  if (!supabase) {
+    if (requireAvailable) throw new Error('Public catalog unavailable');
+    return { rows: [], viewMissing: true };
+  }
   // `analyses_with_song` is a Postgres view created in
   // 0003_atlas_view_helpers.sql — we keep `lib/supabase/database.types.ts`
   // (owned by Stream A) untouched, so cast through `unknown` to access the
@@ -250,6 +254,7 @@ async function fetchVisibleRows(filter?: {
   }>;
   const { data, error } = await awaitable;
   if (error) {
+    if (requireAvailable) throw new Error('Public catalog read failed');
     const message = (error.message ?? '').toLowerCase();
     const missing =
       message.includes('does not exist') ||
@@ -269,8 +274,9 @@ async function fetchVisibleRows(filter?: {
 // getAtlasOverview
 // ---------------------------------------------------------------------------
 
-export async function getAtlasOverview(): Promise<AtlasOverview> {
-  const { rows } = await fetchVisibleRows();
+/** Opt in to reporting read failures so a UI can distinguish unavailable from empty. */
+export async function getAtlasOverview(options: { requireAvailable?: boolean } = {}): Promise<AtlasOverview> {
+  const { rows } = await fetchVisibleRows(undefined, options.requireAvailable);
 
   // Keep raw row + mapped row paired so we can read the genre from the raw
   // result jsonb without an extra lookup. Rows that fail to map (missing
@@ -390,8 +396,9 @@ export async function getArtistAtlas(
 
 export async function getGenreAtlas(
   genreName: string,
+  options: { requireAvailable?: boolean } = {},
 ): Promise<GenreAtlas | null> {
-  const { rows } = await fetchVisibleRows({ genre: genreName });
+  const { rows } = await fetchVisibleRows({ genre: genreName }, options.requireAvailable);
   const mapped = rows
     .map(mapRow)
     .filter((row): row is AtlasAnalysisRow => row !== null);

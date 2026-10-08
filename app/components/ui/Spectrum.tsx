@@ -1,7 +1,19 @@
 'use client';
 
-import { useMemo, type SVGAttributes } from 'react';
+import { useMemo, useSyncExternalStore, type SVGAttributes } from 'react';
 import { cn } from '@/lib/cn';
+
+const motionQuery = '(prefers-reduced-motion: reduce)';
+const subscribeMotion = (notify: () => void) => {
+  const media = window.matchMedia(motionQuery);
+  media.addEventListener('change', notify);
+  return () => media.removeEventListener('change', notify);
+};
+const reducedMotion = () => window.matchMedia(motionQuery).matches;
+// Static bars on the server and first hydration render; animate only after
+// the browser preference is known. SVG SMIL does not obey CSS motion rules.
+const serverMotion = () => true;
+const coordinate = (value: number) => Number(value.toFixed(3));
 
 export interface SpectrumProps extends Omit<SVGAttributes<SVGSVGElement>, 'children'> {
   /** Number of bars to render. */
@@ -47,6 +59,7 @@ export function Spectrum({
   className,
   ...rest
 }: SpectrumProps) {
+  const prefersReducedMotion = useSyncExternalStore(subscribeMotion, reducedMotion, serverMotion);
   const gradientId = useMemo(() => `spectrum-grad-${seed}`, [seed]);
 
   // Deterministic pseudo-random bar heights.
@@ -107,10 +120,12 @@ export function Spectrum({
           );
         }
 
-        const baseH = b.h * height;
-        const y = height - baseH;
+        // Math.sin can differ at the last decimal across JS runtimes. Round
+        // decorative coordinates so their SSR attributes hydrate identically.
+        const baseH = coordinate(b.h * height);
+        const y = coordinate(height - baseH);
 
-        if (!animated) {
+        if (!animated || prefersReducedMotion) {
           return (
             <rect
               key={i}
@@ -125,9 +140,9 @@ export function Spectrum({
         }
 
         // Loop between 60%, 100%, 75% of the base height, offset per-bar.
-        const h1 = baseH * 0.6;
+        const h1 = coordinate(baseH * 0.6);
         const h2 = baseH;
-        const h3 = baseH * 0.75;
+        const h3 = coordinate(baseH * 0.75);
         const dur = 1.6 + b.phase * 1.4; // 1.6s – 3.0s
         const begin = `${-(b.phase * dur).toFixed(2)}s`;
 
@@ -150,7 +165,7 @@ export function Spectrum({
             />
             <animate
               attributeName="y"
-              values={`${height - h1};${height - h2};${height - h3};${height - h1}`}
+              values={`${coordinate(height - h1)};${coordinate(height - h2)};${coordinate(height - h3)};${coordinate(height - h1)}`}
               dur={`${dur}s`}
               begin={begin}
               repeatCount="indefinite"

@@ -1,0 +1,1638 @@
+{
+  "base": "e08d15328bf8f04984710d8d6eec7d3e65b9d153",
+  "browser": "151.0.7922.173",
+  "catalogFixtures": true,
+  "finiteUiAnimationsSettledBeforeAxe": true,
+  "audioFeatures": "real worker on original generated WAV",
+  "lyrics": "real keyword engine; transformer unconfigured",
+  "results": [
+    {
+      "width": 390,
+      "theme": "light",
+      "steps": [
+        {
+          "name": "home",
+          "path": "/",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Every song has afingerprint.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "menu-open",
+          "path": "/",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Every song has afingerprint.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "identify-empty",
+          "path": "/identify",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Name that beat.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "identify-unavailable",
+          "path": "/identify",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Name that beat.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "identify-consent",
+          "path": "/identify",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Name that beat.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "discover-empty",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "discover-unavailable",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "discover-loading",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "discover-no-matches",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "discover-error",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "selected-track",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "artist",
+          "path": "/artists/spotify/arden-june",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Arden, June",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "artist-reload",
+          "path": "/artists/spotify/arden-june",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Arden, June",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "artist-history",
+          "path": "/artists/spotify/night-shift",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "The Night Shift",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "atlas-unavailable",
+          "path": "/atlas",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "The Mood Atlas",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "atlas-reload",
+          "path": "/atlas",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "The Mood Atlas",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "genre-detail",
+          "path": "/atlas/genre/rock",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "The Mood Atlas",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "404",
+          "path": "/share/qa-absent-reading",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "That page isn’t available.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "analyze-empty",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "lyrics-loading",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "lyrics-error",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "lyrics",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "engine-evidence",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "copy-toast",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "audio-empty",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "waveform-loading",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "audio-reading",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "listening-window",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "comparison",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "navigation-cleared-audio",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "final-reload",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        }
+      ],
+      "errors": [],
+      "hydration": [],
+      "prohibited": [],
+      "writes": [
+        {
+          "path": "/api/identify",
+          "audioPhase": false,
+          "contentType": "application/json"
+        },
+        {
+          "path": "/api/identify",
+          "audioPhase": false,
+          "contentType": "application/json"
+        },
+        {
+          "path": "/api/analyze",
+          "audioPhase": false,
+          "contentType": "application/json"
+        },
+        {
+          "path": "/api/analyze",
+          "audioPhase": false,
+          "contentType": "application/json"
+        },
+        {
+          "path": "/api/analyses",
+          "audioPhase": false,
+          "contentType": "application/json"
+        }
+      ],
+      "workers": [
+        "http://localhost:3127/_next/static/chunks/turbopack-worker-2ru9m5gbh1na6.js#params=%5B%5B%22%2F_next%2Fstatic%2Fchunks%2Fturbopack-00n_06w8odkez.js%22%2C%22%2F_next%2Fstatic%2Fchunks%2F1cccjwmjd-4fg.js%22%5D%2C%22%22%2C%22%2F_next%2F%22%2Cnull%2Cnull%5D",
+        "http://localhost:3127/_next/static/chunks/turbopack-worker-2ru9m5gbh1na6.js#params=%5B%5B%22%2F_next%2Fstatic%2Fchunks%2Fturbopack-00n_06w8odkez.js%22%2C%22%2F_next%2Fstatic%2Fchunks%2F1cccjwmjd-4fg.js%22%5D%2C%22%22%2C%22%2F_next%2F%22%2Cnull%2Cnull%5D",
+        "http://localhost:3127/_next/static/chunks/turbopack-worker-2ru9m5gbh1na6.js#params=%5B%5B%22%2F_next%2Fstatic%2Fchunks%2Fturbopack-20nk2aq1zxald.js%22%2C%22%2F_next%2Fstatic%2Fchunks%2F3ipru9zkx541z.js%22%5D%2C%22%22%2C%22%2F_next%2F%22%2Cnull%2Cnull%5D"
+      ]
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "steps": [
+        {
+          "name": "home",
+          "path": "/",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Every song has afingerprint.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "menu-open",
+          "path": "/",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Every song has afingerprint.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "identify-empty",
+          "path": "/identify",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Name that beat.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "identify-unavailable",
+          "path": "/identify",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Name that beat.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "identify-consent",
+          "path": "/identify",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Name that beat.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "discover-empty",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "discover-unavailable",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "discover-loading",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "discover-no-matches",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "discover-error",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "selected-track",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "artist",
+          "path": "/artists/spotify/arden-june",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Arden, June",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "artist-reload",
+          "path": "/artists/spotify/arden-june",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Arden, June",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "artist-history",
+          "path": "/artists/spotify/night-shift",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "The Night Shift",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "atlas-unavailable",
+          "path": "/atlas",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "The Mood Atlas",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "atlas-reload",
+          "path": "/atlas",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "The Mood Atlas",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "genre-detail",
+          "path": "/atlas/genre/rock",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "The Mood Atlas",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "404",
+          "path": "/share/qa-absent-reading",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "That page isn’t available.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "analyze-empty",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "lyrics-loading",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "lyrics-error",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "lyrics",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "engine-evidence",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "copy-toast",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "audio-empty",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "waveform-loading",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "audio-reading",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "listening-window",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "comparison",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "navigation-cleared-audio",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "final-reload",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        }
+      ],
+      "errors": [],
+      "hydration": [],
+      "prohibited": [],
+      "writes": [
+        {
+          "path": "/api/identify",
+          "audioPhase": false,
+          "contentType": "application/json"
+        },
+        {
+          "path": "/api/identify",
+          "audioPhase": false,
+          "contentType": "application/json"
+        },
+        {
+          "path": "/api/analyze",
+          "audioPhase": false,
+          "contentType": "application/json"
+        },
+        {
+          "path": "/api/analyze",
+          "audioPhase": false,
+          "contentType": "application/json"
+        },
+        {
+          "path": "/api/analyses",
+          "audioPhase": false,
+          "contentType": "application/json"
+        }
+      ],
+      "workers": [
+        "http://localhost:3127/_next/static/chunks/turbopack-worker-2ru9m5gbh1na6.js#params=%5B%5B%22%2F_next%2Fstatic%2Fchunks%2Fturbopack-00n_06w8odkez.js%22%2C%22%2F_next%2Fstatic%2Fchunks%2F1cccjwmjd-4fg.js%22%5D%2C%22%22%2C%22%2F_next%2F%22%2Cnull%2Cnull%5D",
+        "http://localhost:3127/_next/static/chunks/turbopack-worker-2ru9m5gbh1na6.js#params=%5B%5B%22%2F_next%2Fstatic%2Fchunks%2Fturbopack-00n_06w8odkez.js%22%2C%22%2F_next%2Fstatic%2Fchunks%2F1cccjwmjd-4fg.js%22%5D%2C%22%22%2C%22%2F_next%2F%22%2Cnull%2Cnull%5D",
+        "http://localhost:3127/_next/static/chunks/turbopack-worker-2ru9m5gbh1na6.js#params=%5B%5B%22%2F_next%2Fstatic%2Fchunks%2Fturbopack-20nk2aq1zxald.js%22%2C%22%2F_next%2Fstatic%2Fchunks%2F3ipru9zkx541z.js%22%5D%2C%22%22%2C%22%2F_next%2F%22%2Cnull%2Cnull%5D"
+      ]
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "steps": [
+        {
+          "name": "home",
+          "path": "/",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Every song has afingerprint.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "identify-empty",
+          "path": "/identify",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Name that beat.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "identify-unavailable",
+          "path": "/identify",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Name that beat.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "identify-consent",
+          "path": "/identify",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Name that beat.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "discover-empty",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "discover-unavailable",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "discover-loading",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "discover-no-matches",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "discover-error",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "selected-track",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "artist",
+          "path": "/artists/spotify/arden-june",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Arden, June",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "artist-reload",
+          "path": "/artists/spotify/arden-june",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Arden, June",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "artist-history",
+          "path": "/artists/spotify/night-shift",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "The Night Shift",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "atlas-unavailable",
+          "path": "/atlas",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "The Mood Atlas",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "atlas-reload",
+          "path": "/atlas",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "The Mood Atlas",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "genre-detail",
+          "path": "/atlas/genre/rock",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "The Mood Atlas",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "404",
+          "path": "/share/qa-absent-reading",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "That page isn’t available.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "analyze-empty",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "lyrics-loading",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "lyrics-error",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "lyrics",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "engine-evidence",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "copy-toast",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "audio-empty",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "waveform-loading",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "audio-reading",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "listening-window",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "comparison",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "navigation-cleared-audio",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "final-reload",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(250, 247, 240)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        }
+      ],
+      "errors": [],
+      "hydration": [],
+      "prohibited": [],
+      "writes": [
+        {
+          "path": "/api/identify",
+          "audioPhase": false,
+          "contentType": "application/json"
+        },
+        {
+          "path": "/api/identify",
+          "audioPhase": false,
+          "contentType": "application/json"
+        },
+        {
+          "path": "/api/analyze",
+          "audioPhase": false,
+          "contentType": "application/json"
+        },
+        {
+          "path": "/api/analyze",
+          "audioPhase": false,
+          "contentType": "application/json"
+        },
+        {
+          "path": "/api/analyses",
+          "audioPhase": false,
+          "contentType": "application/json"
+        }
+      ],
+      "workers": [
+        "http://localhost:3127/_next/static/chunks/turbopack-worker-2ru9m5gbh1na6.js#params=%5B%5B%22%2F_next%2Fstatic%2Fchunks%2Fturbopack-00n_06w8odkez.js%22%2C%22%2F_next%2Fstatic%2Fchunks%2F1cccjwmjd-4fg.js%22%5D%2C%22%22%2C%22%2F_next%2F%22%2Cnull%2Cnull%5D",
+        "http://localhost:3127/_next/static/chunks/turbopack-worker-2ru9m5gbh1na6.js#params=%5B%5B%22%2F_next%2Fstatic%2Fchunks%2Fturbopack-00n_06w8odkez.js%22%2C%22%2F_next%2Fstatic%2Fchunks%2F1cccjwmjd-4fg.js%22%5D%2C%22%22%2C%22%2F_next%2F%22%2Cnull%2Cnull%5D",
+        "http://localhost:3127/_next/static/chunks/turbopack-worker-2ru9m5gbh1na6.js#params=%5B%5B%22%2F_next%2Fstatic%2Fchunks%2Fturbopack-20nk2aq1zxald.js%22%2C%22%2F_next%2Fstatic%2Fchunks%2F3ipru9zkx541z.js%22%5D%2C%22%22%2C%22%2F_next%2F%22%2Cnull%2Cnull%5D"
+      ]
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "steps": [
+        {
+          "name": "home",
+          "path": "/",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Every song has afingerprint.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "identify-empty",
+          "path": "/identify",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Name that beat.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "identify-unavailable",
+          "path": "/identify",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Name that beat.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "identify-consent",
+          "path": "/identify",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Name that beat.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "discover-empty",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "discover-unavailable",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "discover-loading",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "discover-no-matches",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "discover-error",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "selected-track",
+          "path": "/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Find what feels the same.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "artist",
+          "path": "/artists/spotify/arden-june",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Arden, June",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "artist-reload",
+          "path": "/artists/spotify/arden-june",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Arden, June",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "artist-history",
+          "path": "/artists/spotify/night-shift",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "The Night Shift",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "atlas-unavailable",
+          "path": "/atlas",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "The Mood Atlas",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "atlas-reload",
+          "path": "/atlas",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "The Mood Atlas",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "genre-detail",
+          "path": "/atlas/genre/rock",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "The Mood Atlas",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "404",
+          "path": "/share/qa-absent-reading",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "That page isn’t available.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "analyze-empty",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "lyrics-loading",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "lyrics-error",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "lyrics",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "engine-evidence",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "copy-toast",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "audio-empty",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "waveform-loading",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "audio-reading",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "listening-window",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "comparison",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "navigation-cleared-audio",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        },
+        {
+          "name": "final-reload",
+          "path": "/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "h1": "Analyze a song.",
+            "font": "\"Instrument Serif\", \"Instrument Serif Fallback\"",
+            "overflow": false
+          },
+          "violations": []
+        }
+      ],
+      "errors": [],
+      "hydration": [],
+      "prohibited": [],
+      "writes": [
+        {
+          "path": "/api/identify",
+          "audioPhase": false,
+          "contentType": "application/json"
+        },
+        {
+          "path": "/api/identify",
+          "audioPhase": false,
+          "contentType": "application/json"
+        },
+        {
+          "path": "/api/analyze",
+          "audioPhase": false,
+          "contentType": "application/json"
+        },
+        {
+          "path": "/api/analyze",
+          "audioPhase": false,
+          "contentType": "application/json"
+        },
+        {
+          "path": "/api/analyses",
+          "audioPhase": false,
+          "contentType": "application/json"
+        }
+      ],
+      "workers": [
+        "http://localhost:3127/_next/static/chunks/turbopack-worker-2ru9m5gbh1na6.js#params=%5B%5B%22%2F_next%2Fstatic%2Fchunks%2Fturbopack-00n_06w8odkez.js%22%2C%22%2F_next%2Fstatic%2Fchunks%2F1cccjwmjd-4fg.js%22%5D%2C%22%22%2C%22%2F_next%2F%22%2Cnull%2Cnull%5D",
+        "http://localhost:3127/_next/static/chunks/turbopack-worker-2ru9m5gbh1na6.js#params=%5B%5B%22%2F_next%2Fstatic%2Fchunks%2Fturbopack-00n_06w8odkez.js%22%2C%22%2F_next%2Fstatic%2Fchunks%2F1cccjwmjd-4fg.js%22%5D%2C%22%22%2C%22%2F_next%2F%22%2Cnull%2Cnull%5D",
+        "http://localhost:3127/_next/static/chunks/turbopack-worker-2ru9m5gbh1na6.js#params=%5B%5B%22%2F_next%2Fstatic%2Fchunks%2Fturbopack-20nk2aq1zxald.js%22%2C%22%2F_next%2Fstatic%2Fchunks%2F3ipru9zkx541z.js%22%5D%2C%22%22%2C%22%2F_next%2F%22%2Cnull%2Cnull%5D"
+      ]
+    }
+  ]
+}

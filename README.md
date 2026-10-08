@@ -177,7 +177,7 @@ cp .env.example .env.local
 | Variable | Without it… |
 |---|---|
 | `HUGGINGFACE_API_KEY` | Transformer engine is `skipped`; keyword fallback runs alone. No non-English translation. |
-| `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` | No persistence, no auth, no share URLs (`/share/<bad-slug>` returns a clean 404). Atlas pages show an empty state. |
+| `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` | No persistence, no auth, no share URLs (`/share/<bad-slug>` returns a themed 404). Atlas overview/genre pages show unavailable readings and hide unknown totals. |
 | `SUPABASE_SERVICE_ROLE_KEY` | Lyrics persistence, metadata upserts and Atlas refresh are unavailable. Audio-derived writes are disabled even with this key. |
 | `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` | `/api/songs/search` returns 503 (`spotify_not_configured`); SongSearch shows an inline notice. |
 | `GENIUS_ACCESS_TOKEN` | Genius enrichment skipped in `resolveSong`; everything else still resolves. |
@@ -210,7 +210,7 @@ A SHA-256-keyed cache (`lib/analysis/cache.ts`) lets future re-analyses of the s
 
 ## Design system
 
-The music-streaming-dark theme is built from CSS variables registered in `app/globals.css` with Tailwind v4's `@theme` directive:
+The music workbench uses shared dark surfaces and a warm cream/off-white light palette, built from CSS variables registered in `app/globals.css` with Tailwind v4's `@theme` directive:
 
 - Surface depths: `--bg-base`, `--bg-elev1`, `--bg-elev2`, `--bg-elev3`
 - Text: `--text-hi`, `--text-med`, `--text-low`
@@ -218,7 +218,9 @@ The music-streaming-dark theme is built from CSS variables registered in `app/gl
 - State: `--state-success`, `--state-warn`, `--state-error`
 - Easings: `--ease-out`, `--ease-in-out`
 
-`<MoodThemeProvider>` lets any component call `setMoodColor({ from, to, glow })` and have the gradient cascade everywhere — the analyze flow uses the engine-derived color, `SongHero` overrides it with the cover-art palette via `node-vibrant`, and the showcase page lets you pick manually. All primitives respect `prefers-reduced-motion`.
+`<MoodThemeProvider>` lets any component call `setMoodColor({ from, to, glow })` and have the gradient cascade everywhere — the analyze flow uses the engine-derived color, `SongHero` overrides it with the cover-art palette via `node-vibrant`, and the showcase page lets you pick manually. Text, action and focus colors resolve against the theme; the lyrics radar uses these same tokens without changing its heuristic values.
+
+A synchronous head script applies a valid saved theme before paint. Without a saved choice, the theme follows live system changes; explicit choices persist and synchronize across tabs. If theme storage is denied, the system preference still initializes and toggling works for that visit. Decorative spectra render static bars until hydration and remain static for reduced motion. Missing pages retain the shell, typography and chosen theme. See the [cross-page theme verification](docs/CROSS_PAGE_THEME.md) for complete production browser journeys, accessibility results and limits.
 
 ## Data layer
 
@@ -263,7 +265,7 @@ The Mood Atlas is a public, research-flavored dashboard at `/atlas` that aggrega
 - **Per-artist** (`/atlas/artist/[slug]`) — mood-over-time area chart of the artist's discography, mood mix, and a clickable list of every analyzed song.
 - **Per-genre** (`/atlas/genre/[name]`) — mood distribution, top artists in the genre, and a weighted theme cloud.
 
-The atlas reads from a materialized view (`atlas_aggregates`) plus an `analyses_with_song` convenience join, both created by `supabase/migrations/0002_atlas_view.sql` and `0003_atlas_view_helpers.sql`. Pages render an empty-state card when no data is present, so the dashboard is safe to visit before the seed has been applied locally.
+The atlas reads from a materialized view (`atlas_aggregates`) plus an `analyses_with_song` convenience join, both created by `supabase/migrations/0002_atlas_view.sql` and `0003_atlas_view_helpers.sql`. The overview and canonical genre pages distinguish a failed read from a successful empty catalog. Unknown totals are hidden, and both states offer the analysis workbench. The query helpers opt into reporting errors for these pages; query filters, existing callers, schema and access rules are preserved.
 
 ### Seeding the atlas
 

@@ -1,0 +1,1336 @@
+{
+  "base": "e08d15328bf8f04984710d8d6eec7d3e65b9d153",
+  "browser": "151.0.7922.173",
+  "results": [
+    {
+      "width": 390,
+      "scheme": "light",
+      "steps": [
+        {
+          "name": "home",
+          "url": "http://localhost:3127/",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(247, 247, 248)",
+            "low": "#8a8a95",
+            "h1": "Every song has afingerprint.",
+            "fonts": "\"Instrument Serif\", \"Instrument Serif Fallback\""
+          },
+          "violations": [
+            {
+              "id": "color-contrast",
+              "nodes": [
+                {
+                  "target": [
+                    ".mb-6"
+                  ],
+                  "text": "<div class=\"mb-6 flex items-center justify-center gap-3 text-xs uppercase tracking-[0.32em] text-[var(--text-low)]\">",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    "div:nth-child(1) > .rounded-2xl.transition-\\[transform\\,border-color\\,box-shadow\\].duration-300 > .justify-between.flex.items-center > .text-\\[10px\\].font-semibold.tracking-\\[0\\.24em\\]"
+                  ],
+                  "text": "<p class=\"text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--text-low)]\">Identify</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.41 (foreground color: #8a8a95, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    "div:nth-child(2) > .rounded-2xl.transition-\\[transform\\,border-color\\,box-shadow\\].duration-300 > .justify-between.flex.items-center > .text-\\[10px\\].font-semibold.tracking-\\[0\\.24em\\]"
+                  ],
+                  "text": "<p class=\"text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--text-low)]\">Analyze</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.41 (foreground color: #8a8a95, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    "div:nth-child(3) > .rounded-2xl.transition-\\[transform\\,border-color\\,box-shadow\\].duration-300 > .justify-between.flex.items-center > .text-\\[10px\\].font-semibold.tracking-\\[0\\.24em\\]"
+                  ],
+                  "text": "<p class=\"text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--text-low)]\">Discover</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.41 (foreground color: #8a8a95, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".space-y-3:nth-child(1) > .font-mono.tracking-\\[0\\.3em\\].text-xs"
+                  ],
+                  "text": "<p class=\"font-mono text-xs tracking-[0.3em] text-[var(--text-low)]\">01</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.27 (foreground color: #8a8a95, background color: #fafafb, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".space-y-3:nth-child(2) > .font-mono.tracking-\\[0\\.3em\\].text-xs"
+                  ],
+                  "text": "<p class=\"font-mono text-xs tracking-[0.3em] text-[var(--text-low)]\">02</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.27 (foreground color: #8a8a95, background color: #fafafb, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".space-y-3:nth-child(3) > .font-mono.tracking-\\[0\\.3em\\].text-xs"
+                  ],
+                  "text": "<p class=\"font-mono text-xs tracking-[0.3em] text-[var(--text-low)]\">03</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.27 (foreground color: #8a8a95, background color: #fafafb, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".text-xs.tracking-wide.text-\\[var\\(--text-low\\)\\]"
+                  ],
+                  "text": "<p class=\"text-xs tracking-wide text-[var(--text-low)]\">Beat · Lyric · Mood — identified, decoded, and mapped.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".space-y-1\\.5 > .tracking-wide:nth-child(1)"
+                  ],
+                  "text": "<p class=\"tracking-wide\">Local audio insights stay on your device. Catalog identification sends fingerprint hashes to SongAnalyzer. Optional AudD recognition sends the clip to AudD only after you conf",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".opacity-80"
+                  ],
+                  "text": "<p class=\"tracking-wide opacity-80\">Song metadata via Spotify, MusicBrainz &amp; Genius (metadata only — never lyrics). Remote previews are not analyzed. Audio insights are estimates of the passage yo",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.42 (foreground color: #a0a0a9, background color: #f7f7f8, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "identify",
+          "url": "http://localhost:3127/identify",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(247, 247, 248)",
+            "low": "#8a8a95",
+            "h1": "Name that beat.",
+            "fonts": "\"Instrument Serif\", \"Instrument Serif Fallback\""
+          },
+          "violations": [
+            {
+              "id": "color-contrast",
+              "nodes": [
+                {
+                  "target": [
+                    ".text-\\[var\\(--text-low\\)\\].text-xs"
+                  ],
+                  "text": "<p class=\"text-xs tracking-wide text-[var(--text-low)]\">Beat · Lyric · Mood — identified, decoded, and mapped.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mt-8 > p:nth-child(1)"
+                  ],
+                  "text": "<p class=\"tracking-wide\">Local audio insights stay on your device. Catalog identification sends fingerprint hashes to SongAnalyzer. Optional AudD recognition sends the clip to AudD only after you conf",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".opacity-80"
+                  ],
+                  "text": "<p class=\"tracking-wide opacity-80\">Song metadata via Spotify, MusicBrainz &amp; Genius (metadata only — never lyrics). Remote previews are not analyzed. Audio insights are estimates of the passage yo",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.42 (foreground color: #a0a0a9, background color: #f7f7f8, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "identify-error",
+          "url": "http://localhost:3127/identify",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(247, 247, 248)",
+            "low": "#8a8a95",
+            "h1": "Name that beat.",
+            "fonts": "\"Instrument Serif\", \"Instrument Serif Fallback\""
+          },
+          "violations": [
+            {
+              "id": "color-contrast",
+              "nodes": [
+                {
+                  "target": [
+                    ".text-\\[var\\(--text-low\\)\\].text-xs"
+                  ],
+                  "text": "<p class=\"text-xs tracking-wide text-[var(--text-low)]\">Beat · Lyric · Mood — identified, decoded, and mapped.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mt-8 > p:nth-child(1)"
+                  ],
+                  "text": "<p class=\"tracking-wide\">Local audio insights stay on your device. Catalog identification sends fingerprint hashes to SongAnalyzer. Optional AudD recognition sends the clip to AudD only after you conf",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".opacity-80"
+                  ],
+                  "text": "<p class=\"tracking-wide opacity-80\">Song metadata via Spotify, MusicBrainz &amp; Genius (metadata only — never lyrics). Remote previews are not analyzed. Audio insights are estimates of the passage yo",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.42 (foreground color: #a0a0a9, background color: #f7f7f8, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "discover-error",
+          "url": "http://localhost:3127/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(247, 247, 248)",
+            "low": "#8a8a95",
+            "h1": "Find what feels the same.",
+            "fonts": "\"Instrument Serif\", \"Instrument Serif Fallback\""
+          },
+          "violations": [
+            {
+              "id": "color-contrast",
+              "nodes": [
+                {
+                  "target": [
+                    ".rounded-full"
+                  ],
+                  "text": "<span class=\"inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium tracking-wide bg-[color-mix(in_oklab,var(--state-warn)_14%,transparent)] text-[var(--state-warn)] border bord",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 1.4 (foreground color: #fbbf24, background color: #f3ebd7, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".text-\\[var\\(--text-low\\)\\].text-xs"
+                  ],
+                  "text": "<p class=\"text-xs tracking-wide text-[var(--text-low)]\">Beat · Lyric · Mood — identified, decoded, and mapped.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mt-8 > p:nth-child(1)"
+                  ],
+                  "text": "<p class=\"tracking-wide\">Local audio insights stay on your device. Catalog identification sends fingerprint hashes to SongAnalyzer. Optional AudD recognition sends the clip to AudD only after you conf",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".opacity-80"
+                  ],
+                  "text": "<p class=\"tracking-wide opacity-80\">Song metadata via Spotify, MusicBrainz &amp; Genius (metadata only — never lyrics). Remote previews are not analyzed. Audio insights are estimates of the passage yo",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.42 (foreground color: #a0a0a9, background color: #f7f7f8, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "lyrics",
+          "url": "http://localhost:3127/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(247, 247, 248)",
+            "low": "#8a8a95",
+            "h1": "Analyze a song.",
+            "fonts": "\"Instrument Serif\", \"Instrument Serif Fallback\""
+          },
+          "violations": [
+            {
+              "id": "aria-progressbar-name",
+              "nodes": [
+                {
+                  "target": [
+                    ".h-2"
+                  ],
+                  "text": "<div role=\"progressbar\" aria-valuenow=\"55\" aria-valuemin=\"0\" aria-valuemax=\"100\" class=\"relative w-full overflow-hidden rounded-full bg-[var(--bg-elev2)] border border-[var(--border-subtle)] h-2\">",
+                  "summary": "Fix any of the following:\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute"
+                }
+              ]
+            },
+            {
+              "id": "aria-prohibited-attr",
+              "nodes": [
+                {
+                  "target": [
+                    "div[aria-label=\"Analysis confidence\"]"
+                  ],
+                  "text": "<div class=\"w-full\" aria-label=\"Analysis confidence\">",
+                  "summary": "Fix all of the following:\n  aria-label attribute cannot be used on a div with no valid role attribute."
+                }
+              ]
+            },
+            {
+              "id": "color-contrast",
+              "nodes": [
+                {
+                  "target": [
+                    "#analysis-mode-audio"
+                  ],
+                  "text": "<button id=\"analysis-mode-audio\" type=\"button\" role=\"tab\" aria-selected=\"false\" class=\"relative px-6 py-2.5 rounded-xl text-sm font-medium tracking-wide transition-[background,color,box-shadow] durati",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.41 (foreground color: #8a8a95, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mb-3.text-\\[10px\\].font-semibold"
+                  ],
+                  "text": "<p class=\"text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--text-low)] mb-3\">Quick start · try a sample</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".flex-shrink-0.w-48.text-left:nth-child(1) > .mt-0\\.5.truncate.text-xs"
+                  ],
+                  "text": "<p class=\"text-xs text-[var(--text-low)] truncate mt-0.5\">Sample — Upbeat Pop</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.41 (foreground color: #8a8a95, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".flex-shrink-0.w-48.text-left:nth-child(2) > .mt-0\\.5.truncate.text-xs"
+                  ],
+                  "text": "<p class=\"text-xs text-[var(--text-low)] truncate mt-0.5\">Sample — Melancholic Ballad</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.41 (foreground color: #8a8a95, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    "label[for=\"lyrics\"]"
+                  ],
+                  "text": "<label for=\"lyrics\" class=\"block text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-low)] mb-3\">Paste song lyrics</label>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.41 (foreground color: #8a8a95, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".hover\\:text-\\[var\\(--text-med\\)\\].gap-2.uppercase"
+                  ],
+                  "text": "<button type=\"button\" class=\"inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-[var(--text-low)] hover:text-[var(--text-med)] transition-colors\">",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".border-\\[color-mix\\(in_oklab\\,var\\(--accent-from\\)_40\\%\\,var\\(--border-strong\\)\\)\\] > .mb-1\\.5.text-\\[10px\\].font-semibold"
+                  ],
+                  "text": "<p class=\"text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--text-low)] mb-1.5\">Mood</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.05 (foreground color: #8a8a95, background color: #f2f2f4, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".py-3\\.5.bg-\\[var\\(--bg-elev2\\)\\].px-4:nth-child(2) > .mb-1\\.5.text-\\[10px\\].font-semibold"
+                  ],
+                  "text": "<p class=\"text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--text-low)] mb-1.5\">Vibe</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.05 (foreground color: #8a8a95, background color: #f2f2f4, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".py-3\\.5.bg-\\[var\\(--bg-elev2\\)\\].px-4:nth-child(3) > .mb-1\\.5.text-\\[10px\\].font-semibold"
+                  ],
+                  "text": "<p class=\"text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--text-low)] mb-1.5\">Energy</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.05 (foreground color: #8a8a95, background color: #f2f2f4, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".py-3\\.5.bg-\\[var\\(--bg-elev2\\)\\].px-4:nth-child(4) > .mb-1\\.5.text-\\[10px\\].font-semibold"
+                  ],
+                  "text": "<p class=\"text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--text-low)] mb-1.5\">Sentiment</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.05 (foreground color: #8a8a95, background color: #f2f2f4, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".space-y-2:nth-child(3) > .text-\\[10px\\].font-semibold.uppercase"
+                  ],
+                  "text": "<p class=\"text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--text-low)]\">Themes</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.41 (foreground color: #8a8a95, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".pt-4.space-y-2.border-t > .text-\\[10px\\].font-semibold.uppercase"
+                  ],
+                  "text": "<p class=\"text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--text-low)]\">Reading</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.41 (foreground color: #8a8a95, background color: #ffffff, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".space-y-3 > .justify-between.flex.text-xs > span:nth-child(1)"
+                  ],
+                  "text": "<span><span class=\"font-mono text-[var(--text-med)]\">17</span> words</span>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.41 (foreground color: #8a8a95, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".justify-between.flex.text-xs > .uppercase.tracking-\\[0\\.18em\\]"
+                  ],
+                  "text": "<span class=\"uppercase tracking-[0.18em]\">Confidence <span class=\"font-mono text-[var(--text-med)]\">55%</span></span>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.41 (foreground color: #8a8a95, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    "span[title=\"HUGGINGFACE_API_KEY not set\"] > .opacity-70"
+                  ],
+                  "text": "<span class=\"opacity-70\">transformer · skipped</span>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.91 (foreground color: #808088, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".ml-1\\.5.opacity-80.font-mono"
+                  ],
+                  "text": "<span class=\"ml-1.5 font-mono opacity-80\">+8 / −0</span>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.38 (foreground color: #8b8b92, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".tracking-wide.text-xs.text-\\[var\\(--text-low\\)\\]"
+                  ],
+                  "text": "<p class=\"text-xs tracking-wide text-[var(--text-low)]\">Beat · Lyric · Mood — identified, decoded, and mapped.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mt-8 > .tracking-wide:nth-child(1)"
+                  ],
+                  "text": "<p class=\"tracking-wide\">Local audio insights stay on your device. Catalog identification sends fingerprint hashes to SongAnalyzer. Optional AudD recognition sends the clip to AudD only after you conf",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".opacity-80.tracking-wide"
+                  ],
+                  "text": "<p class=\"tracking-wide opacity-80\">Song metadata via Spotify, MusicBrainz &amp; Genius (metadata only — never lyrics). Remote previews are not analyzed. Audio insights are estimates of the passage yo",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.42 (foreground color: #a0a0a9, background color: #f7f7f8, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "atlas",
+          "url": "http://localhost:3127/atlas",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(247, 247, 248)",
+            "low": "#8a8a95",
+            "h1": "The Mood Atlas",
+            "fonts": "\"Instrument Serif\", \"Instrument Serif Fallback\""
+          },
+          "violations": [
+            {
+              "id": "color-contrast",
+              "nodes": [
+                {
+                  "target": [
+                    ".items-start > div > .tracking-widest.uppercase.text-xs"
+                  ],
+                  "text": "<p class=\"text-xs uppercase tracking-widest text-[var(--text-low)]\">Cold start</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.41 (foreground color: #8a8a95, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mt-4.text-sm.text-\\[var\\(--text-low\\)\\]"
+                  ],
+                  "text": "<p class=\"mt-4 text-sm text-[var(--text-low)]\">Once analyses are public, this dashboard rolls them up by mood, genre, artist, and year.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.41 (foreground color: #8a8a95, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".tracking-wide.text-xs.text-\\[var\\(--text-low\\)\\]"
+                  ],
+                  "text": "<p class=\"text-xs tracking-wide text-[var(--text-low)]\">Beat · Lyric · Mood — identified, decoded, and mapped.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mt-8 > .tracking-wide:nth-child(1)"
+                  ],
+                  "text": "<p class=\"tracking-wide\">Local audio insights stay on your device. Catalog identification sends fingerprint hashes to SongAnalyzer. Optional AudD recognition sends the clip to AudD only after you conf",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".opacity-80"
+                  ],
+                  "text": "<p class=\"tracking-wide opacity-80\">Song metadata via Spotify, MusicBrainz &amp; Genius (metadata only — never lyrics). Remote previews are not analyzed. Audio insights are estimates of the passage yo",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.42 (foreground color: #a0a0a9, background color: #f7f7f8, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                }
+              ]
+            },
+            {
+              "id": "scrollable-region-focusable",
+              "nodes": [
+                {
+                  "target": [
+                    "pre"
+                  ],
+                  "text": "<pre class=\"mt-4 overflow-x-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-base)] p-4 text-xs leading-relaxed text-[var(--text-med)]\">",
+                  "summary": "Fix any of the following:\n  Element should have focusable content\n  Element should be focusable"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "back",
+          "url": "http://localhost:3127/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(247, 247, 248)",
+            "low": "#8a8a95",
+            "h1": "Analyze a song.",
+            "fonts": "\"Instrument Serif\", \"Instrument Serif Fallback\""
+          },
+          "violations": [
+            {
+              "id": "color-contrast",
+              "nodes": [
+                {
+                  "target": [
+                    "#analysis-mode-audio"
+                  ],
+                  "text": "<button id=\"analysis-mode-audio\" type=\"button\" role=\"tab\" aria-selected=\"false\" class=\"relative px-6 py-2.5 rounded-xl text-sm font-medium tracking-wide transition-[background,color,box-shadow] durati",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.41 (foreground color: #8a8a95, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".text-\\[10px\\]"
+                  ],
+                  "text": "<p class=\"text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--text-low)] mb-3\">Quick start · try a sample</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".flex-shrink-0.w-48.text-left:nth-child(1) > .mt-0\\.5.truncate.text-\\[var\\(--text-low\\)\\]"
+                  ],
+                  "text": "<p class=\"text-xs text-[var(--text-low)] truncate mt-0.5\">Sample — Upbeat Pop</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.41 (foreground color: #8a8a95, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".flex-shrink-0.w-48.text-left:nth-child(2) > .mt-0\\.5.truncate.text-\\[var\\(--text-low\\)\\]"
+                  ],
+                  "text": "<p class=\"text-xs text-[var(--text-low)] truncate mt-0.5\">Sample — Melancholic Ballad</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.41 (foreground color: #8a8a95, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    "label[for=\"lyrics\"]"
+                  ],
+                  "text": "<label for=\"lyrics\" class=\"block text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-low)] mb-3\">Paste song lyrics</label>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.41 (foreground color: #8a8a95, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".hover\\:text-\\[var\\(--text-med\\)\\].tracking-\\[0\\.18em\\].uppercase"
+                  ],
+                  "text": "<button type=\"button\" class=\"inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-[var(--text-low)] hover:text-[var(--text-med)] transition-colors\">",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".tracking-wide.text-\\[var\\(--text-low\\)\\].text-xs"
+                  ],
+                  "text": "<p class=\"text-xs tracking-wide text-[var(--text-low)]\">Beat · Lyric · Mood — identified, decoded, and mapped.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mt-8 > .tracking-wide:nth-child(1)"
+                  ],
+                  "text": "<p class=\"tracking-wide\">Local audio insights stay on your device. Catalog identification sends fingerprint hashes to SongAnalyzer. Optional AudD recognition sends the clip to AudD only after you conf",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".opacity-80"
+                  ],
+                  "text": "<p class=\"tracking-wide opacity-80\">Song metadata via Spotify, MusicBrainz &amp; Genius (metadata only — never lyrics). Remote previews are not analyzed. Audio insights are estimates of the passage yo",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.42 (foreground color: #a0a0a9, background color: #f7f7f8, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "forward",
+          "url": "http://localhost:3127/atlas",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(247, 247, 248)",
+            "low": "#8a8a95",
+            "h1": "The Mood Atlas",
+            "fonts": "\"Instrument Serif\", \"Instrument Serif Fallback\""
+          },
+          "violations": [
+            {
+              "id": "color-contrast",
+              "nodes": [
+                {
+                  "target": [
+                    ".items-start > div > .tracking-widest.uppercase.text-xs"
+                  ],
+                  "text": "<p class=\"text-xs uppercase tracking-widest text-[var(--text-low)]\">Cold start</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.41 (foreground color: #8a8a95, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mt-4.text-sm.text-\\[var\\(--text-low\\)\\]"
+                  ],
+                  "text": "<p class=\"mt-4 text-sm text-[var(--text-low)]\">Once analyses are public, this dashboard rolls them up by mood, genre, artist, and year.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.41 (foreground color: #8a8a95, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".tracking-wide.text-xs.text-\\[var\\(--text-low\\)\\]"
+                  ],
+                  "text": "<p class=\"text-xs tracking-wide text-[var(--text-low)]\">Beat · Lyric · Mood — identified, decoded, and mapped.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mt-8 > .tracking-wide:nth-child(1)"
+                  ],
+                  "text": "<p class=\"tracking-wide\">Local audio insights stay on your device. Catalog identification sends fingerprint hashes to SongAnalyzer. Optional AudD recognition sends the clip to AudD only after you conf",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".opacity-80"
+                  ],
+                  "text": "<p class=\"tracking-wide opacity-80\">Song metadata via Spotify, MusicBrainz &amp; Genius (metadata only — never lyrics). Remote previews are not analyzed. Audio insights are estimates of the passage yo",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.42 (foreground color: #a0a0a9, background color: #f7f7f8, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                }
+              ]
+            },
+            {
+              "id": "scrollable-region-focusable",
+              "nodes": [
+                {
+                  "target": [
+                    "pre"
+                  ],
+                  "text": "<pre class=\"mt-4 overflow-x-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-base)] p-4 text-xs leading-relaxed text-[var(--text-med)]\">",
+                  "summary": "Fix any of the following:\n  Element should have focusable content\n  Element should be focusable"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "reload",
+          "url": "http://localhost:3127/atlas",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+            "bg": "rgb(247, 247, 248)",
+            "low": "#8a8a95",
+            "h1": "The Mood Atlas",
+            "fonts": "\"Instrument Serif\", \"Instrument Serif Fallback\""
+          },
+          "violations": [
+            {
+              "id": "color-contrast",
+              "nodes": [
+                {
+                  "target": [
+                    ".items-start > div > .tracking-widest.uppercase.text-xs"
+                  ],
+                  "text": "<p class=\"text-xs uppercase tracking-widest text-[var(--text-low)]\">Cold start</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.41 (foreground color: #8a8a95, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mt-4.text-sm.text-\\[var\\(--text-low\\)\\]"
+                  ],
+                  "text": "<p class=\"mt-4 text-sm text-[var(--text-low)]\">Once analyses are public, this dashboard rolls them up by mood, genre, artist, and year.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.41 (foreground color: #8a8a95, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".tracking-wide.text-xs.text-\\[var\\(--text-low\\)\\]"
+                  ],
+                  "text": "<p class=\"text-xs tracking-wide text-[var(--text-low)]\">Beat · Lyric · Mood — identified, decoded, and mapped.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mt-8 > .tracking-wide:nth-child(1)"
+                  ],
+                  "text": "<p class=\"tracking-wide\">Local audio insights stay on your device. Catalog identification sends fingerprint hashes to SongAnalyzer. Optional AudD recognition sends the clip to AudD only after you conf",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.18 (foreground color: #8a8a95, background color: #f7f7f8, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".opacity-80"
+                  ],
+                  "text": "<p class=\"tracking-wide opacity-80\">Song metadata via Spotify, MusicBrainz &amp; Genius (metadata only — never lyrics). Remote previews are not analyzed. Audio insights are estimates of the passage yo",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.42 (foreground color: #a0a0a9, background color: #f7f7f8, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                }
+              ]
+            },
+            {
+              "id": "scrollable-region-focusable",
+              "nodes": [
+                {
+                  "target": [
+                    "pre"
+                  ],
+                  "text": "<pre class=\"mt-4 overflow-x-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-base)] p-4 text-xs leading-relaxed text-[var(--text-med)]\">",
+                  "summary": "Fix any of the following:\n  Element should have focusable content\n  Element should be focusable"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "systemChangedTo": "dark",
+      "afterSystem": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable light",
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "scheme": "dark",
+      "steps": [
+        {
+          "name": "home",
+          "url": "http://localhost:3127/",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "low": "#6e6e78",
+            "h1": "Every song has afingerprint.",
+            "fonts": "\"Instrument Serif\", \"Instrument Serif Fallback\""
+          },
+          "violations": [
+            {
+              "id": "color-contrast",
+              "nodes": [
+                {
+                  "target": [
+                    ".mb-6"
+                  ],
+                  "text": "<div class=\"mb-6 flex items-center justify-center gap-3 text-xs uppercase tracking-[0.32em] text-[var(--text-low)]\">",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    "div:nth-child(1) > .rounded-2xl.transition-\\[transform\\,border-color\\,box-shadow\\].duration-300 > .justify-between.flex.items-center > .text-\\[10px\\].font-semibold.tracking-\\[0\\.24em\\]"
+                  ],
+                  "text": "<p class=\"text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--text-low)]\">Identify</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    "div:nth-child(2) > .rounded-2xl.transition-\\[transform\\,border-color\\,box-shadow\\].duration-300 > .justify-between.flex.items-center > .text-\\[10px\\].font-semibold.tracking-\\[0\\.24em\\]"
+                  ],
+                  "text": "<p class=\"text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--text-low)]\">Analyze</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    "div:nth-child(3) > .rounded-2xl.transition-\\[transform\\,border-color\\,box-shadow\\].duration-300 > .justify-between.flex.items-center > .text-\\[10px\\].font-semibold.tracking-\\[0\\.24em\\]"
+                  ],
+                  "text": "<p class=\"text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--text-low)]\">Discover</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".space-y-3:nth-child(1) > .font-mono.tracking-\\[0\\.3em\\].text-xs"
+                  ],
+                  "text": "<p class=\"font-mono text-xs tracking-[0.3em] text-[var(--text-low)]\">01</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.91 (foreground color: #6e6e78, background color: #0a0a0e, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".space-y-3:nth-child(2) > .font-mono.tracking-\\[0\\.3em\\].text-xs"
+                  ],
+                  "text": "<p class=\"font-mono text-xs tracking-[0.3em] text-[var(--text-low)]\">02</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.91 (foreground color: #6e6e78, background color: #0a0a0e, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".space-y-3:nth-child(3) > .font-mono.tracking-\\[0\\.3em\\].text-xs"
+                  ],
+                  "text": "<p class=\"font-mono text-xs tracking-[0.3em] text-[var(--text-low)]\">03</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.91 (foreground color: #6e6e78, background color: #0a0a0e, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".text-xs.tracking-wide.text-\\[var\\(--text-low\\)\\]"
+                  ],
+                  "text": "<p class=\"text-xs tracking-wide text-[var(--text-low)]\">Beat · Lyric · Mood — identified, decoded, and mapped.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".space-y-1\\.5 > .tracking-wide:nth-child(1)"
+                  ],
+                  "text": "<p class=\"tracking-wide\">Local audio insights stay on your device. Catalog identification sends fingerprint hashes to SongAnalyzer. Optional AudD recognition sends the clip to AudD only after you conf",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".opacity-80"
+                  ],
+                  "text": "<p class=\"tracking-wide opacity-80\">Song metadata via Spotify, MusicBrainz &amp; Genius (metadata only — never lyrics). Remote previews are not analyzed. Audio insights are estimates of the passage yo",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.9 (foreground color: #595962, background color: #07070a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "identify",
+          "url": "http://localhost:3127/identify",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "low": "#6e6e78",
+            "h1": "Name that beat.",
+            "fonts": "\"Instrument Serif\", \"Instrument Serif Fallback\""
+          },
+          "violations": [
+            {
+              "id": "color-contrast",
+              "nodes": [
+                {
+                  "target": [
+                    ".text-\\[var\\(--text-low\\)\\].text-xs"
+                  ],
+                  "text": "<p class=\"text-xs tracking-wide text-[var(--text-low)]\">Beat · Lyric · Mood — identified, decoded, and mapped.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mt-8 > p:nth-child(1)"
+                  ],
+                  "text": "<p class=\"tracking-wide\">Local audio insights stay on your device. Catalog identification sends fingerprint hashes to SongAnalyzer. Optional AudD recognition sends the clip to AudD only after you conf",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".opacity-80"
+                  ],
+                  "text": "<p class=\"tracking-wide opacity-80\">Song metadata via Spotify, MusicBrainz &amp; Genius (metadata only — never lyrics). Remote previews are not analyzed. Audio insights are estimates of the passage yo",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.9 (foreground color: #595962, background color: #07070a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "identify-error",
+          "url": "http://localhost:3127/identify",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "low": "#6e6e78",
+            "h1": "Name that beat.",
+            "fonts": "\"Instrument Serif\", \"Instrument Serif Fallback\""
+          },
+          "violations": [
+            {
+              "id": "color-contrast",
+              "nodes": [
+                {
+                  "target": [
+                    ".text-\\[var\\(--text-low\\)\\].text-xs"
+                  ],
+                  "text": "<p class=\"text-xs tracking-wide text-[var(--text-low)]\">Beat · Lyric · Mood — identified, decoded, and mapped.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mt-8 > p:nth-child(1)"
+                  ],
+                  "text": "<p class=\"tracking-wide\">Local audio insights stay on your device. Catalog identification sends fingerprint hashes to SongAnalyzer. Optional AudD recognition sends the clip to AudD only after you conf",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".opacity-80"
+                  ],
+                  "text": "<p class=\"tracking-wide opacity-80\">Song metadata via Spotify, MusicBrainz &amp; Genius (metadata only — never lyrics). Remote previews are not analyzed. Audio insights are estimates of the passage yo",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.9 (foreground color: #595962, background color: #07070a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "discover-error",
+          "url": "http://localhost:3127/discover",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "low": "#6e6e78",
+            "h1": "Find what feels the same.",
+            "fonts": "\"Instrument Serif\", \"Instrument Serif Fallback\""
+          },
+          "violations": [
+            {
+              "id": "color-contrast",
+              "nodes": [
+                {
+                  "target": [
+                    ".text-\\[var\\(--text-low\\)\\].text-xs"
+                  ],
+                  "text": "<p class=\"text-xs tracking-wide text-[var(--text-low)]\">Beat · Lyric · Mood — identified, decoded, and mapped.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mt-8 > p:nth-child(1)"
+                  ],
+                  "text": "<p class=\"tracking-wide\">Local audio insights stay on your device. Catalog identification sends fingerprint hashes to SongAnalyzer. Optional AudD recognition sends the clip to AudD only after you conf",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".opacity-80"
+                  ],
+                  "text": "<p class=\"tracking-wide opacity-80\">Song metadata via Spotify, MusicBrainz &amp; Genius (metadata only — never lyrics). Remote previews are not analyzed. Audio insights are estimates of the passage yo",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.9 (foreground color: #595962, background color: #07070a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "lyrics",
+          "url": "http://localhost:3127/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "low": "#6e6e78",
+            "h1": "Analyze a song.",
+            "fonts": "\"Instrument Serif\", \"Instrument Serif Fallback\""
+          },
+          "violations": [
+            {
+              "id": "aria-progressbar-name",
+              "nodes": [
+                {
+                  "target": [
+                    ".h-2"
+                  ],
+                  "text": "<div role=\"progressbar\" aria-valuenow=\"55\" aria-valuemin=\"0\" aria-valuemax=\"100\" class=\"relative w-full overflow-hidden rounded-full bg-[var(--bg-elev2)] border border-[var(--border-subtle)] h-2\">",
+                  "summary": "Fix any of the following:\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute"
+                }
+              ]
+            },
+            {
+              "id": "aria-prohibited-attr",
+              "nodes": [
+                {
+                  "target": [
+                    "div[aria-label=\"Analysis confidence\"]"
+                  ],
+                  "text": "<div class=\"w-full\" aria-label=\"Analysis confidence\">",
+                  "summary": "Fix all of the following:\n  aria-label attribute cannot be used on a div with no valid role attribute."
+                }
+              ]
+            },
+            {
+              "id": "color-contrast",
+              "nodes": [
+                {
+                  "target": [
+                    "#analysis-mode-audio"
+                  ],
+                  "text": "<button id=\"analysis-mode-audio\" type=\"button\" role=\"tab\" aria-selected=\"false\" class=\"relative px-6 py-2.5 rounded-xl text-sm font-medium tracking-wide transition-[background,color,box-shadow] durati",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mb-3.text-\\[10px\\].font-semibold"
+                  ],
+                  "text": "<p class=\"text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--text-low)] mb-3\">Quick start · try a sample</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".flex-shrink-0.w-48.text-left:nth-child(1) > .mt-0\\.5.truncate.text-xs"
+                  ],
+                  "text": "<p class=\"text-xs text-[var(--text-low)] truncate mt-0.5\">Sample — Upbeat Pop</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".flex-shrink-0.w-48.text-left:nth-child(2) > .mt-0\\.5.truncate.text-xs"
+                  ],
+                  "text": "<p class=\"text-xs text-[var(--text-low)] truncate mt-0.5\">Sample — Melancholic Ballad</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".flex-shrink-0.w-48.text-left:nth-child(3) > .mt-0\\.5.truncate.text-xs"
+                  ],
+                  "text": "<p class=\"text-xs text-[var(--text-low)] truncate mt-0.5\">Sample — High Energy Rock</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".flex-shrink-0.w-48.text-left:nth-child(4) > .mt-0\\.5.truncate.text-xs"
+                  ],
+                  "text": "<p class=\"text-xs text-[var(--text-low)] truncate mt-0.5\">Sample — Chill &amp; Reflective</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    "label[for=\"lyrics\"]"
+                  ],
+                  "text": "<label for=\"lyrics\" class=\"block text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-low)] mb-3\">Paste song lyrics</label>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".hover\\:text-\\[var\\(--text-med\\)\\].gap-2.uppercase"
+                  ],
+                  "text": "<button type=\"button\" class=\"inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-[var(--text-low)] hover:text-[var(--text-med)] transition-colors\">",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".border-\\[color-mix\\(in_oklab\\,var\\(--accent-from\\)_40\\%\\,var\\(--border-strong\\)\\)\\] > .mb-1\\.5.text-\\[10px\\].font-semibold"
+                  ],
+                  "text": "<p class=\"text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--text-low)] mb-1.5\">Mood</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.53 (foreground color: #6e6e78, background color: #17171e, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".py-3\\.5.bg-\\[var\\(--bg-elev2\\)\\].px-4:nth-child(2) > .mb-1\\.5.text-\\[10px\\].font-semibold"
+                  ],
+                  "text": "<p class=\"text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--text-low)] mb-1.5\">Vibe</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.53 (foreground color: #6e6e78, background color: #17171e, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".py-3\\.5.bg-\\[var\\(--bg-elev2\\)\\].px-4:nth-child(3) > .mb-1\\.5.text-\\[10px\\].font-semibold"
+                  ],
+                  "text": "<p class=\"text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--text-low)] mb-1.5\">Energy</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.53 (foreground color: #6e6e78, background color: #17171e, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".py-3\\.5.bg-\\[var\\(--bg-elev2\\)\\].px-4:nth-child(4) > .mb-1\\.5.text-\\[10px\\].font-semibold"
+                  ],
+                  "text": "<p class=\"text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--text-low)] mb-1.5\">Sentiment</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.53 (foreground color: #6e6e78, background color: #17171e, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".space-y-2:nth-child(3) > .text-\\[10px\\].font-semibold.uppercase"
+                  ],
+                  "text": "<p class=\"text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--text-low)]\">Themes</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".pt-4.space-y-2.border-t > .text-\\[10px\\].font-semibold.uppercase"
+                  ],
+                  "text": "<p class=\"text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--text-low)]\">Reading</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".space-y-3 > .justify-between.flex.text-xs > span:nth-child(1)"
+                  ],
+                  "text": "<span><span class=\"font-mono text-[var(--text-med)]\">17</span> words</span>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".justify-between.flex.text-xs > .uppercase.tracking-\\[0\\.18em\\]"
+                  ],
+                  "text": "<span class=\"uppercase tracking-[0.18em]\">Confidence <span class=\"font-mono text-[var(--text-med)]\">55%</span></span>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".ml-1\\.5.opacity-80.font-mono"
+                  ],
+                  "text": "<span class=\"ml-1.5 font-mono opacity-80\">+8 / −0</span>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.42 (foreground color: #797980, background color: #0f0f14, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".tracking-wide.text-xs.text-\\[var\\(--text-low\\)\\]"
+                  ],
+                  "text": "<p class=\"text-xs tracking-wide text-[var(--text-low)]\">Beat · Lyric · Mood — identified, decoded, and mapped.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mt-8 > .tracking-wide:nth-child(1)"
+                  ],
+                  "text": "<p class=\"tracking-wide\">Local audio insights stay on your device. Catalog identification sends fingerprint hashes to SongAnalyzer. Optional AudD recognition sends the clip to AudD only after you conf",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".opacity-80.tracking-wide"
+                  ],
+                  "text": "<p class=\"tracking-wide opacity-80\">Song metadata via Spotify, MusicBrainz &amp; Genius (metadata only — never lyrics). Remote previews are not analyzed. Audio insights are estimates of the passage yo",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.9 (foreground color: #595962, background color: #07070a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "atlas",
+          "url": "http://localhost:3127/atlas",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "low": "#6e6e78",
+            "h1": "The Mood Atlas",
+            "fonts": "\"Instrument Serif\", \"Instrument Serif Fallback\""
+          },
+          "violations": [
+            {
+              "id": "color-contrast",
+              "nodes": [
+                {
+                  "target": [
+                    ".items-start > div > .tracking-widest.uppercase.text-xs"
+                  ],
+                  "text": "<p class=\"text-xs uppercase tracking-widest text-[var(--text-low)]\">Cold start</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mt-4.text-sm.text-\\[var\\(--text-low\\)\\]"
+                  ],
+                  "text": "<p class=\"mt-4 text-sm text-[var(--text-low)]\">Once analyses are public, this dashboard rolls them up by mood, genre, artist, and year.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".tracking-wide.text-xs.text-\\[var\\(--text-low\\)\\]"
+                  ],
+                  "text": "<p class=\"text-xs tracking-wide text-[var(--text-low)]\">Beat · Lyric · Mood — identified, decoded, and mapped.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mt-8 > .tracking-wide:nth-child(1)"
+                  ],
+                  "text": "<p class=\"tracking-wide\">Local audio insights stay on your device. Catalog identification sends fingerprint hashes to SongAnalyzer. Optional AudD recognition sends the clip to AudD only after you conf",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".opacity-80"
+                  ],
+                  "text": "<p class=\"tracking-wide opacity-80\">Song metadata via Spotify, MusicBrainz &amp; Genius (metadata only — never lyrics). Remote previews are not analyzed. Audio insights are estimates of the passage yo",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.9 (foreground color: #595962, background color: #07070a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "back",
+          "url": "http://localhost:3127/analyze",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "low": "#6e6e78",
+            "h1": "Analyze a song.",
+            "fonts": "\"Instrument Serif\", \"Instrument Serif Fallback\""
+          },
+          "violations": [
+            {
+              "id": "color-contrast",
+              "nodes": [
+                {
+                  "target": [
+                    "#analysis-mode-audio"
+                  ],
+                  "text": "<button id=\"analysis-mode-audio\" type=\"button\" role=\"tab\" aria-selected=\"false\" class=\"relative px-6 py-2.5 rounded-xl text-sm font-medium tracking-wide transition-[background,color,box-shadow] durati",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".text-\\[10px\\]"
+                  ],
+                  "text": "<p class=\"text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--text-low)] mb-3\">Quick start · try a sample</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".flex-shrink-0.w-48.text-left:nth-child(1) > .mt-0\\.5.truncate.text-\\[var\\(--text-low\\)\\]"
+                  ],
+                  "text": "<p class=\"text-xs text-[var(--text-low)] truncate mt-0.5\">Sample — Upbeat Pop</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".flex-shrink-0.w-48.text-left:nth-child(2) > .mt-0\\.5.truncate.text-\\[var\\(--text-low\\)\\]"
+                  ],
+                  "text": "<p class=\"text-xs text-[var(--text-low)] truncate mt-0.5\">Sample — Melancholic Ballad</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".flex-shrink-0.w-48.text-left:nth-child(3) > .mt-0\\.5.truncate.text-\\[var\\(--text-low\\)\\]"
+                  ],
+                  "text": "<p class=\"text-xs text-[var(--text-low)] truncate mt-0.5\">Sample — High Energy Rock</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".flex-shrink-0.w-48.text-left:nth-child(4) > .mt-0\\.5.truncate.text-\\[var\\(--text-low\\)\\]"
+                  ],
+                  "text": "<p class=\"text-xs text-[var(--text-low)] truncate mt-0.5\">Sample — Chill &amp; Reflective</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    "label[for=\"lyrics\"]"
+                  ],
+                  "text": "<label for=\"lyrics\" class=\"block text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-low)] mb-3\">Paste song lyrics</label>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".hover\\:text-\\[var\\(--text-med\\)\\].tracking-\\[0\\.18em\\].uppercase"
+                  ],
+                  "text": "<button type=\"button\" class=\"inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-[var(--text-low)] hover:text-[var(--text-med)] transition-colors\">",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".tracking-wide.text-\\[var\\(--text-low\\)\\].text-xs"
+                  ],
+                  "text": "<p class=\"text-xs tracking-wide text-[var(--text-low)]\">Beat · Lyric · Mood — identified, decoded, and mapped.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mt-8 > .tracking-wide:nth-child(1)"
+                  ],
+                  "text": "<p class=\"tracking-wide\">Local audio insights stay on your device. Catalog identification sends fingerprint hashes to SongAnalyzer. Optional AudD recognition sends the clip to AudD only after you conf",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".opacity-80"
+                  ],
+                  "text": "<p class=\"tracking-wide opacity-80\">Song metadata via Spotify, MusicBrainz &amp; Genius (metadata only — never lyrics). Remote previews are not analyzed. Audio insights are estimates of the passage yo",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.9 (foreground color: #595962, background color: #07070a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "forward",
+          "url": "http://localhost:3127/atlas",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "low": "#6e6e78",
+            "h1": "The Mood Atlas",
+            "fonts": "\"Instrument Serif\", \"Instrument Serif Fallback\""
+          },
+          "violations": [
+            {
+              "id": "color-contrast",
+              "nodes": [
+                {
+                  "target": [
+                    ".items-start > div > .tracking-widest.uppercase.text-xs"
+                  ],
+                  "text": "<p class=\"text-xs uppercase tracking-widest text-[var(--text-low)]\">Cold start</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mt-4.text-sm.text-\\[var\\(--text-low\\)\\]"
+                  ],
+                  "text": "<p class=\"mt-4 text-sm text-[var(--text-low)]\">Once analyses are public, this dashboard rolls them up by mood, genre, artist, and year.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".tracking-wide.text-xs.text-\\[var\\(--text-low\\)\\]"
+                  ],
+                  "text": "<p class=\"text-xs tracking-wide text-[var(--text-low)]\">Beat · Lyric · Mood — identified, decoded, and mapped.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mt-8 > .tracking-wide:nth-child(1)"
+                  ],
+                  "text": "<p class=\"tracking-wide\">Local audio insights stay on your device. Catalog identification sends fingerprint hashes to SongAnalyzer. Optional AudD recognition sends the clip to AudD only after you conf",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".opacity-80"
+                  ],
+                  "text": "<p class=\"tracking-wide opacity-80\">Song metadata via Spotify, MusicBrainz &amp; Genius (metadata only — never lyrics). Remote previews are not analyzed. Audio insights are estimates of the passage yo",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.9 (foreground color: #595962, background color: #07070a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "reload",
+          "url": "http://localhost:3127/atlas",
+          "style": {
+            "theme": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+            "bg": "rgb(7, 7, 10)",
+            "low": "#6e6e78",
+            "h1": "The Mood Atlas",
+            "fonts": "\"Instrument Serif\", \"Instrument Serif Fallback\""
+          },
+          "violations": [
+            {
+              "id": "color-contrast",
+              "nodes": [
+                {
+                  "target": [
+                    ".items-start > div > .tracking-widest.uppercase.text-xs"
+                  ],
+                  "text": "<p class=\"text-xs uppercase tracking-widest text-[var(--text-low)]\">Cold start</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mt-4.text-sm.text-\\[var\\(--text-low\\)\\]"
+                  ],
+                  "text": "<p class=\"mt-4 text-sm text-[var(--text-low)]\">Once analyses are public, this dashboard rolls them up by mood, genre, artist, and year.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.79 (foreground color: #6e6e78, background color: #0f0f14, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".tracking-wide.text-xs.text-\\[var\\(--text-low\\)\\]"
+                  ],
+                  "text": "<p class=\"text-xs tracking-wide text-[var(--text-low)]\">Beat · Lyric · Mood — identified, decoded, and mapped.</p>",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".mt-8 > .tracking-wide:nth-child(1)"
+                  ],
+                  "text": "<p class=\"tracking-wide\">Local audio insights stay on your device. Catalog identification sends fingerprint hashes to SongAnalyzer. Optional AudD recognition sends the clip to AudD only after you conf",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 3.98 (foreground color: #6e6e78, background color: #07070a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                },
+                {
+                  "target": [
+                    ".opacity-80"
+                  ],
+                  "text": "<p class=\"tracking-wide opacity-80\">Song metadata via Spotify, MusicBrainz &amp; Genius (metadata only — never lyrics). Remote previews are not analyzed. Audio insights are estimates of the passage yo",
+                  "summary": "Fix any of the following:\n  Element has insufficient color contrast of 2.9 (foreground color: #595962, background color: #07070a, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "systemChangedTo": "light",
+      "afterSystem": "instrument_serif_f6aaad2f-module__XbIMWq__variable inter_c6e48ee1-module__JRO3KW__variable jetbrains_mono_6104e6b7-module__s6uLTa__variable dark",
+      "errors": []
+    },
+    {
+      "case": "denied-theme-storage",
+      "errors": [
+        "Controlled denied theme storage"
+      ],
+      "theme": null,
+      "body": "This page couldn’t load\n\nReload to try again, or go back.\n\nReload\nBack"
+    }
+  ]
+}
