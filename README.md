@@ -137,7 +137,7 @@ next reliability, music evaluation, discovery and product-interface work.
 
 ## Tech stack
 
-- **Framework:** Next.js 16 (App Router) on Turbopack
+- **Framework:** Next.js 16.3.8 (App Router) on Turbopack
 - **Language / runtime:** TypeScript 5, React 19, Node 20+
 - **Styling:** Tailwind v4 with CSS-variable `@theme` tokens. Display: Instrument Serif. Body: Inter. Mono: JetBrains Mono.
 - **Primitives:** Radix UI (Dialog, Tabs, Tooltip, Slot, Popover) + Framer Motion (`LazyMotion + domAnimation`) + Sonner toasts
@@ -149,6 +149,15 @@ next reliability, music evaluation, discovery and product-interface work.
 - **Color extraction:** `node-vibrant`
 - **Testing:** Vitest + Playwright (E2E smoke)
 - **Deployment:** Vercel (Edge runtime for OG images)
+
+The [October 9 Next.js patch verification](docs/NEXT_PATCH_2026-10-09.md)
+records the bounded 16.3.6 → 16.3.8 update, detailed audit delta and fresh
+music-flow browser evidence. Six Next.js advisory entries are removed from the
+audit; 27 other reported package findings remain, including 18 high findings.
+The Image Optimization SSRF advisory states apps without `images.remotePatterns`
+are unaffected, and this app has none configured. No exposed SSRF path or
+incident was established. This maintenance update preserves the existing music
+interface, analysis estimates, recording permissions and access rules.
 
 ## Getting started
 
