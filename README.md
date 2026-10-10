@@ -20,7 +20,7 @@ SongAnalyzer is a Next.js music workbench. **Identify** (`/identify`) computes c
 | **Follow artist credits** | Selected tracks with source artist IDs link each credited artist to a provider-qualified profile (`/artists/<provider>/<id>`). Profiles retain known track metadata in this tab, show an explicit Person/Group/Unknown type, and use an accessible fallback when permitted official imagery is unavailable. Legacy saved rows cannot yet connect artist identities or related readings. |
 | **Share a result** | Persisted lyrics readings and existing saved records can be shared by permalink (`/share/<slug>`). New audio readings are not persisted. Share images require configured backing services; the known missing-config OG/Twitter 500 remains a follow-up. |
 | **Mood Atlas** | A public dashboard (`/atlas`) aggregating every visible analysis into a global mood distribution, browseable genres, per-artist mood-over-time, and theme clouds. |
-| **Combined view** | When both a pasted-text reading and a local-clip reading exist, the view compares their estimated valence/arousal. The app does not verify that these inputs belong to the same recording; the agreement value is a distance between estimates, not model accuracy. |
+| **Combined view** | Compare separately supplied text and local audio with visible input size, filename and projection basis. Estimated proximity describes distance between supported valence/arousal coordinates. It is withheld when coordinates are unavailable; evidence explains the mapping and its limits. Song identity and model accuracy are not verified. |
 | **Mood-color cascade** | When a result lands, `--accent-from / --accent-to / --accent-glow` are written to `<html>` and every primitive (cards, buttons, badges, charts, hero glow) repaints in the song's color. |
 | **Multi-language** | Built-in detection across 11+ languages; auto-translates via Helsinki-NLP through the Hugging Face Inference API when a token is configured. |
 | **History** | Local result previews persist to `localStorage`; restoring one clears the current song/audio context and Share id. Full lyrics and a server analysis id are not retained locally, so a restored result can be copied but must be re-analyzed from its lyrics to enable sharing. |
@@ -96,6 +96,25 @@ narrow lockfile repair for GHSA-68fv-2mgg-jv7q and remaining audit findings.
 The [timeline theme readiness follow-up](docs/TIMELINE_THEME_READINESS.md)
 records the post-merge CI race, initialized-color test fix and fresh production
 browser checks. Runtime playback and analysis behavior are unchanged.
+
+## Comparison evidence
+
+Combined view identifies the supplied text and local recording, and distinguishes
+weighted text-model emotion scores, preset mood-label positions and audio signal
+estimates. The word count describes analyzed text and can reflect a translation
+rather than the original input. Its estimated proximity describes geometric
+distance between these readings. It does not establish that they belong to the same song or measure
+accuracy or the songwriter's intended meaning. Missing, unsupported or invalid
+coordinates withhold the map and percentage while keeping each reading visible.
+
+Open **See comparison evidence** for the projection basis, rounded coordinates
+and axis definitions. Audio coordinates describe the analyzed recording;
+selecting a listening window does not recalculate this point. Input filenames
+remain in the current browser session. The existing analysis engines, recording
+permissions and persistence boundaries are unchanged.
+
+The [comparison verification](docs/COMPARISON_EVIDENCE.md) records the demonstrated
+clarity defect, regression coverage, production browser evidence and limits.
 
 ## Architecture in one breath
 

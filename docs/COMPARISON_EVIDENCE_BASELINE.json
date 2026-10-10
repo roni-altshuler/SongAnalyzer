@@ -1,0 +1,17 @@
+{
+  "base": "c6c70099aa03acf285bd654b3f057966e6f230cc",
+  "flow": "Original pasted text plus independently chosen original synthetic WAV; real keyword/MIR engines",
+  "text": "Combined view\nLyrics × Audio\nLyrics\ntext engine\nMOOD\nRomantic\nVIBE\nBalanced\nENERGY\nModerate\nSENTIMENT\nVery Positive\nAudio\nsignal engine\nMOOD\nSorrowful\nVIBE\nMoody\nENERGY\nLow\nSENTIMENT\nVery Negative\n\nEMOTION MAP\n\npositive →\n← negative\nenergetic\ncalm\nL\nA\nLyrics\nAudio\nAGREEMENT\n53%\n\nThe words are brighter than the sound.",
+  "posts": [
+    {
+      "path": "/api/analyze",
+      "contentType": "application/json"
+    },
+    {
+      "path": "/api/analyses",
+      "contentType": "application/json",
+      "mode": "lyrics"
+    }
+  ],
+  "errors": []
+}
