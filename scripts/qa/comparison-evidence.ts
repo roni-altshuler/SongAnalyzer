@@ -79,6 +79,7 @@ async function main() {
       ...[390, 1440].flatMap(width => (['light', 'dark'] as const).map(theme => ({ width, theme, scenario: 'real-engines' }))),
       { width: 390, theme: 'light' as const, scenario: 'controlled-unmapped-text' },
       { width: 390, theme: 'dark' as const, scenario: 'real-dsp-fallback' },
+      { width: 390, theme: 'light' as const, scenario: 'controlled-translated-text' },
     ];
     for (const { width, theme, scenario } of scenarios) {
       const context = await browser.newContext({ viewport: { width, height: 900 }, colorScheme: theme === 'light' ? 'dark' : 'light', reducedMotion: theme === 'light' ? 'reduce' : 'no-preference' });
@@ -106,10 +107,15 @@ async function main() {
           }
         };
       }, { theme, fallback: scenario === 'real-dsp-fallback' });
-      if (scenario === 'controlled-unmapped-text') {
+      if (scenario === 'controlled-unmapped-text' || scenario === 'controlled-translated-text') {
         await page.route('**/api/analyze', async route => {
           const real = await route.fetch();
-          const result = await real.json(); result.mood = 'Controlled unmapped mood';
+          const result = await real.json();
+          if (scenario === 'controlled-unmapped-text') result.mood = 'Controlled unmapped mood';
+          else {
+            // Presentation fixture: translation is not performed or validated.
+            result.translated = true; result.originalLanguage = 'Spanish'; result.wordCount = 9;
+          }
           await route.fulfill({ response: real, json: result });
         });
         // Never persist deliberately altered metadata, even in a configured setup.
@@ -154,7 +160,7 @@ async function main() {
       await expect(view(page).locator('details')).toHaveAttribute('open', '');
       await expect(view(page).getByRole('table', { name: 'Comparison coordinates' })).toBeVisible();
       const signals = await page.evaluate(() => (window as unknown as QAWindow).comparisonSignals);
-      if (scenario === 'real-engines') {
+      if (scenario === 'real-engines' || scenario === 'controlled-translated-text') {
         expect(signals).toHaveLength(1); expect(signals[0].duration).toBe(6);
         const format = (n: number) => `${n >= 0 ? '+' : '−'}${Math.abs(n).toFixed(2)}`;
         for (const [axis, number] of [['Valence', signals[0].valence], ['Arousal', signals[0].arousal]] as const) {
@@ -166,6 +172,10 @@ async function main() {
         await expect(view(page).getByRole('img')).toHaveCount(0);
         await expect(view(page).getByRole('status')).toContainText(scenario === 'real-dsp-fallback' ? 'the audio reading' : 'the lyrics reading');
       }
+      const lyricsInput = view(page).getByRole('group', { name: 'Lyrics comparison input' });
+      await expect(lyricsInput).toContainText(scenario === 'controlled-translated-text' ? '9 analyzed words' : '17 analyzed words');
+      await expect(lyricsInput).toContainText(scenario === 'controlled-translated-text' ? 'Translated text reading' : 'Supplied text reading');
+      await expect(lyricsInput).not.toContainText('supplied words');
       await audit(page, `${scenario}:expanded`, width, theme);
       await capture(page, `${scenario}-${width}-${theme}.png`, width);
       if (scenario === 'real-engines') {
@@ -195,8 +205,8 @@ async function main() {
     }
   } finally {
     await browser.close();
-    writeFileSync(join(output, 'report.json'), JSON.stringify({ date: new Date().toISOString(), baseURL, browser: `Chromium ${browserVersion}; production next start`, viewportHeight: 900, componentCaptureHeight: 6000, axeTags: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'], scenarios: 'Real keyword/MIR engines; controlled lyrics errors/unmapped text and real DSP fallback via worker startup failure', states, journeys }, null, 2));
+    writeFileSync(join(output, 'report.json'), JSON.stringify({ date: new Date().toISOString(), baseURL, browser: `Chromium ${browserVersion}; production next start`, viewportHeight: 900, componentCaptureHeight: 6000, axeTags: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'], scenarios: 'Real keyword/MIR engines; controlled lyrics errors/unmapped/translated metadata and real DSP fallback via worker startup failure', states, journeys }, null, 2));
   }
-  console.log(JSON.stringify({ states: states.length, screenshots: 6, journeys: journeys.length, violations: states.flatMap(s => s.violations) }));
+  console.log(JSON.stringify({ states: states.length, screenshots: journeys.length, journeys: journeys.length, violations: states.flatMap(s => s.violations) }));
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-10T13:18:40.183Z",
+  "date": "2026-10-10T13:36:10.633Z",
   "baseURL": "http://localhost:3141",
   "browser": "Chromium 151.0.7922.173; production next start",
   "viewportHeight": 900,
@@ -10,7 +10,7 @@
     "wcag21a",
     "wcag21aa"
   ],
-  "scenarios": "Real keyword/MIR engines; controlled lyrics errors/unmapped text and real DSP fallback via worker startup failure",
+  "scenarios": "Real keyword/MIR engines; controlled lyrics errors/unmapped/translated metadata and real DSP fallback via worker startup failure",
   "states": [
     {
       "state": "real-engines:empty",
@@ -487,6 +487,44 @@
       "violations": [],
       "overflow": 0,
       "mapContrast": null
+    },
+    {
+      "state": "controlled-translated-text:empty",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0,
+      "mapContrast": null
+    },
+    {
+      "state": "controlled-translated-text:text-only",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0,
+      "mapContrast": null
+    },
+    {
+      "state": "controlled-translated-text:collapsed",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0,
+      "mapContrast": {
+        "text": 5.617283071946963,
+        "outline": 16.905353417786223
+      }
+    },
+    {
+      "state": "controlled-translated-text:expanded",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0,
+      "mapContrast": {
+        "text": 5.617283071946963,
+        "outline": 16.905353417786223
+      }
     }
   ],
   "journeys": [
@@ -636,6 +674,31 @@
       "theme": "dark",
       "scenario": "real-dsp-fallback",
       "signals": [],
+      "posts": [
+        {
+          "path": "/api/analyze",
+          "type": "application/json"
+        },
+        {
+          "path": "/api/analyses",
+          "type": "application/json",
+          "mode": "lyrics"
+        }
+      ],
+      "externalRequests": [],
+      "pageErrors": []
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "scenario": "controlled-translated-text",
+      "signals": [
+        {
+          "valence": -0.759,
+          "arousal": -0.314,
+          "duration": 6
+        }
+      ],
       "posts": [
         {
           "path": "/api/analyze",

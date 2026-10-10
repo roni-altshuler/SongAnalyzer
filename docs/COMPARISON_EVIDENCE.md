@@ -12,7 +12,7 @@ the real keyword/MIR flow. Neither input is a copyrighted song or private clip.
 
 ## Result and boundary
 
-- Input cards show supplied word count, session-only filename, analyzed duration
+- Input cards show analyzed word count, session-only filename, analyzed duration
   and the projection basis: weighted emotion scores, preset mood label, signal
   estimate, or unavailable coordinates.
 - **Estimated proximity** preserves the existing geometric calculation for valid
@@ -36,16 +36,16 @@ filename or audio-derived result is newly sent to a server or external service.
 
 | Check | Observed result |
 |---|---|
-| Vitest | 224 passed; 11 existing RLS tests skipped |
+| Vitest | 225 passed; 11 existing RLS tests skipped |
 | ESLint | No errors; six existing warnings |
 | TypeScript | Passed |
 | Production build | Passed on Next.js 16.3.8; existing middleware/Edge deprecation notices |
 | Full Playwright suite | 55 passed, zero retries |
-| Production Chromium | Six journeys; 52 full-page WCAG 2 A/AA and 2.1 A/AA scans with no detected violations or horizontal overflow |
+| Production Chromium | Seven journeys; 56 full-page WCAG 2 A/AA and 2.1 A/AA scans with no detected violations or horizontal overflow |
 
-The 17 focused unit cases cover supported mappings, weighted text scores,
+The 18 focused unit cases cover supported mappings, weighted text scores,
 stale/malformed metadata, valid zero, invalid/missing signal coordinates,
-replacement results and the former false 100%. Four new browser tests exercise
+replacement results, translated word-count provenance and the former false 100%. Four new browser tests exercise
 real keyword/MIR readings at 390px and 1440px, native keyboard disclosure and
 theme changes, local-file replacement, empty/loading/error states and a real DSP
 fallback after controlled worker-startup failure.
@@ -75,6 +75,15 @@ feature is mocked. Every journey checks for page errors, external requests and
 audio/server writes. Only the existing original-text analysis and lyrics-save
 attempts occur.
 
+Independent review caught that `wordCount` comes from `analyzeKeyword(text)`
+after `maybeTranslate`; `blendResults` retains that analyzed count. The caption
+now says **analyzed words**, with **Translated text reading** when appropriate.
+A focused regression and an additional production-browser presentation fixture
+check a translated result with nine analyzed words against the 17-word original
+input. That fixture changes only translation/count metadata and blocks its
+persistence; it does not call or validate a translation provider. The real MIR
+worker continues to analyze the original local WAV.
+
 Screenshots below are actual browser component captures, manually inspected.
 They use the tested responsive width with a tall capture viewport to prevent
 sticky navigation from covering the expanded card; journeys use 900px height.
@@ -84,6 +93,7 @@ sticky navigation from covering the expanded card; journeys use 900px height.
 | Mobile, 390px | [Expanded evidence](screenshots/comparison-evidence/real-engines-390-light.png) | [Expanded evidence](screenshots/comparison-evidence/real-engines-390-dark.png) |
 | Desktop, 1440px | [Expanded evidence](screenshots/comparison-evidence/real-engines-1440-light.png) | [Expanded evidence](screenshots/comparison-evidence/real-engines-1440-dark.png) |
 | Unavailable coordinates | [Controlled unmapped text](screenshots/comparison-evidence/controlled-unmapped-text-390-light.png) | [Real DSP fallback](screenshots/comparison-evidence/real-dsp-fallback-390-dark.png) |
+| Translated count provenance | [Controlled translated result](screenshots/comparison-evidence/controlled-translated-text-390-light.png) | — |
 
 ## Reproduce
 
@@ -103,7 +113,7 @@ COMPARISON_QA_BASE_URL=http://localhost:3141 \
 npx tsx scripts/qa/comparison-evidence.ts
 ```
 
-The committed script writes a compact report and six screenshots to
+The committed script writes a compact report and seven screenshots to
 `/tmp/song-comparison-qa`; `COMPARISON_QA_OUTPUT` can select another directory.
 Axe is an external QA-only installation; no app dependency was added.
 

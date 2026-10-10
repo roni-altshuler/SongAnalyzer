@@ -209,7 +209,7 @@ export default function CombinedView({
   const audio = audioComparisonProjection(audioAnalysis);
   const breakdown = lyrics.point && audio.point ? agreementBreakdown(lyrics.point, audio.point) : null;
   const wordCount = Number.isInteger(lyricsAnalysis.wordCount) && lyricsAnalysis.wordCount > 0
-    ? `${lyricsAnalysis.wordCount} supplied ${lyricsAnalysis.wordCount === 1 ? 'word' : 'words'}` : 'Word count unavailable';
+    ? `${lyricsAnalysis.wordCount} analyzed ${lyricsAnalysis.wordCount === 1 ? 'word' : 'words'}` : 'Word count unavailable';
   const duration = Number.isFinite(audioAnalysis.duration) && audioAnalysis.duration >= 0
     ? `${audioAnalysis.duration.toFixed(1)}s analyzed` : 'Duration unavailable';
   const audioEngine = 'engineVersion' in audioAnalysis

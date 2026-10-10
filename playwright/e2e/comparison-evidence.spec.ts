@@ -26,7 +26,7 @@ for (const width of [390, 1440]) {
     await page.getByRole('tab', { name: /Audio/ }).click(); await choose(page);
     const view = comparison(page);
     await expect(view).toBeVisible({ timeout: 35000 });
-    await expect(view.getByRole('group', { name: 'Lyrics comparison input' })).toContainText('17 supplied words');
+    await expect(view.getByRole('group', { name: 'Lyrics comparison input' })).toContainText('17 analyzed words');
     await expect(view.getByRole('group', { name: 'Lyrics comparison input' })).toContainText('Mood label mapped');
     await expect(view.getByRole('group', { name: 'Audio comparison input' })).toContainText(recording.name);
     await expect(view.getByRole('group', { name: 'Audio comparison input' })).toContainText('Signal estimate');

@@ -72,7 +72,7 @@ describe('comparison UI', () => {
     render(<CombinedView lyricsAnalysis={text} audioAnalysis={mir(MOOD_COORDS.Romantic)} audioFileName="independent-original.wav" />);
     const comparison = screen.getByRole('region', { name: 'Lyrics and audio comparison' });
     expect(within(comparison).getByText('independent-original.wav')).toBeTruthy();
-    expect(within(comparison).getByText('17 supplied words')).toBeTruthy();
+    expect(within(comparison).getByText('17 analyzed words')).toBeTruthy();
     expect(within(comparison).getByText('6.0s analyzed · Signal analysis (v2)')).toBeTruthy();
     expect(within(comparison).getByRole('progressbar', { name: 'Estimated proximity of lyrics and audio' }).getAttribute('aria-valuenow')).toBe('100');
     expect(comparison.textContent).toContain('does not verify they belong to the same song');
@@ -82,6 +82,14 @@ describe('comparison UI', () => {
     expect(mapName).toContain('lyrics circle');
     expect(mapName).toContain('audio diamond');
     expect(within(comparison).getByText('See comparison evidence').tagName).toBe('SUMMARY');
+  });
+  it('identifies a translated word count as analyzed text rather than supplied text', () => {
+    render(<CombinedView lyricsAnalysis={{ ...text, translated: true, originalLanguage: 'Spanish', wordCount: 9 }} audioAnalysis={mir(MOOD_COORDS.Romantic)} />);
+    const input = screen.getByRole('group', { name: 'Lyrics comparison input' });
+    expect(within(input).getByText('9 analyzed words')).toBeTruthy();
+    expect(within(input).getByText('Translated text reading')).toBeTruthy();
+    expect(input.textContent).not.toContain('supplied words');
+    expect(input.textContent).not.toContain('Supplied text reading');
   });
   it('replaces the old false 100% for two unmapped labels with an unavailable state', () => {
     render(<CombinedView lyricsAnalysis={{ ...text, mood: 'Unmapped text' }} audioAnalysis={{ ...legacyAudio, mood: 'Unmapped audio' }} />);

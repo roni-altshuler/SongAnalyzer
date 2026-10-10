@@ -101,8 +101,9 @@ browser checks. Runtime playback and analysis behavior are unchanged.
 
 Combined view identifies the supplied text and local recording, and distinguishes
 weighted text-model emotion scores, preset mood-label positions and audio signal
-estimates. Its estimated proximity describes geometric distance between these
-readings. It does not establish that they belong to the same song or measure
+estimates. The word count describes analyzed text and can reflect a translation
+rather than the original input. Its estimated proximity describes geometric
+distance between these readings. It does not establish that they belong to the same song or measure
 accuracy or the songwriter's intended meaning. Missing, unsupported or invalid
 coordinates withhold the map and percentage while keeping each reading visible.
 
