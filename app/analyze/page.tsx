@@ -8,7 +8,7 @@
  * - A permitted local File opens the shared worker and local listening windows.
  *   No audio-derived persistence or fingerprint ingestion occurs.
  * - When both a lyrics and an audio analysis exist, the CombinedView renders
- *   the real valence/arousal agreement below the grid.
+ *   an evidence-labeled comparison of valence/arousal estimates below the grid.
  */
 
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
@@ -366,7 +366,7 @@ function AnalyzeWorkbench() {
 
         {showCombined && lyricsAnalysis && audio.analysis && (
           <div className="mt-10">
-            <CombinedView lyricsAnalysis={lyricsAnalysis} audioAnalysis={audio.analysis} />
+            <CombinedView lyricsAnalysis={lyricsAnalysis} audioAnalysis={audio.analysis} audioFileName={audio.fileName} />
           </div>
         )}
       </div>
