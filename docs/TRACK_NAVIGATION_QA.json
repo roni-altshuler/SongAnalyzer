@@ -1,5 +1,5 @@
 {
-  "recordedAt": "2026-10-11T13:02:29.716Z",
+  "recordedAt": "2026-10-11T13:19:55.590Z",
   "runtime": "next start production build in the saved cloud environment",
   "browser": "151.0.7922.173",
   "fixture": "Original controlled metadata; no real provider success, artist identity, match score or model accuracy asserted. Local file uses the original synthetic WAV generator and real browser engines.",
@@ -344,7 +344,7 @@
         "Selected controlled original metadata",
         "Keyboard artist link and focused heading",
         "Selected metadata retained through lyrics and Identify links; no recognition asserted",
-        "Clear persists through browser Back; keyboard Explore explicitly reselects known metadata",
+        "Selection and Clear persist through browser Back/Forward; keyboard Explore explicitly reselects known metadata",
         "Repeated replacement and reopening preserve exact source track ID",
         "Interrupted search cannot affect the selected metadata after navigation",
         "Real original WAV measured locally; unrelated metadata cleared; leaving discards page-local audio/results",
@@ -361,7 +361,7 @@
         "Selected controlled original metadata",
         "Keyboard artist link and focused heading",
         "Selected metadata retained through lyrics and Identify links; no recognition asserted",
-        "Clear persists through browser Back; keyboard Explore explicitly reselects known metadata",
+        "Selection and Clear persist through browser Back/Forward; keyboard Explore explicitly reselects known metadata",
         "Repeated replacement and reopening preserve exact source track ID",
         "Reload starts without selected metadata"
       ],
@@ -376,7 +376,7 @@
         "Selected controlled original metadata",
         "Keyboard artist link and focused heading",
         "Selected metadata retained through lyrics and Identify links; no recognition asserted",
-        "Clear persists through browser Back; keyboard Explore explicitly reselects known metadata",
+        "Selection and Clear persist through browser Back/Forward; keyboard Explore explicitly reselects known metadata",
         "Repeated replacement and reopening preserve exact source track ID",
         "Reload starts without selected metadata"
       ],
@@ -391,7 +391,7 @@
         "Selected controlled original metadata",
         "Keyboard artist link and focused heading",
         "Selected metadata retained through lyrics and Identify links; no recognition asserted",
-        "Clear persists through browser Back; keyboard Explore explicitly reselects known metadata",
+        "Selection and Clear persist through browser Back/Forward; keyboard Explore explicitly reselects known metadata",
         "Repeated replacement and reopening preserve exact source track ID",
         "Reload starts without selected metadata"
       ],
@@ -406,7 +406,7 @@
         "Selected controlled original metadata",
         "Keyboard artist link and focused heading",
         "Selected metadata retained through lyrics and Identify links; no recognition asserted",
-        "Clear persists through browser Back; keyboard Explore explicitly reselects known metadata",
+        "Selection and Clear persist through browser Back/Forward; keyboard Explore explicitly reselects known metadata",
         "Repeated replacement and reopening preserve exact source track ID",
         "Reload starts without selected metadata"
       ],
@@ -421,7 +421,7 @@
         "Selected controlled original metadata",
         "Keyboard artist link and focused heading",
         "Selected metadata retained through lyrics and Identify links; no recognition asserted",
-        "Clear persists through browser Back; keyboard Explore explicitly reselects known metadata",
+        "Selection and Clear persist through browser Back/Forward; keyboard Explore explicitly reselects known metadata",
         "Repeated replacement and reopening preserve exact source track ID",
         "Reload starts without selected metadata"
       ],

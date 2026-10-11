@@ -1,5 +1,5 @@
 {
-  "recordedAt": "2026-10-11T13:03:38.472890+00:00",
+  "recordedAt": "2026-10-11T13:20:57.316230+00:00",
   "baseCommit": "963c290c9a62b2cf84c5340690439d5cda8e2832",
   "buildId": "TBrqmYFm5s7bKMzZdX1km",
   "nextVersion": "16.3.8",
@@ -37,17 +37,17 @@
       ]
     }
   },
-  "qaReportSha256": "767b7d025f885e6996d1d687d2d24bd2b0f84d9e8e5e970d5d9ab74a5633a5de",
+  "qaReportSha256": "a6d984e9b39f3ce2f2a10cb45d8976422ac55d189539911a1f66f7e07fb56170",
   "screenshots": {
-    "docs/screenshots/track-navigation/artist-1440-dark.png": "f4213dd15607197cc0643d9c1b8a3c9669259e240709d37019cb68c0d96e04b4",
+    "docs/screenshots/track-navigation/artist-1440-dark.png": "3292c0c1624142c374f70ba662b11e318a5ed12c798fe76f8cb36627f9e2173e",
     "docs/screenshots/track-navigation/artist-1440-light.png": "824ea850531a190047e09f5fd3b40ff572e510e841660229f3f987b8eb32e395",
-    "docs/screenshots/track-navigation/artist-390-dark.png": "917549be090ed329b9cfe783cca9091bb80d5e8984ce5e51622f0889ad7b43eb",
+    "docs/screenshots/track-navigation/artist-390-dark.png": "2bd2d4e24375fd0069545836c36cdfb0681ec5090743a8f86544873b163adb73",
     "docs/screenshots/track-navigation/artist-390-light.png": "24a5a07cfbf9e78b6a2c0603c3c29a316bd5810524e0111a258acf1653c4b333",
-    "docs/screenshots/track-navigation/artist-768-dark.png": "45bdc8a4052760689ba2583d188e2e634a831adddb9d8002db979709b6694bf1",
+    "docs/screenshots/track-navigation/artist-768-dark.png": "e7683c4ddfc1d3df4b974c69a1e349389d123890d3d8a0452495e8670417159c",
     "docs/screenshots/track-navigation/artist-768-light.png": "223a12316e06513ecc1ca247bcd635ac7717ab36927f82e57cdb005d3e2ac105",
     "docs/screenshots/track-navigation/before-return-390-light.png": "d1372bd7665900a82397598e3ef3245db5bb37038237872678044a7d8426a3d0",
     "docs/screenshots/track-navigation/live-search-error-390-light.png": "d615f4a70088c0efba0ede16be6eaf2033b5392eed0e13f88d56c38404ba3e8c",
-    "docs/screenshots/track-navigation/returned-390-dark.png": "b5ee60bdc69cbd5d9e1884b050194a64a7e666c77b4558d97d685eb594fd469b",
+    "docs/screenshots/track-navigation/returned-390-dark.png": "aa89f17990e277e0e7abe0121ff7389ae285cfbdc5d799e93b60b5222b79712a",
     "docs/screenshots/track-navigation/returned-390-light.png": "53caa08e9e60951ad4e5834f29fd0e9e679f0fa9eebbaaf7f11fcf93b350540f"
   }
 }

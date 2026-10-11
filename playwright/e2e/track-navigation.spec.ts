@@ -11,6 +11,7 @@ async function navigate(page: Page, name: 'Identify' | 'Discover') {
   } else {
     await page.getByRole('navigation', { name: 'Primary', exact: true }).getByRole('link', { name, exact: true }).click();
   }
+  await expect(page).toHaveURL(new RegExp(`/${name.toLowerCase()}$`));
 }
 async function pick(page: Page, title = navigationTrack.title, id = navigationTrack.spotifyId) {
   await page.route('**/api/songs/search?*', route => route.fulfill({ json: { hits: [{ id, song: { ...navigationTrack, title, spotifyId: id } }] } }));
@@ -28,15 +29,17 @@ for (const width of [390, 768, 1440]) {
     await selected(page).getByRole('link', { name: 'Demo ensemble artist profile' }).focus(); await page.keyboard.press('Enter');
     await expect(page.getByRole('heading', { name: 'Demo ensemble', exact: true })).toBeFocused();
     await page.getByRole('link', { name: 'Back to exploring' }).click();
+    await expect(page).toHaveURL(/\/discover$/);
     await expect(selected(page)).toContainText(navigationTrack.title);
     await expect(page.getByRole('combobox')).toHaveAttribute('placeholder', 'Find another track…');
     await selected(page).getByRole('link', { name: 'Analyze lyrics', exact: true }).click();
+    await expect(page).toHaveURL(/\/analyze\?mode=lyrics$/);
     await expect(selected(page)).toContainText(navigationTrack.title);
     await navigate(page, 'Identify');
     await expect(selected(page)).toContainText(navigationTrack.title);
-    await page.goBack(); await expect(selected(page)).toContainText(navigationTrack.title);
+    await page.goBack(); await expect(page).toHaveURL(/\/analyze\?mode=lyrics$/); await expect(selected(page)).toContainText(navigationTrack.title);
     await page.getByRole('button', { name: 'Clear selected track' }).click();
-    await page.goBack(); await expect(selected(page)).toHaveCount(0);
+    await page.goBack(); await expect(page).toHaveURL(/\/discover$/); await expect(selected(page)).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
     expect(prohibited).toEqual([]);
   });
@@ -46,6 +49,7 @@ test('known artist credits explicitly reopen either track after reload; ordinary
   await page.goto('/discover'); await pick(page);
   await selected(page).getByRole('link', { name: 'Demo ensemble artist profile' }).click();
   await page.getByRole('link', { name: 'Back to exploring' }).click();
+  await expect(page).toHaveURL(/\/discover$/);
   await expect(selected(page)).toContainText(navigationTrack.title);
   await pick(page, 'Another original demo', 'navigation-replacement');
   await selected(page).getByRole('link', { name: 'Demo ensemble artist profile' }).click();
@@ -53,13 +57,17 @@ test('known artist credits explicitly reopen either track after reload; ordinary
   await page.reload();
   await expect(page.getByRole('region', { name: 'Explored track credits' }).getByRole('link', { name: /^Explore track:/ })).toHaveCount(2);
   await page.getByRole('link', { name: 'Back to exploring' }).click();
+  await expect(page).toHaveURL(/\/discover$/);
   await expect(selected(page)).toHaveCount(0);
   await page.goBack();
+  await expect(page).toHaveURL(/\/artists\/spotify\/demo-ensemble$/);
   await page.getByRole('link', { name: `Explore track: ${navigationTrack.title}`, exact: true }).focus(); await page.keyboard.press('Enter');
+  await expect(page).toHaveURL(/\/discover$/);
   await expect(selected(page)).toContainText(navigationTrack.title);
   await expect(selected(page).getByRole('link', { name: 'Open in Spotify (opens in a new tab)' })).toHaveAttribute('href', 'https://open.spotify.com/track/navigation-demo');
   await selected(page).getByRole('link', { name: 'Demo ensemble artist profile' }).click();
   await page.getByRole('link', { name: 'Explore track: Another original demo', exact: true }).click();
+  await expect(page).toHaveURL(/\/discover$/);
   await expect(selected(page)).toContainText('Another original demo');
   await expect(selected(page)).not.toContainText(navigationTrack.title);
   await page.reload(); await expect(selected(page)).toHaveCount(0);
@@ -69,6 +77,7 @@ test('a real local clip clears the retained identity and its measurements stay o
   const posts: string[] = []; page.on('request', r => { if (r.method() === 'POST') posts.push(r.url()); });
   await page.goto('/discover'); await pick(page);
   await selected(page).getByRole('link', { name: 'Analyze a local file', exact: true }).click();
+  await expect(page).toHaveURL(/\/analyze\?mode=audio$/);
   await expect(selected(page)).toContainText(navigationTrack.title);
   const chooser = page.waitForEvent('filechooser');
   await page.getByRole('button', { name: 'Upload audio file', exact: true }).click();
@@ -77,7 +86,7 @@ test('a real local clip clears the retained identity and its measurements stay o
   await expect(page.getByRole('region', { name: 'Local listening timeline' })).toBeVisible();
   await navigate(page, 'Discover');
   await expect(selected(page)).toHaveCount(0); await expect(page.getByRole('region', { name: 'Local listening timeline' })).toHaveCount(0);
-  await page.goBack(); await expect(selected(page)).toHaveCount(0); await expect(page.getByRole('region', { name: 'Local listening timeline' })).toHaveCount(0);
+  await page.goBack(); await expect(page).toHaveURL(/\/analyze\?mode=audio$/); await expect(selected(page)).toHaveCount(0); await expect(page.getByRole('region', { name: 'Local listening timeline' })).toHaveCount(0);
   expect(posts).toEqual([]);
 });
 
@@ -90,6 +99,7 @@ test('an interrupted search cannot replace retained metadata after leaving its p
   await page.getByRole('combobox').fill('another track'); await requested;
   await selected(page).getByRole('link', { name: 'Demo ensemble artist profile' }).click(); release();
   await page.getByRole('link', { name: 'Back to exploring' }).click();
+  await expect(page).toHaveURL(/\/discover$/);
   await expect(selected(page)).toContainText(navigationTrack.title);
   await expect(page.getByRole('row')).toHaveCount(0);
 });

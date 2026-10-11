@@ -51,8 +51,9 @@ and hashes of all ten screenshots.
   opposite the OS preference; light uses reduced motion and dark normal motion.
 - Artist and Explore actions work with native keyboard activation; artist
   headings receive focus. Explore targets are at least 44 pixels high.
-- Repeated replacement/reopening keeps the exact track source ID. Clear stays
-  cleared through browser history. Reload does not restore a selection.
+- Repeated replacement/reopening keeps the exact track source ID. Selection and
+  Clear are checked through both Back and Forward after each destination URL
+  commits. Reload does not restore a selection.
 - A held search response released after navigation cannot replace metadata.
 - The original synthetic WAV runs through the real browser audio engine. Its
   selection clears metadata, and leaving removes its page-local audio/results.
@@ -67,7 +68,11 @@ whitelisting, cross-page clear, stale callbacks and local-file ownership.
 The browser regressions exercise the actual routed journeys and storage cache.
 Local verification passed: 230 unit tests (11 existing RLS tests skipped), all
 61 Chromium browser tests against the production build, lint (six existing
-warnings), TypeScript and the production build. No retries were enabled.
+warnings), TypeScript and the production build. The six navigation browser
+regressions also pass with the development-server setup used by CI. Route
+assertions wait for the destination URL so identical metadata or an empty
+region on the previous page cannot satisfy a later navigation check.
+No retries were enabled.
 
 Reproduce production QA after `npm run build` and `npm run start -- --port 3147`:
 
