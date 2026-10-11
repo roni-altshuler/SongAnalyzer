@@ -4,6 +4,7 @@ import { Instrument_Serif, Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from './providers/theme-provider';
 import { MoodThemeProvider } from './providers/mood-theme-provider';
+import { TrackSelectionProvider } from './providers/track-selection-provider';
 import { Toaster } from './components/ui/Toast';
 import NavBar from './components/shell/NavBar';
 import SiteFooter from './components/shell/SiteFooter';
@@ -65,7 +66,7 @@ export default function RootLayout({
           <ThemeProvider>
             <div className="flex min-h-screen flex-col">
               <NavBar />
-              <div className="flex-1">{children}</div>
+              <div className="flex-1"><TrackSelectionProvider>{children}</TrackSelectionProvider></div>
               <SiteFooter />
             </div>
           </ThemeProvider>

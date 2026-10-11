@@ -5,12 +5,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { analyzePcmV2, decodeFileToMono } from '@/lib/audio/analyze';
 import { analyzeAudioFile } from '@/lib/audio-analysis';
 import { metadataOnly } from '@/lib/audio/policy';
-import type { Song } from '@/lib/sources/types';
+import { useTrackSelection, type SelectedTrack } from '@/app/providers/track-selection-provider';
 import type { AudioAnalysisResultV2 } from '@/lib/types';
 
-export type SongMeta = Pick<Song,
-  'title' | 'artist' | 'artistCredits' | 'album' | 'year' | 'coverUrl' | 'previewUrl' | 'metadataSource' | 'spotifyId' | 'geniusId' | 'mbid'
->;
+export type SongMeta = SelectedTrack;
 
 export interface UseSongAnalysis {
   song: SongMeta | null;
@@ -32,7 +30,7 @@ export interface UseSongAnalysis {
 }
 
 export function useSongAnalysis(): UseSongAnalysis {
-  const [song, setSong] = useState<SongMeta | null>(null);
+  const { song, setSong } = useTrackSelection();
   const [analysis, setAnalysis] = useState<AudioAnalysisResultV2 | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -61,7 +59,7 @@ export function useSongAnalysis(): UseSongAnalysis {
     setError('');
     setLoading(false);
     return run;
-  }, []);
+  }, [setSong]);
 
   const analyzeSong = useCallback(async (selected: SongMeta): Promise<boolean> => {
     beginRun(selected);
