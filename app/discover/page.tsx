@@ -70,7 +70,7 @@ export default function DiscoverPage() {
         </header>
 
         <div className="mb-6">
-          <SongSearch onSelect={handleSearchPick} placeholder="Start from a song…" />
+          <SongSearch onSelect={handleSearchPick} placeholder={audio.song ? 'Find another track…' : 'Start from a song…'} />
         </div>
 
         {audio.song && (

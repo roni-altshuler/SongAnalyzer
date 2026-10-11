@@ -1,0 +1,53 @@
+{
+  "recordedAt": "2026-10-11T13:03:38.472890+00:00",
+  "baseCommit": "963c290c9a62b2cf84c5340690439d5cda8e2832",
+  "buildId": "TBrqmYFm5s7bKMzZdX1km",
+  "nextVersion": "16.3.8",
+  "nodeVersion": "v24.19.0",
+  "sourceEquivalence": "Production SSR source map sourcesContent equals the final working source bytes. These bytes will be committed unchanged at the review head.",
+  "sources": {
+    "app/providers/track-selection-provider.tsx": {
+      "sha256": "a35253d4b3d0b320db74d91bf77a331ed7dae40124c32faff49b07890a3c23a5",
+      "matchingProductionMaps": [
+        ".next/server/chunks/ssr/_1wr1v9-._.js.map"
+      ]
+    },
+    "app/hooks/useSongAnalysis.ts": {
+      "sha256": "947065c71e66349d7d1a4d37f6434c9a0bfdec81dd3d6df717854745ab93baf3",
+      "matchingProductionMaps": [
+        ".next/server/chunks/ssr/app_hooks_useSongAnalysis_ts_02txpmk._.js.map"
+      ]
+    },
+    "app/layout.tsx": {
+      "sha256": "9094cc1da47d6b47048a4c77f377a4e53e974e8e0f4fce598c58ef71128eba28",
+      "matchingProductionMaps": [
+        ".next/server/chunks/ssr/[root-of-the-server]__1rofhze._.js.map"
+      ]
+    },
+    "app/components/ArtistProfile.tsx": {
+      "sha256": "cb3a7c427f5d2642ddc7b4f814e8d903fce5284c38d8fc37061ea070773a75ea",
+      "matchingProductionMaps": [
+        ".next/server/chunks/ssr/app_components_ArtistProfile_tsx_0y3iqu7._.js.map"
+      ]
+    },
+    "app/discover/page.tsx": {
+      "sha256": "23fd7914aa58bdb8e5ef09f67ec59b988ad63ded0e26b32fc71978ab90f7c787",
+      "matchingProductionMaps": [
+        ".next/server/chunks/ssr/_1y-61qu._.js.map"
+      ]
+    }
+  },
+  "qaReportSha256": "767b7d025f885e6996d1d687d2d24bd2b0f84d9e8e5e970d5d9ab74a5633a5de",
+  "screenshots": {
+    "docs/screenshots/track-navigation/artist-1440-dark.png": "f4213dd15607197cc0643d9c1b8a3c9669259e240709d37019cb68c0d96e04b4",
+    "docs/screenshots/track-navigation/artist-1440-light.png": "824ea850531a190047e09f5fd3b40ff572e510e841660229f3f987b8eb32e395",
+    "docs/screenshots/track-navigation/artist-390-dark.png": "917549be090ed329b9cfe783cca9091bb80d5e8984ce5e51622f0889ad7b43eb",
+    "docs/screenshots/track-navigation/artist-390-light.png": "24a5a07cfbf9e78b6a2c0603c3c29a316bd5810524e0111a258acf1653c4b333",
+    "docs/screenshots/track-navigation/artist-768-dark.png": "45bdc8a4052760689ba2583d188e2e634a831adddb9d8002db979709b6694bf1",
+    "docs/screenshots/track-navigation/artist-768-light.png": "223a12316e06513ecc1ca247bcd635ac7717ab36927f82e57cdb005d3e2ac105",
+    "docs/screenshots/track-navigation/before-return-390-light.png": "d1372bd7665900a82397598e3ef3245db5bb37038237872678044a7d8426a3d0",
+    "docs/screenshots/track-navigation/live-search-error-390-light.png": "d615f4a70088c0efba0ede16be6eaf2033b5392eed0e13f88d56c38404ba3e8c",
+    "docs/screenshots/track-navigation/returned-390-dark.png": "b5ee60bdc69cbd5d9e1884b050194a64a7e666c77b4558d97d685eb594fd469b",
+    "docs/screenshots/track-navigation/returned-390-light.png": "53caa08e9e60951ad4e5834f29fd0e9e679f0fa9eebbaaf7f11fcf93b350540f"
+  }
+}

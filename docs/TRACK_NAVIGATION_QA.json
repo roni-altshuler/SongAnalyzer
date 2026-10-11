@@ -1,0 +1,434 @@
+{
+  "recordedAt": "2026-10-11T13:02:29.716Z",
+  "runtime": "next start production build in the saved cloud environment",
+  "browser": "151.0.7922.173",
+  "fixture": "Original controlled metadata; no real provider success, artist identity, match score or model accuracy asserted. Local file uses the original synthetic WAV generator and real browser engines.",
+  "liveSearchStatus": 503,
+  "themes": "Saved light/dark opposite OS; reduced motion on light; normal motion on dark",
+  "states": [
+    {
+      "state": "selected-track",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "artist-credits",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "returned-track",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "lyrics-workbench",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "identify-with-selected-metadata",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "cleared-track",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "explicit-credit-reselection",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "real-local-file-clears-attribution",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "selected-track",
+      "width": 390,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "artist-credits",
+      "width": 390,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "returned-track",
+      "width": 390,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "lyrics-workbench",
+      "width": 390,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "identify-with-selected-metadata",
+      "width": 390,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "cleared-track",
+      "width": 390,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "explicit-credit-reselection",
+      "width": 390,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "selected-track",
+      "width": 768,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "artist-credits",
+      "width": 768,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "returned-track",
+      "width": 768,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "lyrics-workbench",
+      "width": 768,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "identify-with-selected-metadata",
+      "width": 768,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "cleared-track",
+      "width": 768,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "explicit-credit-reselection",
+      "width": 768,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "selected-track",
+      "width": 768,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "artist-credits",
+      "width": 768,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "returned-track",
+      "width": 768,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "lyrics-workbench",
+      "width": 768,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "identify-with-selected-metadata",
+      "width": 768,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "cleared-track",
+      "width": 768,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "explicit-credit-reselection",
+      "width": 768,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "selected-track",
+      "width": 1440,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "artist-credits",
+      "width": 1440,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "returned-track",
+      "width": 1440,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "lyrics-workbench",
+      "width": 1440,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "identify-with-selected-metadata",
+      "width": 1440,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "cleared-track",
+      "width": 1440,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "explicit-credit-reselection",
+      "width": 1440,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "selected-track",
+      "width": 1440,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "artist-credits",
+      "width": 1440,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "returned-track",
+      "width": 1440,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "lyrics-workbench",
+      "width": 1440,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "identify-with-selected-metadata",
+      "width": 1440,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "cleared-track",
+      "width": 1440,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "explicit-credit-reselection",
+      "width": 1440,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "live-search-unconfigured",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "new-visit-empty-profile",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "retryable-context-error",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "temporary-context",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    }
+  ],
+  "journeys": [
+    {
+      "width": 390,
+      "theme": "light",
+      "actions": [
+        "Selected controlled original metadata",
+        "Keyboard artist link and focused heading",
+        "Selected metadata retained through lyrics and Identify links; no recognition asserted",
+        "Clear persists through browser Back; keyboard Explore explicitly reselects known metadata",
+        "Repeated replacement and reopening preserve exact source track ID",
+        "Interrupted search cannot affect the selected metadata after navigation",
+        "Real original WAV measured locally; unrelated metadata cleared; leaving discards page-local audio/results",
+        "Reload starts without selected metadata"
+      ],
+      "posts": [],
+      "externalRequests": [],
+      "pageErrors": []
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "actions": [
+        "Selected controlled original metadata",
+        "Keyboard artist link and focused heading",
+        "Selected metadata retained through lyrics and Identify links; no recognition asserted",
+        "Clear persists through browser Back; keyboard Explore explicitly reselects known metadata",
+        "Repeated replacement and reopening preserve exact source track ID",
+        "Reload starts without selected metadata"
+      ],
+      "posts": [],
+      "externalRequests": [],
+      "pageErrors": []
+    },
+    {
+      "width": 768,
+      "theme": "light",
+      "actions": [
+        "Selected controlled original metadata",
+        "Keyboard artist link and focused heading",
+        "Selected metadata retained through lyrics and Identify links; no recognition asserted",
+        "Clear persists through browser Back; keyboard Explore explicitly reselects known metadata",
+        "Repeated replacement and reopening preserve exact source track ID",
+        "Reload starts without selected metadata"
+      ],
+      "posts": [],
+      "externalRequests": [],
+      "pageErrors": []
+    },
+    {
+      "width": 768,
+      "theme": "dark",
+      "actions": [
+        "Selected controlled original metadata",
+        "Keyboard artist link and focused heading",
+        "Selected metadata retained through lyrics and Identify links; no recognition asserted",
+        "Clear persists through browser Back; keyboard Explore explicitly reselects known metadata",
+        "Repeated replacement and reopening preserve exact source track ID",
+        "Reload starts without selected metadata"
+      ],
+      "posts": [],
+      "externalRequests": [],
+      "pageErrors": []
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "actions": [
+        "Selected controlled original metadata",
+        "Keyboard artist link and focused heading",
+        "Selected metadata retained through lyrics and Identify links; no recognition asserted",
+        "Clear persists through browser Back; keyboard Explore explicitly reselects known metadata",
+        "Repeated replacement and reopening preserve exact source track ID",
+        "Reload starts without selected metadata"
+      ],
+      "posts": [],
+      "externalRequests": [],
+      "pageErrors": []
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "actions": [
+        "Selected controlled original metadata",
+        "Keyboard artist link and focused heading",
+        "Selected metadata retained through lyrics and Identify links; no recognition asserted",
+        "Clear persists through browser Back; keyboard Explore explicitly reselects known metadata",
+        "Repeated replacement and reopening preserve exact source track ID",
+        "Reload starts without selected metadata"
+      ],
+      "posts": [],
+      "externalRequests": [],
+      "pageErrors": []
+    }
+  ],
+  "limitations": "Live Spotify search unconfigured; Supabase/RLS and hosted preview browser unavailable. Existing OG/Twitter missing-config behavior unchanged."
+}

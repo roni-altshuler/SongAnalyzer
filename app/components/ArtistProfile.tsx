@@ -11,8 +11,10 @@ import { Card, CardContent, CardHeader } from '@/app/components/ui/Card';
 import { Badge } from '@/app/components/ui/Badge';
 import { Button } from '@/app/components/ui/Button';
 import SourceAttribution from '@/app/components/SourceAttribution';
+import { useTrackSelection } from '@/app/providers/track-selection-provider';
 
 export default function ArtistProfile({ identity }: { identity: ArtistIdentity }) {
+  const { setSong } = useTrackSelection();
   const [state, setState] = useState<ArtistContextState>({ status: 'loading' });
   const heading = useRef<HTMLHeadingElement | null>(null);
   const run = useRef(0);
@@ -104,6 +106,11 @@ export default function ArtistProfile({ identity }: { identity: ArtistIdentity }
                     {(track.album || track.year) && <p className="break-words text-xs text-[var(--text-med)]">{[track.album, track.year].filter(Boolean).join(' · ')}</p>}
                     <p className="text-xs text-[var(--text-med)]">Track credit · analysis status not connected</p>
                     <SourceAttribution song={track} />
+                    <Button asChild variant="secondary" className="min-h-11">
+                      <Link href={track.origin} onNavigate={() => setSong(track)} aria-label={`Explore track: ${track.title}`}>
+                        Explore track<ArrowUpRight size={15} aria-hidden="true" />
+                      </Link>
+                    </Button>
                   </li>)}</ul>
                     : <div className="space-y-3"><p className="text-sm leading-relaxed text-[var(--text-med)]">No track credits are available in this tab. Artist links from selected tracks bring their source metadata here.</p><Button asChild variant="secondary" className="min-h-11"><Link href="/discover">Explore a track<ArrowUpRight size={15} aria-hidden="true" /></Link></Button></div>}
               </CardContent>

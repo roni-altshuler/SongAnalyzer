@@ -1,0 +1,8 @@
+{
+  "base": "963c290c9a62b2cf84c5340690439d5cda8e2832",
+  "liveSearchStatus": 503,
+  "fixture": "Original controlled metadata only; no real provider success or artist identity asserted",
+  "journey": "Select track → artist profile → Back to exploring",
+  "selectedTrackAfterReturn": 0,
+  "screenText": "Find what feels the same.\n\nExplore track details and listening links. Remote audio analysis and new catalog indexing are paused while recording permissions are reviewed.\n\nSearch for a song\nStart with a track you love\n\nSearch above for track details and listening links. You can measure a local recording in Analyze; those insights stay on your device."
+}

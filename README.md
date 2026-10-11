@@ -35,6 +35,17 @@ Spotify metadata includes the official full mark and a direct track link.
 Legacy catalog metadata has no verified source label. Clearing returns focus
 to search, and choosing a local file clears unrelated track attribution.
 
+Selected source metadata now follows internal navigation between the workbenches
+and artist profiles during the current visit. Returning from an artist keeps the
+selected track ready to explore. Each known artist credit also offers **Explore
+track** to explicitly reopen that track in its original workbench. Clear applies
+across pages; a reload or new tab starts without a selected track. Audio files,
+lyrics drafts and analysis results stay on their current page. The existing
+artist tab cache stores separate metadata credits and does not restore a
+selection or an analysis automatically. See the
+[navigation verification](docs/TRACK_NAVIGATION.md) for the reproduced baseline,
+production-browser checks and source limitations.
+
 All remote recordings are denied before fetch or DSP, including similar results
 without provider IDs and direct hook calls. Server routes and ingestion helpers
 reject audio-derived writes even if a caller claims `source: upload`; the old
