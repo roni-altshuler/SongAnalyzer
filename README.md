@@ -46,6 +46,14 @@ selection or an analysis automatically. See the
 [navigation verification](docs/TRACK_NAVIGATION.md) for the reproduced baseline,
 production-browser checks and source limitations.
 
+The selected-track card now leads with **Add lyrics**, which brings the permitted
+text field into view and focuses it. **Analyze lyrics** is reserved for submitting
+that text. Optional local-file controls and remote-preview limitations live under
+the keyboard-operable **Audio options** disclosure; active audio loading/errors
+remain visible. Artist and listening links stay available. No lyrics are fetched
+from music services. See the [handoff verification](docs/TRACK_HANDOFF.md) for
+actual before/after screenshots, input-focus measurements and privacy checks.
+
 All remote recordings are denied before fetch or DSP, including similar results
 without provider IDs and direct hook calls. Server routes and ingestion helpers
 reject audio-derived writes even if a caller claims `source: upload`; the old

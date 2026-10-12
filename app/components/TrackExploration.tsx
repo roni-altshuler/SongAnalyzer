@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useRef } from 'react';
 import { Disc3, ExternalLink } from 'lucide-react';
 import type { SongMeta, UseSongAnalysis } from '@/app/hooks/useSongAnalysis';
 import { Card } from '@/app/components/ui/Card';
@@ -25,11 +26,23 @@ interface TrackExplorationProps {
 export default function TrackExploration({
   song, loading, error, hasAnalysis, onClear, onLyrics, onUpload,
 }: TrackExplorationProps) {
+  const audioOptions = useRef<HTMLDetailsElement>(null);
+  useEffect(() => { if (audioOptions.current) audioOptions.current.open = false; }, [song]);
   const unavailable = !loading && !hasAnalysis && !error;
   const status = loading
     ? 'Reading local audio'
     : error ? 'Audio insights unavailable'
     : hasAnalysis ? 'Local clip insights ready' : 'Audio insights unavailable';
+
+  const audioStatus = (
+    <div className="space-y-2">
+      <div role="status" aria-live="polite" aria-atomic="true"><Badge variant="outline">{status}</Badge></div>
+      {loading ? <p className="text-sm leading-relaxed text-[var(--text-med)]">Measuring the local clip in your browser.</p>
+        : error ? <p role="alert" className="break-words text-sm leading-relaxed text-[var(--state-error)]">{error}</p>
+        : hasAnalysis ? <p className="text-sm leading-relaxed text-[var(--text-med)]">These insights describe the analyzed clip. Other passages in the recording may sound different.</p>
+        : <p className="text-sm leading-relaxed text-[var(--text-med)]">Remote previews are not available for analysis here. Choose a local file you have permission to analyze for a separate reading.</p>}
+    </div>
+  );
 
   return (
     <Card variant="elev1" className="track-exploration space-y-4" role="region" aria-label="Explore selected track">
@@ -56,45 +69,33 @@ export default function TrackExploration({
         )}
       </div>
 
+      {!unavailable && audioStatus}
       <div className="space-y-2 border-t border-[var(--border-subtle)] pt-4">
-        <div role="status" aria-live="polite" aria-atomic="true">
-          <Badge variant="outline">{status}</Badge>
-        </div>
-        {loading ? (
-          <p className="text-sm leading-relaxed text-[var(--text-med)]">
-            Measuring the local clip in your browser.
-          </p>
-        ) : error ? (
-          <p role="alert" className="break-words text-sm leading-relaxed text-[var(--state-error)]">{error}</p>
-        ) : hasAnalysis ? (
-          <p className="text-sm leading-relaxed text-[var(--text-med)]">
-            These insights describe the analyzed clip. Other passages in the recording may sound different.
-          </p>
-        ) : (
-          <p className="text-sm leading-relaxed text-[var(--text-med)]">
-            Remote previews are not available for analysis here. Open the track to listen,
-            or choose a local file you have permission to analyze for a separate reading.
-          </p>
-        )}
-      </div>
-
-      <div className="flex flex-wrap items-center gap-2">
-        {(unavailable || error) && (onUpload ? (
-          <Button variant="secondary" className="min-h-11" onClick={onUpload}>Analyze a local file</Button>
-        ) : (
-          <Button asChild variant="secondary" className="min-h-11"><Link href="/analyze?mode=audio">Analyze a local file</Link></Button>
-        ))}
+        <div className="flex flex-wrap items-center gap-2">
         {onLyrics ? (
-          <Button variant="ghost" className="min-h-11" onClick={onLyrics}>Analyze lyrics</Button>
+          <Button variant="primary" className="min-h-11" onClick={onLyrics}>Add lyrics</Button>
         ) : (
-          <Button asChild variant="ghost" className="min-h-11"><Link href="/analyze?mode=lyrics">Analyze lyrics</Link></Button>
+          <Button asChild variant="primary" className="min-h-11"><Link href="/analyze?mode=lyrics#lyrics">Add lyrics</Link></Button>
         )}
         {song.geniusId && (
           <Button asChild variant="ghost" className="min-h-11">
             <a href={`https://genius.com/songs/${encodeURIComponent(String(song.geniusId))}`} target="_blank" rel="noopener noreferrer" aria-label="View on Genius (opens in a new tab)">View on Genius <ExternalLink aria-hidden="true" size={14} /></a>
           </Button>
         )}
+        </div>
+        <p className="text-xs leading-relaxed text-[var(--text-med)]">Use lyrics you have permission to analyze.</p>
       </div>
+      {(unavailable || error) && <details ref={audioOptions} className="border-t border-[var(--border-subtle)] pt-1">
+        <summary className="min-h-11 cursor-pointer rounded-lg py-3 text-sm font-medium text-[var(--text-med)] focus-visible:outline-2 focus-visible:outline-[var(--accent-from)] focus-visible:outline-offset-2">Audio options</summary>
+        <div className="space-y-3 pb-2 pt-1">
+          {unavailable && audioStatus}
+          {(unavailable || error) && (onUpload ? (
+            <Button variant="secondary" className="min-h-11" onClick={onUpload}>Analyze a local file</Button>
+          ) : (
+            <Button asChild variant="secondary" className="min-h-11"><Link href="/analyze?mode=audio">Analyze a local file</Link></Button>
+          ))}
+        </div>
+      </details>}
       <SourceAttribution song={song} />
     </Card>
   );

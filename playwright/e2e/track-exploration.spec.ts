@@ -68,6 +68,7 @@ for (const width of [390, 768, 1440]) {
     await page.route('**/api/identify', (route) => route.fulfill({ json: { status: 'matched', song: spotifySong, match: { votes: 40, confidence: 0.8 } } }));
     await page.goto('/identify'); await chooseIdentifyClip(page);
     const context = page.getByLabel('Explore selected track'); await expect(context).toBeVisible({ timeout: 30_000 });
+    await context.locator('summary').click();
     await expect(context.getByRole('status')).toHaveText('Audio insights unavailable');
     await expect(context).toContainText('Track metadata supplied by Spotify');
     await expect(context.getByRole('link', { name: 'Analyze a local file' })).toHaveAttribute('href', '/analyze?mode=audio');
@@ -84,6 +85,7 @@ test('search selection cannot fetch an unreviewed preview and clears with keyboa
   const prohibited: string[] = []; page.on('request', (r) => { if (r.url().includes('/fixtures/unreviewed.wav')) prohibited.push(r.url()); });
   await page.goto('/discover'); await searchFixture(page, { ...fixtureSong, previewUrl: '/fixtures/unreviewed.wav' });
   const context = page.getByLabel('Explore selected track');
+  await context.locator('summary').click();
   await expect(context.getByRole('status')).toHaveText('Audio insights unavailable');
   await expect(context).toContainText('original source unverified');
   await expect(page.getByRole('button', { name: 'Retry audio clip', exact: true })).toHaveCount(0);
@@ -101,7 +103,7 @@ test('a completed lookup shows a genuine no-match', async ({ page }) => {
 
 test('exploration links and browser back/forward preserve the expected mode', async ({ page }) => {
   await page.goto('/discover'); await searchFixture(page, fixtureSong);
-  await page.getByRole('region', { name: 'Explore selected track' }).getByRole('link', { name: 'Analyze lyrics', exact: true }).click();
+  await page.getByRole('region', { name: 'Explore selected track' }).getByRole('link', { name: 'Add lyrics', exact: true }).click();
   await expect(page).toHaveURL(/analyze\?mode=lyrics/); await expect(page.getByRole('tab', { name: /Lyrics/ })).toHaveAttribute('aria-selected', 'true');
   await page.goBack(); await expect(page).toHaveURL(/discover$/); await expect(page.getByRole('combobox', { name: 'Search for a song' })).toBeVisible();
   await page.goForward(); await expect(page).toHaveURL(/analyze\?mode=lyrics/); await expect(page.getByRole('tab', { name: /Lyrics/ })).toHaveAttribute('aria-selected', 'true');
@@ -112,6 +114,7 @@ test('local fixture uses the real worker without saved results or unrelated meta
   page.on('request', (r) => { if (r.method() === 'POST') writes.push(r.url()); });
   await page.goto('/analyze'); await searchFixture(page, spotifySong);
   const context = page.getByRole('region', { name: 'Explore selected track' });
+  await context.locator('summary').click();
   await context.getByRole('button', { name: 'Analyze a local file', exact: true }).click();
   await expect(page.getByRole('tab', { name: /Audio/ })).toHaveAttribute('aria-selected', 'true');
   await expect(page.getByRole('tab', { name: /Audio/ })).toBeFocused();

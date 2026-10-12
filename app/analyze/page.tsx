@@ -37,24 +37,31 @@ import { Card } from '@/app/components/ui/Card';
 import { Button } from '@/app/components/ui/Button';
 import { toast } from '@/app/components/ui/Toast';
 
+function focusLyricsInput() {
+  const input = document.getElementById('lyrics');
+  input?.scrollIntoView({ block: 'center', behavior: 'instant' });
+  input?.focus({ preventScroll: true });
+}
+
 function AnalyzeWorkbench() {
   const searchParams = useSearchParams();
   const [mode, setModeState] = useState<AnalysisMode>(
     searchParams.get('mode') === 'audio' ? 'audio' : 'lyrics',
   );
-  const focusModeRef = useRef(false);
+  const focusModeRef = useRef<'mode' | 'lyrics' | null>(null);
 
   const setMode = useCallback((next: AnalysisMode) => {
-    focusModeRef.current = true;
+    focusModeRef.current = 'mode';
     setModeState(next);
     // Keep the mode linkable without triggering a navigation.
     window.history.replaceState(null, '', `/analyze?mode=${next}`);
   }, []);
 
   useEffect(() => {
-    if (!focusModeRef.current) return;
-    focusModeRef.current = false;
-    document.getElementById(`analysis-mode-${mode}`)?.focus();
+    const target = focusModeRef.current;
+    focusModeRef.current = null;
+    if (target === 'lyrics' || (mode === 'lyrics' && window.location.hash === '#lyrics')) focusLyricsInput();
+    else if (target === 'mode') document.getElementById(`analysis-mode-${mode}`)?.focus();
   }, [mode]);
 
   // ── Audio pipeline (shared hook) ──
@@ -261,8 +268,12 @@ function AnalyzeWorkbench() {
                 document.querySelector<HTMLInputElement>('[role="combobox"]')?.focus();
               }}
               onLyrics={() => {
-                setMode('lyrics');
-                if (mode === 'lyrics') document.getElementById('lyrics')?.focus();
+                if (mode === 'lyrics') focusLyricsInput();
+                else {
+                  focusModeRef.current = 'lyrics';
+                  setModeState('lyrics');
+                  window.history.replaceState(null, '', '/analyze?mode=lyrics');
+                }
               }}
               onUpload={() => {
                 setMode('audio');
