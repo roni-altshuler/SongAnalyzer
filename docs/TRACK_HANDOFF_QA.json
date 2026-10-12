@@ -1,0 +1,435 @@
+{
+  "recordedAt": "2026-10-12T12:53:22.117Z",
+  "runtime": "next start production build in saved cloud environment",
+  "buildId": "G2XsNypQsSZ9InXkaKYQ9",
+  "browser": "151.0.7922.173",
+  "fixture": "Original controlled metadata and recognition response (no match scores). Keyword reading computed by existing pure keyword/blend code on original text. Local clip uses real browser engines and original synthetic PCM. No live provider success or model accuracy claimed.",
+  "liveSearchStatus": 503,
+  "themes": "Saved themes opposite OS; light reduced motion, dark normal motion",
+  "focusMeasurements": [
+    {
+      "width": 390,
+      "theme": "light",
+      "lyricsY": 290.015625,
+      "lyricsHeight": 320,
+      "viewportHeight": 900,
+      "focusedId": "lyrics",
+      "withinViewport": true,
+      "submitControls": 1
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "lyricsY": 290.015625,
+      "lyricsHeight": 320,
+      "viewportHeight": 900,
+      "focusedId": "lyrics",
+      "withinViewport": true,
+      "submitControls": 1
+    },
+    {
+      "width": 768,
+      "theme": "light",
+      "lyricsY": 290.140625,
+      "lyricsHeight": 320,
+      "viewportHeight": 900,
+      "focusedId": "lyrics",
+      "withinViewport": true,
+      "submitControls": 1
+    },
+    {
+      "width": 768,
+      "theme": "dark",
+      "lyricsY": 290.140625,
+      "lyricsHeight": 320,
+      "viewportHeight": 900,
+      "focusedId": "lyrics",
+      "withinViewport": true,
+      "submitControls": 1
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "lyricsY": 290.140625,
+      "lyricsHeight": 320,
+      "viewportHeight": 900,
+      "focusedId": "lyrics",
+      "withinViewport": true,
+      "submitControls": 1
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "lyricsY": 290.140625,
+      "lyricsHeight": 320,
+      "viewportHeight": 900,
+      "focusedId": "lyrics",
+      "withinViewport": true,
+      "submitControls": 1
+    }
+  ],
+  "states": [
+    {
+      "state": "selected-primary-action",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "optional-audio-open",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "artist-context",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "focused-lyrics-handoff",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "repeated-handoff-keeps-draft",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "history-discards-draft-keeps-metadata",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "real-local-clip-clears-context",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "selected-primary-action",
+      "width": 390,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "optional-audio-open",
+      "width": 390,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "artist-context",
+      "width": 390,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "focused-lyrics-handoff",
+      "width": 390,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "repeated-handoff-keeps-draft",
+      "width": 390,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "history-discards-draft-keeps-metadata",
+      "width": 390,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "selected-primary-action",
+      "width": 768,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "optional-audio-open",
+      "width": 768,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "artist-context",
+      "width": 768,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "focused-lyrics-handoff",
+      "width": 768,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "repeated-handoff-keeps-draft",
+      "width": 768,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "history-discards-draft-keeps-metadata",
+      "width": 768,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "actual-keyword-engine-reading",
+      "width": 768,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "selected-primary-action",
+      "width": 768,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "optional-audio-open",
+      "width": 768,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "artist-context",
+      "width": 768,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "focused-lyrics-handoff",
+      "width": 768,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "repeated-handoff-keeps-draft",
+      "width": 768,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "history-discards-draft-keeps-metadata",
+      "width": 768,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "selected-primary-action",
+      "width": 1440,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "optional-audio-open",
+      "width": 1440,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "artist-context",
+      "width": 1440,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "focused-lyrics-handoff",
+      "width": 1440,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "repeated-handoff-keeps-draft",
+      "width": 1440,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "history-discards-draft-keeps-metadata",
+      "width": 1440,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "selected-primary-action",
+      "width": 1440,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "optional-audio-open",
+      "width": 1440,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "artist-context",
+      "width": 1440,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "focused-lyrics-handoff",
+      "width": 1440,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "repeated-handoff-keeps-draft",
+      "width": 1440,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "history-discards-draft-keeps-metadata",
+      "width": 1440,
+      "theme": "dark",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "live-search-unavailable",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "held-lyrics-loading",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "retryable-lyrics-error",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "controlled-recognition-metadata-handoff",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "recognition-to-focused-text",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    },
+    {
+      "state": "reload-empty-selection-requested-input",
+      "width": 390,
+      "theme": "light",
+      "violations": [],
+      "overflow": 0
+    }
+  ],
+  "journeys": [
+    {
+      "width": 390,
+      "theme": "light",
+      "posts": [],
+      "externalRequests": [],
+      "pageErrors": [],
+      "passed": true
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "posts": [],
+      "externalRequests": [],
+      "pageErrors": [],
+      "passed": true
+    },
+    {
+      "width": 768,
+      "theme": "light",
+      "posts": [
+        "/api/analyze",
+        "/api/analyses"
+      ],
+      "externalRequests": [],
+      "pageErrors": [],
+      "passed": true
+    },
+    {
+      "width": 768,
+      "theme": "dark",
+      "posts": [],
+      "externalRequests": [],
+      "pageErrors": [],
+      "passed": true
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "posts": [],
+      "externalRequests": [],
+      "pageErrors": [],
+      "passed": true
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "posts": [],
+      "externalRequests": [],
+      "pageErrors": [],
+      "passed": true
+    }
+  ],
+  "limits": "Spotify/live recognition, Supabase/RLS and hosted browser behavior remain unverified. Existing OG/Twitter missing-config limitation unchanged."
+}

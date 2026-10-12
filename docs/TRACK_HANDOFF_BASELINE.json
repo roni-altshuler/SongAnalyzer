@@ -1,0 +1,46 @@
+{
+  "base": "d314fb0a71d52322cc03854853a42f8c079c42d5",
+  "runtime": "Saved production build; tree equals current main",
+  "fixture": "Original controlled metadata only; no live provider success or recognition accuracy asserted",
+  "browser": "151.0.7922.173",
+  "journeys": [
+    {
+      "width": 390,
+      "liveSearchStatus": 503,
+      "selectedActions": [
+        "Demo ensemble",
+        "Clear",
+        "Analyze a local file",
+        "Analyze lyrics",
+        "Open in Spotify"
+      ],
+      "analyzeLyricsButtons": 2,
+      "lyricsY": 1146.515625,
+      "lyricsHeight": 320,
+      "viewportHeight": 900,
+      "lyricsWithinViewport": false,
+      "focusedId": "",
+      "focusedTag": "BODY",
+      "pageErrors": []
+    },
+    {
+      "width": 1440,
+      "liveSearchStatus": 503,
+      "selectedActions": [
+        "Demo ensemble",
+        "Clear",
+        "Analyze a local file",
+        "Analyze lyrics",
+        "Open in Spotify"
+      ],
+      "analyzeLyricsButtons": 2,
+      "lyricsY": 1051.390625,
+      "lyricsHeight": 320,
+      "viewportHeight": 900,
+      "lyricsWithinViewport": false,
+      "focusedId": "",
+      "focusedTag": "BODY",
+      "pageErrors": []
+    }
+  ]
+}

@@ -43,7 +43,7 @@ export default function LyricsInput({
           value={lyrics}
           onChange={(e) => onLyricsChange(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={`Paste lyrics here…\n\nMultiple languages supported — non-English will be auto-translated.\nMore lyrics = sharper analysis.`}
+          placeholder={`Paste lyrics here…\n\nUse text you have permission to analyze.\nTranslation depends on service availability.`}
           className="w-full h-80 px-4 py-3 rounded-xl resize-none font-mono text-sm leading-relaxed
             text-[var(--text-hi)] placeholder:text-[var(--text-low)]
             bg-[var(--bg-base)] border border-[var(--border-subtle)]

@@ -32,12 +32,12 @@ for (const width of [390, 768, 1440]) {
     await expect(page).toHaveURL(/\/discover$/);
     await expect(selected(page)).toContainText(navigationTrack.title);
     await expect(page.getByRole('combobox')).toHaveAttribute('placeholder', 'Find another track…');
-    await selected(page).getByRole('link', { name: 'Analyze lyrics', exact: true }).click();
-    await expect(page).toHaveURL(/\/analyze\?mode=lyrics$/);
+    await selected(page).getByRole('link', { name: 'Add lyrics', exact: true }).click();
+    await expect(page).toHaveURL(/\/analyze\?mode=lyrics#lyrics$/);
     await expect(selected(page)).toContainText(navigationTrack.title);
     await navigate(page, 'Identify');
     await expect(selected(page)).toContainText(navigationTrack.title);
-    await page.goBack(); await expect(page).toHaveURL(/\/analyze\?mode=lyrics$/); await expect(selected(page)).toContainText(navigationTrack.title);
+    await page.goBack(); await expect(page).toHaveURL(/\/analyze\?mode=lyrics#lyrics$/); await expect(selected(page)).toContainText(navigationTrack.title);
     await page.getByRole('button', { name: 'Clear selected track' }).click();
     await page.goBack(); await expect(page).toHaveURL(/\/discover$/); await expect(selected(page)).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
@@ -76,6 +76,7 @@ test('known artist credits explicitly reopen either track after reload; ordinary
 test('a real local clip clears the retained identity and its measurements stay on the audio page', async ({ page }) => {
   const posts: string[] = []; page.on('request', r => { if (r.method() === 'POST') posts.push(r.url()); });
   await page.goto('/discover'); await pick(page);
+  await selected(page).locator('summary').click();
   await selected(page).getByRole('link', { name: 'Analyze a local file', exact: true }).click();
   await expect(page).toHaveURL(/\/analyze\?mode=audio$/);
   await expect(selected(page)).toContainText(navigationTrack.title);
