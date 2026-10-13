@@ -246,6 +246,10 @@ Visit `/dev/components` for the design-system showcase — every primitive in ev
 
 ## The hybrid analysis engine
 
+The result's **Engine details** button opens the per-engine breakdown. Dismissing
+it with Escape, the close button or the backdrop returns focus to that button;
+leaving the page keeps focus with the destination.
+
 The `/api/analyze` route blends two engines:
 
 1. **Transformer** (`lib/analysis/transformer.ts`) — calls the HF Inference API with an 8-second `AbortSignal.timeout`. On 503 it falls back from the primary model to the secondary; on any further failure (rate limit, timeout, missing token) it returns `null` and the route records `engines.transformer.status` accordingly.

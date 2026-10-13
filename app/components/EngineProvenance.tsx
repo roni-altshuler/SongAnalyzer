@@ -5,6 +5,7 @@ import type { AnalysisResult } from '@/lib/types';
 import { Badge } from '@/app/components/ui/Badge';
 import {
   Modal,
+  ModalTrigger,
   ModalContent,
   ModalHeader,
   ModalTitle,
@@ -31,10 +32,9 @@ export default function EngineProvenance({ engines, className }: EngineProvenanc
   const k = engines.keyword;
 
   return (
-    <>
-      <button
+    <Modal open={open} onOpenChange={setOpen}>
+      <ModalTrigger
         type="button"
-        onClick={() => setOpen(true)}
         className={cn(
           'group flex flex-wrap items-center gap-2 text-xs',
           'rounded-md -mx-1 px-1 py-0.5',
@@ -71,107 +71,105 @@ export default function EngineProvenance({ engines, className }: EngineProvenanc
         <span className="text-[var(--text-low)] opacity-0 group-hover:opacity-100 transition-opacity">
           details →
         </span>
-      </button>
+      </ModalTrigger>
 
-      <Modal open={open} onOpenChange={setOpen}>
-        <ModalContent>
-          <ModalHeader>
-            <ModalTitle>Engine details</ModalTitle>
-            <ModalDescription>
-              Per-engine outputs that produced this analysis. Hybrid pipeline =
-              transformer (semantic) + keyword (deterministic fallback).
-            </ModalDescription>
-          </ModalHeader>
+      <ModalContent>
+        <ModalHeader>
+          <ModalTitle>Engine details</ModalTitle>
+          <ModalDescription>
+            Per-engine outputs that produced this analysis. Hybrid pipeline =
+            transformer (semantic) + keyword (deterministic fallback).
+          </ModalDescription>
+        </ModalHeader>
 
-          <div className="space-y-5 text-sm">
-            <section>
-              <h4 className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-low)] mb-2">
-                Transformer
-              </h4>
-              <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elev2)] p-4 space-y-2">
+        <div className="space-y-5 text-sm">
+          <section>
+            <h4 className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-low)] mb-2">
+              Transformer
+            </h4>
+            <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elev2)] p-4 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[var(--text-med)]">Status</span>
+                <Badge variant={t.status === 'ok' ? 'success' : 'outline'}>
+                  {t.status}
+                </Badge>
+              </div>
+              {t.model && (
                 <div className="flex items-center justify-between">
-                  <span className="text-[var(--text-med)]">Status</span>
-                  <Badge variant={t.status === 'ok' ? 'success' : 'outline'}>
-                    {t.status}
-                  </Badge>
+                  <span className="text-[var(--text-med)]">Model</span>
+                  <span className="font-mono text-xs text-[var(--text-hi)]">
+                    {t.model}
+                  </span>
                 </div>
-                {t.model && (
+              )}
+              {t.reason && (
+                <div className="flex items-center justify-between">
+                  <span className="text-[var(--text-med)]">Reason</span>
+                  <span className="font-mono text-xs text-[var(--state-warn)]">
+                    {t.reason}
+                  </span>
+                </div>
+              )}
+              {t.scores && t.scores.length > 0 && (
+                <div className="pt-2">
+                  <p className="text-xs text-[var(--text-low)] mb-2">All emotion scores</p>
+                  <ul className="space-y-1.5">
+                    {t.scores.map((s) => (
+                      <li
+                        key={s.label}
+                        className="flex items-center justify-between text-xs"
+                      >
+                        <span className="text-[var(--text-hi)] capitalize">
+                          {s.label}
+                        </span>
+                        <span className="font-mono text-[var(--text-med)] tabular-nums">
+                          {s.score.toFixed(3)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </section>
+
+          <section>
+            <h4 className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-low)] mb-2">
+              Keyword
+            </h4>
+            <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elev2)] p-4 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[var(--text-med)]">Status</span>
+                <Badge variant={k.status === 'ok' ? 'success' : 'outline'}>
+                  {k.status}
+                </Badge>
+              </div>
+              {k.scores && (
+                <div className="pt-2 space-y-1.5 text-xs">
                   <div className="flex items-center justify-between">
-                    <span className="text-[var(--text-med)]">Model</span>
-                    <span className="font-mono text-xs text-[var(--text-hi)]">
-                      {t.model}
+                    <span className="text-[var(--text-hi)]">Positive</span>
+                    <span className="font-mono text-[var(--state-success)] tabular-nums">
+                      {k.scores.positive}
                     </span>
                   </div>
-                )}
-                {t.reason && (
                   <div className="flex items-center justify-between">
-                    <span className="text-[var(--text-med)]">Reason</span>
-                    <span className="font-mono text-xs text-[var(--state-warn)]">
-                      {t.reason}
+                    <span className="text-[var(--text-hi)]">Negative</span>
+                    <span className="font-mono text-[var(--state-error)] tabular-nums">
+                      {k.scores.negative}
                     </span>
                   </div>
-                )}
-                {t.scores && t.scores.length > 0 && (
-                  <div className="pt-2">
-                    <p className="text-xs text-[var(--text-low)] mb-2">All emotion scores</p>
-                    <ul className="space-y-1.5">
-                      {t.scores.map((s) => (
-                        <li
-                          key={s.label}
-                          className="flex items-center justify-between text-xs"
-                        >
-                          <span className="text-[var(--text-hi)] capitalize">
-                            {s.label}
-                          </span>
-                          <span className="font-mono text-[var(--text-med)] tabular-nums">
-                            {s.score.toFixed(3)}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[var(--text-hi)]">Neutral</span>
+                    <span className="font-mono text-[var(--text-med)] tabular-nums">
+                      {k.scores.neutral}
+                    </span>
                   </div>
-                )}
-              </div>
-            </section>
-
-            <section>
-              <h4 className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-low)] mb-2">
-                Keyword
-              </h4>
-              <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elev2)] p-4 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[var(--text-med)]">Status</span>
-                  <Badge variant={k.status === 'ok' ? 'success' : 'outline'}>
-                    {k.status}
-                  </Badge>
                 </div>
-                {k.scores && (
-                  <div className="pt-2 space-y-1.5 text-xs">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[var(--text-hi)]">Positive</span>
-                      <span className="font-mono text-[var(--state-success)] tabular-nums">
-                        {k.scores.positive}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-[var(--text-hi)]">Negative</span>
-                      <span className="font-mono text-[var(--state-error)] tabular-nums">
-                        {k.scores.negative}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-[var(--text-hi)]">Neutral</span>
-                      <span className="font-mono text-[var(--text-med)] tabular-nums">
-                        {k.scores.neutral}
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </section>
-          </div>
-        </ModalContent>
-      </Modal>
-    </>
+              )}
+            </div>
+          </section>
+        </div>
+      </ModalContent>
+    </Modal>
   );
 }
