@@ -7,6 +7,7 @@ const comparison = (page: Page) => page.getByRole('region', { name: 'Lyrics and 
 async function readText(page: Page) {
   await page.goto('/analyze');
   await page.getByRole('textbox').fill(originalText);
+  await page.getByRole('checkbox', { name: 'I’m providing English text' }).check();
   await page.getByRole('button', { name: 'Analyze lyrics', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Analysis', exact: true })).toBeVisible();
 }
@@ -71,7 +72,8 @@ test('empty, held lyrics, failed lyrics and invalid-file states cannot show a st
   await page.goto('/analyze'); await expect(comparison(page)).toHaveCount(0);
   let release!: () => void; const held = new Promise<void>(resolve => { release = resolve; });
   await page.route('**/api/analyze', async route => { await held; await route.fulfill({ status: 500, json: { error: 'Controlled lyrics error for comparison QA' } }); });
-  await page.getByRole('textbox').fill(originalText); await page.getByRole('button', { name: 'Analyze lyrics', exact: true }).click();
+  await page.getByRole('textbox').fill(originalText);
+  await page.getByRole('checkbox', { name: 'I’m providing English text' }).check(); await page.getByRole('button', { name: 'Analyze lyrics', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Analyzing…', exact: true })).toBeDisabled(); await expect(comparison(page)).toHaveCount(0); release();
   await expect(page.getByRole('alert').filter({ hasText: 'Controlled lyrics error' })).toBeVisible(); await expect(comparison(page)).toHaveCount(0);
   await page.unroute('**/api/analyze'); await page.getByRole('button', { name: 'Analyze lyrics', exact: true }).click(); await expect(page.getByRole('heading', { name: 'Analysis', exact: true })).toBeVisible();

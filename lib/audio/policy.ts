@@ -1,3 +1,5 @@
+import { parseLanguageProcessing } from '@/lib/language';
+
 /**
  * Remote recordings have no verified analysis grant in this application.
  * Provider IDs, URL hosts and a caller's `source: upload` are not permission.
@@ -18,9 +20,10 @@ export function metadataOnly<T extends { previewUrl?: string }>(song: T): T {
 /** A lyrics label must not smuggle audio feature payloads into generic JSON. */
 const LYRICS_FIELDS = new Set([
   'mood', 'vibe', 'energy', 'sentiment', 'themes', 'detailedAnalysis', 'confidence',
-  'wordCount', 'originalLanguage', 'translated', 'engines', 'moodColor',
+  'wordCount', 'originalLanguage', 'translated', 'engines', 'moodColor', 'languageProcessing',
 ]);
 
 export function isLyricsResult(result: Record<string, unknown>): boolean {
-  return Object.keys(result).every((key) => LYRICS_FIELDS.has(key));
+  return Object.keys(result).every((key) => LYRICS_FIELDS.has(key))
+    && (!('languageProcessing' in result) || parseLanguageProcessing(result.languageProcessing) !== undefined);
 }

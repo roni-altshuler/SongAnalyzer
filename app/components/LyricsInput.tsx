@@ -4,6 +4,8 @@ import { Button } from '@/app/components/ui/Button';
 import { Card } from '@/app/components/ui/Card';
 
 interface LyricsInputProps {
+  englishConfirmed: boolean;
+  onEnglishConfirmedChange: (confirmed: boolean) => void;
   lyrics: string;
   onLyricsChange: (value: string) => void;
   onAnalyze: () => void;
@@ -13,6 +15,8 @@ interface LyricsInputProps {
 
 export default function LyricsInput({
   lyrics,
+  englishConfirmed,
+  onEnglishConfirmedChange,
   onLyricsChange,
   onAnalyze,
   loading,
@@ -51,6 +55,13 @@ export default function LyricsInput({
             focus:ring-2 focus:ring-[var(--accent-glow)]
             transition-colors"
         />
+        <div className="mt-3 space-y-2 text-xs leading-relaxed text-[var(--text-med)]">
+          <p id="lyrics-language-help">English-focused analysis. Automatic language checks are unverified; other languages may produce misleading readings.</p>
+          <label className="flex min-h-11 cursor-pointer items-center gap-3">
+            <input type="checkbox" checked={englishConfirmed} onChange={event => onEnglishConfirmedChange(event.target.checked)} aria-describedby="lyrics-language-help" className="h-4 w-4 accent-[var(--accent-from)]" />
+            I’m providing English text
+          </label>
+        </div>
         <div className="mt-3 flex flex-wrap items-center justify-between gap-x-3 text-xs text-[var(--text-med)]">
           <span id="lyrics-help">
             <span className="font-mono">{wordCount}</span> words · ⌘/Ctrl+Enter to analyze

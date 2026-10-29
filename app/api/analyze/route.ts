@@ -37,7 +37,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { detectLanguage, LANGUAGE_CODE_MAP } from '@/lib/language';
+import { prepareLyrics } from '@/lib/analysis/translation';
+import { languageSupportsComparison } from '@/lib/analysis/language-context';
 import { AnalysisResult } from '@/lib/types';
 import { analyzeKeyword } from '@/lib/analysis/keyword';
 import { analyzeTransformer, TransformerError } from '@/lib/analysis/transformer';
@@ -45,7 +46,7 @@ import { blendResults } from '@/lib/analysis/blend';
 import { moodToColor } from '@/lib/analysis/palette';
 import {
   getCachedAnalysis,
-  hashLyrics,
+  analysisCacheKey,
   setAnalysisCache,
   setCachedAnalysis,
 } from '@/lib/analysis/cache';
@@ -61,68 +62,25 @@ const durableCache = createDurableAnalysisCache();
 if (durableCache) setAnalysisCache(durableCache);
 
 /**
- * Translate non-English lyrics to English using HF Helsinki-NLP, if a token is
- * available. Falls back to the original text on any failure — this is purely
- * best-effort and never blocks downstream analysis.
- */
-async function maybeTranslate(lyrics: string): Promise<{
-  text: string;
-  originalLanguage: string;
-  translated: boolean;
-}> {
-  const originalLanguage = detectLanguage(lyrics);
-  if (originalLanguage === 'English') {
-    return { text: lyrics, originalLanguage, translated: false };
-  }
-
-  const HF_TOKEN = process.env.HUGGINGFACE_API_KEY;
-  if (!HF_TOKEN) return { text: lyrics, originalLanguage, translated: false };
-
-  const langCode = LANGUAGE_CODE_MAP[originalLanguage];
-  if (!langCode) return { text: lyrics, originalLanguage, translated: false };
-
-  try {
-    const modelName = `Helsinki-NLP/opus-mt-${langCode}-en`;
-    const response = await fetch(
-      `https://api-inference.huggingface.co/models/${modelName}`,
-      {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${HF_TOKEN}` },
-        body: JSON.stringify({ inputs: lyrics }),
-      },
-    );
-
-    if (!response.ok) {
-      const errorText = await response.text().catch(() => '');
-      console.error('Translation API error:', errorText);
-      return { text: lyrics, originalLanguage, translated: false };
-    }
-    const result = await response.json();
-    const translatedText = result[0]?.translation_text || result[0]?.generated_text;
-    if (translatedText) {
-      return { text: translatedText, originalLanguage, translated: true };
-    }
-  } catch (err) {
-    console.error('Translation error:', err);
-  }
-  return { text: lyrics, originalLanguage, translated: false };
-}
-
-/**
  * Run the hybrid analysis pipeline. Exported for tests / future internal use.
  */
-export async function analyzeLyrics(lyrics: string): Promise<AnalysisResult> {
-  const { text, originalLanguage, translated } = await maybeTranslate(lyrics);
+export async function analyzeLyrics(lyrics: string, englishConfirmed = false): Promise<AnalysisResult> {
+  const { text, originalLanguage, translated, languageProcessing } = await prepareLyrics(lyrics, englishConfirmed);
 
-  // Cache key uses the (possibly translated) English text — same lyrics in
-  // different surface forms still hit the cache.
-  const hash = hashLyrics(text);
+  // Normalized text can be reused only within the same engine regime.
+  // Legacy bare hashes are intentionally not read across this boundary.
+  const englishEligible = languageSupportsComparison(languageProcessing);
+  const regime = englishEligible
+    ? process.env.HUGGINGFACE_API_KEY ? 'english-model' : 'english-no-token'
+    : 'provisional';
+  const hash = analysisCacheKey(text, regime);
   const cached = await getCachedAnalysis(hash);
   if (cached) {
     return {
       ...cached,
-      originalLanguage: translated ? originalLanguage : cached.originalLanguage,
-      translated: translated || cached.translated,
+      originalLanguage,
+      translated,
+      languageProcessing,
     };
   }
 
@@ -132,7 +90,8 @@ export async function analyzeLyrics(lyrics: string): Promise<AnalysisResult> {
   let transformerStatus: 'ok' | 'skipped' | 'unavailable' | 'timeout' | 'error' = 'ok';
   let transformerReason: string | undefined;
   try {
-    transformer = await analyzeTransformer(text);
+    if (englishEligible) transformer = await analyzeTransformer(text);
+    else { transformerStatus = 'skipped'; transformerReason = 'Language unverified or untranslated; English-focused model skipped'; }
   } catch (err) {
     if (err instanceof TransformerError) {
       transformerStatus = err.kind;
@@ -152,8 +111,9 @@ export async function analyzeLyrics(lyrics: string): Promise<AnalysisResult> {
 
   const result: AnalysisResult = {
     ...blended,
-    originalLanguage: translated ? originalLanguage : undefined,
+    originalLanguage,
     translated,
+    languageProcessing,
     moodColor: moodToColor(blended.mood),
   };
 
@@ -175,7 +135,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const { lyrics } = await request.json();
+    const { lyrics, englishConfirmed } = await request.json();
 
     if (!lyrics || typeof lyrics !== 'string') {
       return NextResponse.json(
@@ -191,7 +151,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const analysis = await analyzeLyrics(lyrics);
+    const analysis = await analyzeLyrics(lyrics, englishConfirmed === true);
     return NextResponse.json(analysis);
   } catch (error) {
     console.error('Analysis error:', error);

@@ -8,6 +8,8 @@ import { Card, CardHeader, CardTitle } from '@/app/components/ui/Card';
 import { Badge } from '@/app/components/ui/Badge';
 import { Meter } from '@/app/components/ui/Meter';
 import { cn } from '@/lib/cn';
+import LanguageNotice from './LanguageNotice';
+import { languageSupportsComparison } from '@/lib/analysis/language-context';
 
 interface CombinedViewProps {
   lyricsAnalysis: AnalysisResult;
@@ -226,6 +228,9 @@ export default function CombinedView({
         Compare the feeling estimated from your text with the character estimated from your recording.
         {' '}These inputs are chosen separately; SongAnalyzer does not verify they belong to the same song.
       </p>
+
+      <LanguageNotice processing={lyricsAnalysis.languageProcessing} />
+      {!languageSupportsComparison(lyricsAnalysis.languageProcessing) && <p className="text-sm text-[var(--text-hi)]">Numeric comparison withheld until English text is selected or a usable translation is available. Language support and model comprehension are not validated by a default mood or confidence score.</p>}
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_220px]">
         <div className="grid gap-4 md:grid-cols-2">

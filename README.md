@@ -22,7 +22,7 @@ SongAnalyzer is a Next.js music workbench. **Identify** (`/identify`) computes c
 | **Mood Atlas** | A public dashboard (`/atlas`) aggregating every visible analysis into a global mood distribution, browseable genres, per-artist mood-over-time, and theme clouds. |
 | **Combined view** | Compare separately supplied text and local audio with visible input size, filename and projection basis. Estimated proximity describes distance between supported valence/arousal coordinates. It is withheld when coordinates are unavailable; evidence explains the mapping and its limits. Song identity and model accuracy are not verified. |
 | **Mood-color cascade** | When a result lands, `--accent-from / --accent-to / --accent-glow` are written to `<html>` and every primitive (cards, buttons, badges, charts, hero glow) repaints in the song's color. |
-| **Multi-language** | Built-in detection across 11+ languages; auto-translates via Helsinki-NLP through the Hugging Face Inference API when a token is configured. |
+| **Language context** | English-focused analysis with an explicit English choice, unverified character hints and visible translation outcomes. Existing Helsinki-NLP routing is best-effort; language coverage and comprehension are not validated. |
 | **History** | Local result previews persist to `localStorage`; restoring one clears the current song/audio context and Share id. Full lyrics and a server analysis id are not retained locally, so a restored result can be copied but must be re-analyzed from its lyrics to enable sharing. |
 
 ## Recognition to exploration
@@ -294,7 +294,15 @@ SUPABASE_LOCAL=1 npm test       # adds the RLS suite to the test run
 
 ## Multi-language
 
-Built-in detection for: Spanish, French, German, Italian, Portuguese, Russian, Chinese, Japanese, Korean, Arabic, and Hebrew. When a non-English language is detected and `HUGGINGFACE_API_KEY` is set, the lyrics are translated via Helsinki-NLP models before analysis.
+Lyrics analysis is English-focused. The **I’m providing English text** checkbox records the submitter’s choice; it does not validate language or comprehension and resets when lyrics change. Automatic character checks are unverified hints, not a reliable language detector. ASCII Spanish/French can resemble English; European accents overlap; Han characters can be Chinese or Japanese; mixed scripts, unsupported scripts and punctuation alone do not establish a language. Unicode accents are normalized only for the checks.
+
+Unverified or untranslated inputs receive a visible provisional reading from English-focused keywords; the English transformer and numeric lyrics/audio comparison are withheld. A default mood and confidence driven partly by text length do not demonstrate comprehension. Select English only when appropriate, or supply a translation you trust.
+
+The existing Helsinki-NLP path is best-effort when a single character hint has an existing model mapping and `HUGGINGFACE_API_KEY` is configured. Ambiguous hints are not sent for translation. Hebrew has a character hint but **no configured model mapping**. There are no language accuracy claims or guaranteed supported-language counts. Both translation endpoints report unverified input, unsupported routing, missing configuration, failed/empty/invalid translation, or actual machine translation. Machine translation quality remains unverified. These states accompany results, local history, copied text, shared readings and comparison evidence; older readings without metadata are labeled unverified.
+
+Analysis caches are separated by provisional, English-without-token and English-model regimes. Legacy unversioned entries are treated as misses, so earlier model readings cannot bypass the current language gate and provisional readings cannot suppress an eligible model. Within a regime, normalized text reuse remains available.
+
+Social metadata and OG/Twitter previews withhold mood claims and illustrative charts when language support is unresolved or absent from an older record. Eligible previews are labeled estimates. Missing, private or unavailable shares receive a generic branded image; the shared reading retains its detailed language context.
 
 ## Deployment
 

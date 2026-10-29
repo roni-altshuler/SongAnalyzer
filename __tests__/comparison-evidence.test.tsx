@@ -13,6 +13,7 @@ afterEach(cleanup);
 // Controlled metadata for projection/rendering contracts, not audio-extraction
 // output or evidence of model accuracy. Browser tests use the real audio worker.
 const text: AnalysisResult = {
+  languageProcessing: { status: 'english_confirmed' },
   mood: 'Romantic', vibe: 'Balanced', energy: 'Moderate', sentiment: 'Positive',
   themes: [], detailedAnalysis: '', confidence: 0.55, wordCount: 17,
   engines: { transformer: { status: 'skipped' }, keyword: { status: 'ok' } },

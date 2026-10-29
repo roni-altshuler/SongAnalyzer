@@ -13,6 +13,8 @@ import { Card, CardHeader, CardTitle } from '@/app/components/ui/Card';
 import { Badge } from '@/app/components/ui/Badge';
 import { Meter } from '@/app/components/ui/Meter';
 import { extractOgPayload } from './og-data';
+import { parseLanguageProcessing } from '@/lib/language';
+import LanguageNotice from '@/app/components/LanguageNotice';
 
 export const revalidate = 3600;
 
@@ -39,6 +41,7 @@ function asAnalysisResult(result: unknown): AnalysisResult {
       typeof r.detailedAnalysis === 'string' ? r.detailedAnalysis : '',
     confidence: typeof r.confidence === 'number' ? r.confidence : 0.5,
     wordCount: typeof r.wordCount === 'number' ? r.wordCount : 0,
+    languageProcessing: parseLanguageProcessing(r.languageProcessing),
     originalLanguage:
       typeof r.originalLanguage === 'string' ? r.originalLanguage : undefined,
     translated: typeof r.translated === 'boolean' ? r.translated : undefined,
@@ -87,22 +90,25 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const song = analysis.song_id ? await tryGetSong(analysis.song_id) : null;
   const payload = extractOgPayload(analysis, song);
 
-  const titleText = song
-    ? `${payload.title} — ${payload.artist} · ${payload.mood} · Song Analyzer`
-    : `${payload.mood} · Song Analyzer`;
+  const titleText = payload.showEstimates
+    ? `${song ? `${payload.title} — ${payload.artist} · ` : ''}Estimated ${payload.mood} · Song Analyzer`
+    : `${payload.title} · Provisional reading · Song Analyzer`;
+  const description = payload.showEstimates
+    ? `${payload.languageSummary}. English-focused estimate: ${payload.mood}; language and comprehension are unverified.`
+    : `${payload.languageSummary}. Provisional English-focused keywords; language and comprehension are unverified. Mood preview withheld.`;
 
   return {
     title: titleText,
-    description: `Mood: ${payload.mood} · Vibe: ${payload.vibe} · Sentiment: ${payload.sentiment}`,
+    description,
     openGraph: {
       title: titleText,
-      description: `Mood: ${payload.mood} · Vibe: ${payload.vibe}`,
+      description,
       type: 'article',
     },
     twitter: {
       card: 'summary_large_image',
       title: titleText,
-      description: `Mood: ${payload.mood} · Vibe: ${payload.vibe}`,
+      description,
     },
   };
 }
@@ -190,6 +196,8 @@ export default async function SharePage({ params }: PageProps) {
               <CardTitle>Analysis</CardTitle>
             </div>
           </CardHeader>
+
+          <LanguageNotice processing={result.languageProcessing} />
 
           <div className="grid grid-cols-2 gap-3">
             {[
