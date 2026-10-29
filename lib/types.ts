@@ -1,3 +1,5 @@
+import type { LanguageProcessing } from '@/lib/language';
+
 /**
  * Shared types for the Song Lyric Analyzer application.
  */
@@ -38,6 +40,7 @@ export interface AnalysisResult {
   detailedAnalysis: string;
   confidence: number;
   wordCount: number;
+  languageProcessing?: LanguageProcessing;
   originalLanguage?: string;
   translated?: boolean;
   /** Per-engine provenance (Stream C, v2 hybrid engine). */

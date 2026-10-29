@@ -1,5 +1,6 @@
 /** Presentation evidence for two independently supplied readings. Client-safe. */
 import { EMOTION_COORDS, lyricsAffect, type AgreementBreakdown } from './affect';
+import { languageSupportsComparison } from './language-context';
 import { MOOD_COORDS, type AffectPoint } from '@/lib/audio/mood-map';
 import type { AnalysisResult, AudioAnalysisResult, AudioAnalysisResultV2 } from '@/lib/types';
 
@@ -19,6 +20,7 @@ function mappedMood(mood: string): ComparisonProjection {
 }
 
 export function lyricsComparisonProjection(result: AnalysisResult): ComparisonProjection {
+  if (!languageSupportsComparison(result.languageProcessing)) return { point: null, basis: 'unavailable' };
   const engines = result.engines;
   const transformer = engines?.transformer;
   if (engines && transformer?.status === 'ok' && Array.isArray(transformer.scores)) {

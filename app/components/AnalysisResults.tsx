@@ -11,6 +11,7 @@ import { Button } from '@/app/components/ui/Button';
 import { toast } from '@/app/components/ui/Toast';
 import { cn } from '@/lib/cn';
 import MoodRadar from './MoodRadar';
+import LanguageNotice from './LanguageNotice';
 import EngineProvenance from './EngineProvenance';
 
 interface AnalysisResultsProps {
@@ -129,11 +130,7 @@ export default function AnalysisResults({ analysis, onExport, analysisId }: Anal
           </div>
         </CardHeader>
 
-        {analysis.translated && (
-          <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-elev2)] px-3 py-2.5 text-xs text-[var(--text-med)]">
-            Detected {analysis.originalLanguage ?? 'non-English'} — translated for analysis.
-          </div>
-        )}
+        <LanguageNotice processing={analysis.languageProcessing} />
 
         <div className="grid grid-cols-2 gap-3">
           <Stat label="Mood" value={analysis.mood} accent />

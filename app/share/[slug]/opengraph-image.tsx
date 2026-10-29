@@ -110,7 +110,7 @@ function deriveScores(p: {
 
 export default async function Image({ params }: RouteContext) {
   const { slug } = await params;
-  const analysis = await getAnalysisBySlug(slug);
+  const analysis = await getAnalysisBySlug(slug).catch(() => null);
 
   // If the slug isn't valid, still render a generic fallback image — Next
   // expects a 200 from this route, not a 404.
@@ -136,8 +136,19 @@ export default async function Image({ params }: RouteContext) {
     );
   }
 
-  const song = analysis.song_id ? await getSongById(analysis.song_id) : null;
+  const song = analysis.song_id ? await getSongById(analysis.song_id).catch(() => null) : null;
   const payload = extractOgPayload(analysis, song);
+  if (!payload.showEstimates) {
+    return new ImageResponse(
+      <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 28, padding: 80, background: '#07070A', color: '#F5F5F7' }}>
+        <div style={{ display: 'flex', color: '#B4B4BD', fontSize: 24 }}>Song Analyzer</div>
+        <div style={{ display: 'flex', fontSize: 54 }}>{payload.languageSummary}</div>
+        <div style={{ display: 'flex', fontSize: 30 }}>Provisional English-focused reading</div>
+        <div style={{ display: 'flex', color: '#B4B4BD', fontSize: 26 }}>Language and comprehension are unverified. Mood preview withheld.</div>
+      </div>,
+      { ...size },
+    );
+  }
   const palette = payload.moodColor ?? moodToColor(payload.mood);
   const scores = deriveScores(payload);
 
@@ -225,7 +236,11 @@ export default async function Image({ params }: RouteContext) {
                 color: '#F5F5F7',
               }}
             >
-              ♪
+              <svg width={140} height={140} viewBox="0 0 24 24" fill="none" stroke="#F5F5F7" strokeWidth={1.5}>
+                <path d="M9 18V5l12-2v13M9 9l12-2" />
+                <ellipse cx={6} cy={18} rx={3} ry={2} fill="#F5F5F7" />
+                <ellipse cx={18} cy={16} rx={3} ry={2} fill="#F5F5F7" />
+              </svg>
             </div>
           )}
         </div>
@@ -250,7 +265,7 @@ export default async function Image({ params }: RouteContext) {
               color: '#B4B4BD',
             }}
           >
-            Song Analyzer
+            Song Analyzer · Estimate
           </div>
           <div
             style={{

@@ -7,8 +7,12 @@
  */
 
 import type { AnalysisRow, SongRow } from '@/lib/supabase/database.types';
+import { languageContext, languageSupportsComparison } from '@/lib/analysis/language-context';
+import { parseLanguageProcessing } from '@/lib/language';
 
 export interface OgPayload {
+  showEstimates: boolean;
+  languageSummary: string;
   /** Big serif title; falls back to "Song Analysis" when no song is resolved. */
   title: string;
   /** Artist line; empty string when no song is resolved. */
@@ -60,8 +64,11 @@ export function extractOgPayload(
   song: Pick<SongRow, 'title' | 'artist' | 'album' | 'cover_url'> | null,
 ): OgPayload {
   const result = (analysis.result ?? {}) as Record<string, unknown>;
+  const processing = parseLanguageProcessing(result.languageProcessing);
 
   return {
+    showEstimates: languageSupportsComparison(processing),
+    languageSummary: languageContext(processing).title,
     title: song?.title ?? 'Song Analysis',
     artist: song?.artist ?? '',
     album: song?.album ?? '',

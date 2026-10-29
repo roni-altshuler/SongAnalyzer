@@ -100,6 +100,18 @@ export function hashLyrics(lyrics: string): string {
   return createHash('sha256').update(normalizeLyrics(lyrics)).digest('hex');
 }
 
+export type AnalysisCacheRegime = 'provisional' | 'english-no-token' | 'english-model';
+
+/**
+ * Versioned, disjoint from legacy bare hashes. A provisional keyword result
+ * must neither inherit nor suppress an English-model reading. Keep the token
+ * itself out of keys; only model configuration eligibility affects the regime.
+ * The durable lyrics_hash column is text and accepts these namespaced keys.
+ */
+export function analysisCacheKey(lyrics: string, regime: AnalysisCacheRegime): string {
+  return `analysis:language-v1:${regime}:${hashLyrics(lyrics)}`;
+}
+
 /**
  * Convenience wrappers. The API route can use the lower-level
  * `getAnalysisCache()` directly when it needs a transaction-like flow.
