@@ -75,6 +75,7 @@ function AnalyzeWorkbench() {
   const [lyricsLoading, setLyricsLoading] = useState(false);
   const [lyricsError, setLyricsError] = useState('');
   const [historyKey, setHistoryKey] = useState(0);
+  const [historySaveFailed, setHistorySaveFailed] = useState(false);
   const lyricsRunRef = useRef(0);
 
   useEffect(() => () => { lyricsRunRef.current++; }, []);
@@ -90,6 +91,7 @@ function AnalyzeWorkbench() {
     setLyricsError('');
     setLyricsAnalysis(null);
     setLyricsAnalysisId(null);
+    setHistorySaveFailed(false);
 
     try {
       const response = await fetch('/api/analyze', {
@@ -106,7 +108,9 @@ function AnalyzeWorkbench() {
       const result: AnalysisResult = await response.json();
       if (lyricsRunRef.current !== run) return;
       setLyricsAnalysis(result);
-      saveToHistory(lyrics, result);
+      // Local history is optional; it has a separate failure state from analysis.
+      try { setHistorySaveFailed(!saveToHistory(lyrics, result)); }
+      catch { setHistorySaveFailed(true); }
       setHistoryKey((k) => k + 1);
 
       // Persist so the Share button has an id — fail-soft, fire-and-forget.
@@ -145,6 +149,7 @@ function AnalyzeWorkbench() {
       setLyricsAnalysis(null);
       setLyricsAnalysisId(null);
       setLyricsError('');
+      setHistorySaveFailed(false);
     },
     [],
   );
@@ -159,6 +164,7 @@ function AnalyzeWorkbench() {
     setLyricsLoading(false);
     setLyricsError('');
     resetAudio();
+    setHistorySaveFailed(false);
   }, [resetAudio]);
 
   const handleLyricsExport = useCallback(() => {
@@ -298,7 +304,7 @@ function AnalyzeWorkbench() {
                   loading={lyricsLoading}
                   error={lyricsError}
                 />
-                <HistoryPanel onRestore={handleRestoreHistory} refreshKey={historyKey} />
+                <HistoryPanel onRestore={handleRestoreHistory} refreshKey={historyKey} saveFailed={historySaveFailed} />
               </div>
 
               <div>

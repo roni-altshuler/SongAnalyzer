@@ -23,7 +23,7 @@ SongAnalyzer is a Next.js music workbench. **Identify** (`/identify`) computes c
 | **Combined view** | Compare separately supplied text and local audio with visible input size, filename and projection basis. Estimated proximity describes distance between supported valence/arousal coordinates. It is withheld when coordinates are unavailable; evidence explains the mapping and its limits. Song identity and model accuracy are not verified. |
 | **Mood-color cascade** | When a result lands, `--accent-from / --accent-to / --accent-glow` are written to `<html>` and every primitive (cards, buttons, badges, charts, hero glow) repaints in the song's color. |
 | **Multi-language** | Built-in detection across 11+ languages; auto-translates via Helsinki-NLP through the Hugging Face Inference API when a token is configured. |
-| **History** | Local result previews persist to `localStorage`; restoring one clears the current song/audio context and Share id. Full lyrics and a server analysis id are not retained locally, so a restored result can be copied but must be re-analyzed from its lyrics to enable sharing. |
+| **History** | This browser keeps up to 20 result previews, with at most the first 120 lyrics characters plus an ellipsis. Storage failures are shown separately from analysis errors; a completed analysis stays usable. Unreadable saved data is left unchanged until you explicitly clear it, while valid entries remain restorable. Restoring clears song/audio context and the Share id; full lyrics and a server analysis id are not retained locally. |
 
 ## Recognition to exploration
 
