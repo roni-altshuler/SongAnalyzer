@@ -22,8 +22,8 @@ vi.mock('@/app/components/AnalysisResults', () => ({
   ),
 }));
 vi.mock('@/app/components/HistoryPanel', () => ({
-  default: (p: { onRestore: (entry: unknown) => void }) => (
-    <button onClick={() => p.onRestore({ id: 'local-history-id', result: { mood: 'History B' } })}>Restore B</button>
+  default: (p: { onRestore: (entry: unknown) => void; saveFailed?: boolean }) => (
+    <div>{p.saveFailed && <span>Local save failed</span>}<button onClick={() => p.onRestore({ id: 'local-history-id', result: { mood: 'History B' } })}>Restore B</button></div>
   ),
 }));
 vi.mock('@/app/components/AnalysisSkeleton', () => ({ default: () => <span>Loading</span> }));
@@ -51,7 +51,7 @@ function analyze(lyrics: string) {
 }
 
 describe('lyrics result and Share identity', () => {
-  beforeEach(() => { vi.clearAllMocks(); vi.stubGlobal('React', React); });
+  beforeEach(() => { vi.clearAllMocks(); mocks.save.mockReturnValue({ id: 'synthetic-history' }); vi.stubGlobal('React', React); });
   afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 
   it('restores history without keeping the previous result or pending persistence id', async () => {
@@ -103,6 +103,19 @@ describe('lyrics result and Share identity', () => {
     await act(async () => { savedA.resolve(savedResponse('server-A')); });
     expect(screen.getByTestId('result').textContent).toBe('B');
     expect(screen.getByTestId('result').getAttribute('data-share-id')).toBe('server-B');
+  });
+
+  it('keeps a successful analysis and its Share id when optional history throws', async () => {
+    mocks.save.mockImplementationOnce(() => { throw new Error('Synthetic history quota'); });
+    const fetcher = vi.fn().mockResolvedValueOnce(resultResponse('A')).mockResolvedValueOnce(savedResponse('server-A'));
+    vi.stubGlobal('fetch', fetcher);
+    render(<AnalyzePage />);
+    analyze('Synthetic lyrics A');
+    await screen.findByText('A');
+    await waitFor(() => expect(screen.getByTestId('result').getAttribute('data-share-id')).toBe('server-A'));
+    expect(screen.queryByText('Synthetic history quota')).toBeNull();
+    expect(screen.getByText('Local save failed')).toBeTruthy();
+    expect(fetcher).toHaveBeenCalledTimes(2);
   });
 
   it('ignores a pending analysis when the lyrics are edited', async () => {

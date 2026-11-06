@@ -38,7 +38,17 @@ export const ModalContent = forwardRef<
 >(function ModalContent({ className, children, showClose = true, ...rest }, ref) {
   return (
     <ModalPortal>
-      <ModalOverlay />
+      {rest.onInteractOutside || rest.onPointerDownOutside ? (
+        <ModalOverlay />
+      ) : (
+        // Default backdrops must respond from mount, before Radix's deferred
+        // document listener is ready. Custom outside handlers keep their guard.
+        <DialogPrimitive.Close asChild>
+          <ModalOverlay onClick={(event) => {
+            if (event.button !== 0 || event.ctrlKey) event.preventDefault();
+          }} />
+        </DialogPrimitive.Close>
+      )}
       <DialogPrimitive.Content
         ref={ref}
         data-focus-no-outline
