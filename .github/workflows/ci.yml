@@ -44,7 +44,8 @@ jobs:
 
   e2e:
     name: Playwright smoke
-    runs-on: ubuntu-latest
+    # Playwright 1.60's Chromium 148 supports Ubuntu 24.04, not 26.04.
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     needs: lint-typecheck-test
     # Only run E2E on PRs and pushes to main / v2-overhaul. Skipping forks keeps
