@@ -1,29 +1,38 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import type { HistoryEntry } from '@/lib/types';
-import { clearHistory, getHistory, removeFromHistory } from '@/lib/history';
+import { clearHistory, readHistory, removeFromHistory, type HistoryRead } from '@/lib/history';
 import { cn } from '@/lib/cn';
 
 interface HistoryPanelProps {
   onRestore: (entry: HistoryEntry) => void;
   refreshKey: number;
+  saveFailed?: boolean;
 }
 
-export default function HistoryPanel({ onRestore, refreshKey }: HistoryPanelProps) {
-  const [entries, setEntries] = useState<HistoryEntry[]>([]);
+export default function HistoryPanel({ onRestore, refreshKey, saveFailed = false }: HistoryPanelProps) {
+  const [history, setHistory] = useState<HistoryRead>({ entries: [], status: 'ready' });
   const [open, setOpen] = useState(false);
+  const [feedback, setFeedback] = useState('');
+  const [actionError, setActionError] = useState('');
+  const trigger = useRef<HTMLButtonElement>(null);
+  const panelId = useId();
+  const { entries, status } = history;
 
   useEffect(() => {
-    setEntries(getHistory());
+    setHistory(readHistory());
+    setFeedback('');
+    setActionError('');
   }, [refreshKey]);
 
-  if (entries.length === 0) return null;
-
   return (
-    <div className="mt-2">
+    <div className="mt-2 space-y-2" role="region" aria-label="Local history">
       <button
+        ref={trigger}
         type="button"
+        aria-expanded={open}
+        aria-controls={panelId}
         onClick={() => setOpen((v) => !v)}
         className={cn(
           'inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em]',
@@ -45,11 +54,27 @@ export default function HistoryPanel({ onRestore, refreshKey }: HistoryPanelProp
         >
           <polyline points="9 18 15 12 9 6" />
         </svg>
-        History · {entries.length}
+        History{status === 'unavailable' ? ' · unavailable' : ` · ${entries.length}`}
       </button>
 
+      <div role="status" className="space-y-2 text-xs leading-relaxed text-[var(--text-med)]">
+        {saveFailed && <p>Your analysis is ready, but this result was not saved to local history. You can still copy it.</p>}
+        {status === 'unavailable' && <p>Local history is unavailable in this browser. Analysis still works.</p>}
+        {status === 'invalid' && <p>Some saved history needs attention. Available results can still be restored. Saved data is unchanged; saving and removal are paused until you explicitly clear this history.</p>}
+        {feedback && <p>{feedback}</p>}
+      </div>
+      {actionError && <p role="alert" className="text-xs leading-relaxed text-[var(--state-error)]">{actionError}</p>}
+      {status === 'unavailable' && (
+        <button type="button" className="text-xs underline underline-offset-4 text-[var(--text-med)]" onClick={() => {
+          const next = readHistory();
+          setHistory(next); setActionError('');
+          if (next.status !== 'unavailable') trigger.current?.focus();
+        }}>Retry local history</button>
+      )}
+
       {open && (
-        <div className="mt-3 space-y-2 animate-fade-in">
+        <div id={panelId} className="mt-3 space-y-2 animate-fade-in">
+          {entries.length === 0 && status === 'ready' && <p className="text-xs text-[var(--text-low)]">No saved analyses in this browser yet.</p>}
           {entries.map((entry) => (
             <div
               key={entry.id}
@@ -65,7 +90,7 @@ export default function HistoryPanel({ onRestore, refreshKey }: HistoryPanelProp
               <button
                 type="button"
                 onClick={() => onRestore(entry)}
-                className="flex-1 text-left min-w-0 focus-visible:outline-none"
+                className="flex-1 text-left min-w-0 rounded focus-visible:outline-2 focus-visible:outline-[var(--accent-from)] focus-visible:outline-offset-2"
               >
                 <p className="text-sm text-[var(--text-hi)] truncate">
                   <span className="font-medium">{entry.result.mood}</span>
@@ -81,10 +106,16 @@ export default function HistoryPanel({ onRestore, refreshKey }: HistoryPanelProp
               </button>
               <button
                 type="button"
+                disabled={status !== 'ready'}
                 onClick={(e) => {
                   e.stopPropagation();
-                  removeFromHistory(entry.id);
-                  setEntries(getHistory());
+                  setFeedback('');
+                  if (!removeFromHistory(entry.id)) {
+                    setActionError('Could not remove that saved result. Try again.');
+                    return;
+                  }
+                  setActionError(''); setHistory(readHistory());
+                  setFeedback('Result removed from local history.'); trigger.current?.focus();
                 }}
                 className={cn(
                   'p-1.5 rounded-md text-[var(--text-low)]',
@@ -92,6 +123,7 @@ export default function HistoryPanel({ onRestore, refreshKey }: HistoryPanelProp
                   'hover:text-[var(--state-error)] hover:bg-[var(--bg-elev3)]',
                   'transition-[opacity,color,background] duration-150',
                   'focus-visible:opacity-100',
+                  'disabled:opacity-40 disabled:cursor-not-allowed',
                 )}
                 title="Remove"
                 aria-label="Remove from history"
@@ -104,16 +136,18 @@ export default function HistoryPanel({ onRestore, refreshKey }: HistoryPanelProp
             </div>
           ))}
 
-          <button
+          {(entries.length > 0 || status === 'invalid') && <button
             type="button"
             onClick={() => {
-              clearHistory();
-              setEntries([]);
+              setFeedback('');
+              if (!clearHistory()) { setActionError('Could not clear local history. Try again.'); return; }
+              setActionError(''); setHistory(readHistory()); setOpen(false);
+              setFeedback('Local history cleared.'); trigger.current?.focus();
             }}
             className="mt-2 text-[11px] uppercase tracking-[0.18em] text-[var(--text-low)] hover:text-[var(--state-error)] transition-colors"
           >
             Clear all
-          </button>
+          </button>}
         </div>
       )}
     </div>
